@@ -9,7 +9,18 @@ import os
 import requests
 from datetime import datetime, timedelta, date
 
+from fastapi.middleware.cors import CORSMiddleware
+
 app = FastAPI(title="Pan-India Mining Weather Pipeline")
+
+# Enable CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 PAN_INDIA_MINES = {
     # Maharashtra
