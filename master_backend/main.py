@@ -1,53 +1,31 @@
 """
-MOIL AI: Manganese Reserve Explorer & Integrated Mine Intelligence Backend API
------------------------------------------------------------------------------
+MOIL AI: Manganese Reserve Explorer Backend API
+-----------------------------------------------
 FastAPI + PyKrige Geostatistical 3D Kriging, KoBold Bayesian Prospecting,
-Multi-Parametric Remote Sensing/Geophysical Services, and Equipment Operations.
+and Multi-Parametric Remote Sensing/Geophysical Services.
 Host: localhost:8000
 """
 
-import os
 import time
 import math
-import json
 from typing import List, Dict, Any, Optional
-from datetime import date
 from fastapi import FastAPI, Query, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
 
-# -------------------------------------------------------------
-# ADITI: EXPLORATION & RESERVE SERVICES
-# -------------------------------------------------------------
-from backend.geostatistics import (
+from geostatistics import (
     generate_dongri_drillholes,
     create_3d_grid,
     run_ordinary_kriging_3d,
     calculate_reserves
 )
-from backend.services.parameter_engine import ParameterEngine
-from backend.services.prospector_engine import ProspectorEngine
-from backend.services.block_model import BlockModelEngine
-
-# -------------------------------------------------------------
-# SHIVAM: EQUIPMENT & MINE INTELLIGENCE SERVICES
-# -------------------------------------------------------------
-try:
-    from backend.setup_database import Equipment, Base
-    from backend.ml_service import get_machine_risk_score
-    from backend.optimization_service import optimize_equipment_redeployment
-    from backend.mine_intelligence import calculate_mine_safety_score
-except ImportError:
-    from setup_database import Equipment, Base
-    from ml_service import get_machine_risk_score
-    from optimization_service import optimize_equipment_redeployment
-    from mine_intelligence import calculate_mine_safety_score
+from services.parameter_engine import ParameterEngine
+from services.prospector_engine import ProspectorEngine
+from services.block_model import BlockModelEngine
 
 app = FastAPI(
-    title="MOIL AI: Exploration & Mine Intelligence Platform",
-    description="Integrated 3D Block Modeling, Bayesian Prospectivity, Remote Sensing, Equipment Intelligence & Operations API for MOIL Manganese Mines.",
+    title="MOIL AI: Exploration & Reserve Estimation Platform",
+    description="Mathematical reserve estimation, Bayesian prospectivity, and remote sensing parameter engine for MOIL Manganese Mines.",
     version="2.0.0"
 )
 
@@ -60,16 +38,18 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Initialize Exploration Engines
+# Initialize engines
 parameter_engine = ParameterEngine(base_lat=21.80, base_lng=79.80)
 prospector_engine = ProspectorEngine(risk_aversion_lambda=0.25)
 block_model_engine = BlockModelEngine(block_size_x=12.0, block_size_y=12.0, block_size_z=6.0)
 drillholes_cache = generate_dongri_drillholes()
 
-# Connect to DB for Equipment Intelligence
-db_path = os.path.join(os.path.dirname(__file__), "moil_equipment.db")
-engine = create_engine(f"sqlite:///{db_path}")
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+# Mount User and Shivam Backends
+from user_app import app as user_app
+from shivam_app import app as shivam_app
+
+app.mount("/user", user_app)
+app.mount("/shivam", shivam_app)
 
 
 # -------------------------------------------------------------
@@ -103,64 +83,27 @@ class BayesianPredictRequest(BaseModel):
     mansar_proximity: Optional[float] = Field(default=0.85)
 
 
-class EquipmentResponse(BaseModel):
-    id: int
-    machine_id: str
-    type: str
-    capacity: str
-    mine_location: str
-    status: str
-    purchase_date: date
-    last_serviced_date: date
-    health_score: float
-    workers_count: str
-    has_fuel_sensor: int = 0
-    fuel_capacity: float | None = None
-    current_fuel_level: float | None = None
-    engine_temperature: float | None = None
-    vibration_level: float | None = None
-
-    class Config:
-        from_attributes = True
-
-
-class TelemetryInput(BaseModel):
-    machine_id: str
-    engine_temperature: float
-    vibration_level: float
-    days_since_service: int
-    operating_hours: float
-    current_fuel_level: float | None = None
-    fuel_capacity: float | None = None
-
-
 # -------------------------------------------------------------
-# API ROUTES: SYSTEM & HEALTH
+# API ROUTES
 # -------------------------------------------------------------
 
 @app.get("/api/v1/health", tags=["System"])
-@app.get("/api/health", tags=["System"])
 async def health_check():
     """
     Returns server health, engine status, and runtime environment.
     """
     return {
         "status": "online",
-        "service": "MOIL AI 3D Block Model, KoBold Exploration & Equipment Operations Platform",
+        "service": "MOIL AI 3D Block Model & KoBold Exploration Platform",
         "version": "2.0.0",
         "engines": {
             "pykrige_3d": "active (vectorized)",
             "kobold_bayesian_ai": "active (ensemble rf+gb)",
-            "parameter_engine": "active (multi-spectral + geophysical)",
-            "equipment_telemetry": "active (sqlite + xgboost)"
+            "parameter_engine": "active (multi-spectral + geophysical)"
         },
         "target_region": "Sausar Manganese Belt (Balaghat - Dongri Buzurg, Central India)"
     }
 
-
-# -------------------------------------------------------------
-# API ROUTES: EXPLORATION & REMOTE SENSING
-# -------------------------------------------------------------
 
 @app.get("/api/v1/spatial/layers", tags=["Phase 1: Remote Sensing & Geophysics"])
 async def get_spatial_layers(resolution: int = Query(default=40, ge=20, le=80)):
@@ -347,88 +290,6 @@ async def get_drillholes(limit: int = Query(default=100, ge=1, le=1000)):
     }
 
 
-# -------------------------------------------------------------
-# API ROUTES: EQUIPMENT & MINE INTELLIGENCE OPERATIONS
-# -------------------------------------------------------------
-
-@app.get("/api/mines/locations", tags=["Equipment & Operations"])
-def get_mine_locations():
-    """Serves the JSON file containing the actual GPS coordinates of the 11 MOIL mines"""
-    mines_file = os.path.join(os.path.dirname(__file__), 'data', 'moil_mines.json')
-    if os.path.exists(mines_file):
-        with open(mines_file, 'r') as f:
-            return json.load(f)
-    return []
-
-
-@app.get("/api/equipment", response_model=List[EquipmentResponse], tags=["Equipment & Operations"])
-def get_equipments():
-    db = SessionLocal()
-    equipments = db.query(Equipment).all()
-    db.close()
-    return equipments
-
-
-@app.get("/api/equipment/{mine_name}", response_model=List[EquipmentResponse], tags=["Equipment & Operations"])
-def get_equipment_by_mine(mine_name: str):
-    db = SessionLocal()
-    equipments = db.query(Equipment).filter(Equipment.mine_location == mine_name).all()
-    db.close()
-    return equipments
-
-
-@app.get("/api/mine/{mine_name}/safety", tags=["Equipment & Operations"])
-def get_mine_safety(mine_name: str):
-    """
-    Calculates the Operational Safety Score of a specific mine based on its equipment.
-    """
-    db = SessionLocal()
-    equipments = db.query(Equipment).filter(Equipment.mine_location == mine_name).all()
-    db.close()
-    
-    if not equipments:
-        raise HTTPException(status_code=404, detail="Mine or equipment not found")
-        
-    return calculate_mine_safety_score(equipments)
-
-
-@app.post("/api/predict", tags=["Equipment & Operations"])
-def predict_machine_health(telemetry: TelemetryInput):
-    """
-    Predicts the risk of failure using the XGBoost Model based on live telemetry.
-    """
-    prediction = get_machine_risk_score(telemetry.dict())
-    return {
-        "machine_id": telemetry.machine_id,
-        "prediction": prediction
-    }
-
-
-@app.post("/api/optimize/{failed_machine_id}", tags=["Equipment & Operations"])
-def optimize_redeployment(failed_machine_id: str):
-    """
-    If a machine fails, this API triggers Google OR-Tools/Optimization Engine
-    to find the closest idle machine of the same type across all mines.
-    """
-    db = SessionLocal()
-    failed_machine = db.query(Equipment).filter(Equipment.machine_id == failed_machine_id).first()
-    
-    if not failed_machine:
-        db.close()
-        raise HTTPException(status_code=404, detail="Machine not found")
-        
-    all_idle_machines = db.query(Equipment).filter(Equipment.status == 'Idle').all()
-    
-    recommendation = optimize_equipment_redeployment(
-        failed_machine_type=failed_machine.type,
-        failed_machine_mine=failed_machine.mine_location,
-        all_idle_machines=all_idle_machines
-    )
-    
-    db.close()
-    return recommendation
-
-
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("backend.main:app", host="0.0.0.0", port=8000, reload=True)
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)

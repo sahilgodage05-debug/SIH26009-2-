@@ -1,0 +1,13 @@
+[
+  { "mine_id": "M01", "name": "Balaghat Mine", "type": "Underground & Opencast", "district": "Balaghat", "state": "Madhya Pradesh", "latitude": 21.8129, "longitude": 80.1838, "status": "Active", "workers": "2,500 - 3,000" },
+  { "mine_id": "M02", "name": "Tirodi Mine", "type": "Opencast", "district": "Balaghat", "state": "Madhya Pradesh", "latitude": 21.6880, "longitude": 79.9320, "status": "Active", "workers": "400 - 500" },
+  { "mine_id": "M03", "name": "Ukwa Mine", "type": "Underground", "district": "Balaghat", "state": "Madhya Pradesh", "latitude": 21.9500, "longitude": 80.4600, "status": "Active", "workers": "600 - 800" },
+  { "mine_id": "M04", "name": "Sitapatore Mine", "type": "Opencast", "district": "Balaghat", "state": "Madhya Pradesh", "latitude": 21.6500, "longitude": 79.9000, "status": "Active", "workers": "150 - 250" },
+  { "mine_id": "M05", "name": "Dongri Buzurg Mine", "type": "Opencast", "district": "Bhandara", "state": "Maharashtra", "latitude": 21.5173, "longitude": 79.6917, "status": "Active", "workers": "800 - 1,000" },
+  { "mine_id": "M06", "name": "Chikla Mine", "type": "Underground", "district": "Bhandara", "state": "Maharashtra", "latitude": 21.5300, "longitude": 79.7200, "status": "Active", "workers": "700 - 900" },
+  { "mine_id": "M07", "name": "Kandri Mine", "type": "Underground", "district": "Nagpur", "state": "Maharashtra", "latitude": 21.4116, "longitude": 79.2882, "status": "Active", "workers": "500 - 700" },
+  { "mine_id": "M08", "name": "Mansar Mine", "type": "Underground & Opencast", "district": "Nagpur", "state": "Maharashtra", "latitude": 21.3963, "longitude": 79.2559, "status": "Active", "workers": "500 - 650" },
+  { "mine_id": "M09", "name": "Gumgaon Mine", "type": "Underground", "district": "Nagpur", "state": "Maharashtra", "latitude": 21.3650, "longitude": 79.0069, "status": "Active", "workers": "450 - 600" },
+  { "mine_id": "M10", "name": "Beldongri Mine", "type": "Opencast", "district": "Nagpur", "state": "Maharashtra", "latitude": 21.3500, "longitude": 79.3100, "status": "Active", "workers": "200 - 350" },
+  { "mine_id": "M11", "name": "Parsoda Mine", "type": "Opencast", "district": "Nagpur", "state": "Maharashtra", "latitude": 21.3800, "longitude": 79.2800, "status": "Active", "workers": "200 - 350" }
+]
