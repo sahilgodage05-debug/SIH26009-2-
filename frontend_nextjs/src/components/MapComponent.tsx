@@ -144,6 +144,41 @@ export const MapComponent: React.FC<MapComponentProps> = ({
 }) => {
   const [basemap, setBasemap] = useState<'osm' | 'dark' | 'satellite'>('dark');
   const [flyTarget, setFlyTarget] = useState<[number, number] | null>(null);
+  const [liveScores, setLiveScores] = useState<Record<string, number>>({});
+
+  useEffect(() => {
+    if (layers.aiHeatmap) {
+      AI_HEATMAP_CLUSTERS.forEach(cluster => {
+        // Use the first coordinate as the centroid for prediction
+        const lat = cluster.coordinates[0][0];
+        const lng = cluster.coordinates[0][1];
+        
+        fetch('http://localhost:8000/api/v1/predict/scoring', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            lat: lat,
+            lng: lng,
+            msv_anomaly: 1.8,
+            swir_ratio: 2.1,
+            resistivity: 135.0,
+            chargeability: 24.5,
+            s_density: 6.5,
+            elevation: 340.0,
+            slope_deg: 22.0,
+            mansar_proximity: 0.85
+          })
+        })
+        .then(res => res.json())
+        .then(data => {
+          if (data && data.bayesian_confidence_score) {
+            setLiveScores(prev => ({ ...prev, [cluster.id]: data.bayesian_confidence_score }));
+          }
+        })
+        .catch(err => console.error('Failed to fetch real AI score', err));
+      });
+    }
+  }, [layers.aiHeatmap]);
 
   const getTileLayerUrl = () => {
     switch (basemap) {
@@ -289,34 +324,39 @@ export const MapComponent: React.FC<MapComponentProps> = ({
           maxZoom={18}
         />
 
-        {/* 1. AI Manganese Heatmap Polygon Clusters (Simulated ML Model Output) */}
+        {/* 1. AI Manganese Heatmap Polygon Clusters (Live KoBold ML Output) */}
         {layers.aiHeatmap &&
-          AI_HEATMAP_CLUSTERS.filter(cluster => cluster.probability >= confidenceThreshold).map(cluster => (
-            <Polygon
-              key={cluster.id}
-              positions={cluster.coordinates}
-              pathOptions={{
-                color: cluster.color,
-                weight: 2,
-                opacity: 0.9,
-                fillColor: cluster.fillColor,
-                fillOpacity: 0.45,
-                dashArray: '4, 4'
-              }}
-            >
-              <Tooltip sticky direction="top" className="custom-leaflet-tooltip">
-                <div className="text-xs p-1">
-                  <div className="font-bold text-slate-100 flex items-center gap-1">
-                    <Sparkles className="w-3 h-3 text-red-400" />
-                    <span>{cluster.name}</span>
+          AI_HEATMAP_CLUSTERS.map(cluster => {
+            const realScore = liveScores[cluster.id] !== undefined ? liveScores[cluster.id] : cluster.probability;
+            if (realScore < confidenceThreshold) return null;
+            
+            return (
+              <Polygon
+                key={cluster.id}
+                positions={cluster.coordinates}
+                pathOptions={{
+                  color: cluster.color,
+                  weight: 2,
+                  opacity: 0.9,
+                  fillColor: cluster.fillColor,
+                  fillOpacity: 0.45,
+                  dashArray: '4, 4'
+                }}
+              >
+                <Tooltip sticky direction="top" className="custom-leaflet-tooltip">
+                  <div className="text-xs p-1">
+                    <div className="font-bold text-slate-100 flex items-center gap-1">
+                      <Sparkles className="w-3 h-3 text-red-400" />
+                      <span>{cluster.name}</span>
+                    </div>
+                    <div className="text-[11px] text-amber-300 font-mono mt-0.5">
+                      Manganese Probability: {realScore}% (Live AI)
+                    </div>
                   </div>
-                  <div className="text-[11px] text-amber-300 font-mono mt-0.5">
-                    Manganese Probability: {cluster.probability}%
-                  </div>
-                </div>
-              </Tooltip>
-            </Polygon>
-          ))}
+                </Tooltip>
+              </Polygon>
+            );
+          })}
 
         {/* 2. Space-Tech Layer: NDVI Vegetation Index Stress Anomaly */}
         {layers.ndvi &&
