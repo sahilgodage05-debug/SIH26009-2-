@@ -64,6 +64,7 @@ class WeatherInput(BaseModel):
     Temp_Min: float
     Soil_Moisture: float
     Month: int
+    Rainfall_mm: float
 
 class ScheduleInput(BaseModel):
     Mine_Name: str

@@ -23,7 +23,7 @@ def main():
                                (df["Temp_Max"] > 40) | 
                                (df["Soil_Moisture"] > 0.9)).astype(int)
 
-    features = ["Temp_Max", "Temp_Min", "Soil_Moisture", "Month"]
+    features = ["Temp_Max", "Temp_Min", "Soil_Moisture", "Month", "Rainfall_mm"]
     target = "High_Risk_Weather"
 
     X = df[features]
