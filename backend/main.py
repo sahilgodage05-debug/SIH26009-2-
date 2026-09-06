@@ -18,6 +18,13 @@ from pydantic import BaseModel, Field
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
+import sys
+
+# Ensure repository root is in sys.path when running backend/main.py directly
+root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if root_dir not in sys.path:
+    sys.path.insert(0, root_dir)
+
 # -------------------------------------------------------------
 # ADITI: EXPLORATION & RESERVE SERVICES
 # -------------------------------------------------------------
