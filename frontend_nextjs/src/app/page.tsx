@@ -18,7 +18,7 @@ export default function Home() {
     soilMoisture: true,
     landTemperature: false,
     historicalDrilling: true,
-    aiHeatmap: false,
+    aiHeatmap: true,
     radarPrecipitation: false,
     structuralFaults: true,
   });
