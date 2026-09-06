@@ -33,9 +33,53 @@ export const ConfidenceInspector: React.FC<ConfidenceInspectorProps> = ({
   isOpen,
   onClose
 }) => {
-  const [activeTab, setActiveTab] = useState<'geology' | 'stratigraphy' | 'satellite' | 'kriging'>('geology');
+  const [activeTab, setActiveTab] = useState<'geology' | 'stratigraphy' | 'satellite' | 'kriging' | 'equipment'>('geology');
   const [isExporting, setIsExporting] = useState(false);
   const [dossierNotice, setDossierNotice] = useState<string | null>(null);
+
+  // Equipment & AI Scheduling State
+  const [fleet, setFleet] = useState<any[]>([]);
+  const [shivamAlert, setShivamAlert] = useState<any | null>(null);
+
+  React.useEffect(() => {
+    if (!zone) return;
+
+    const baseMineName = zone.name.split(' (')[0];
+    const locationName = zone.name.split(' ')[0];
+
+    // Fetch User's Equipment Data
+    const fetchEquipment = async () => {
+      try {
+        const url = `http://${window.location.hostname}:8000/user/api/equipment/${encodeURIComponent(baseMineName)}`;
+        const response = await fetch(url);
+        if (response.ok) {
+          const data = await response.json();
+          setFleet(data);
+        }
+      } catch (err) {
+        console.error("Failed to fetch equipment:", err);
+      }
+    };
+    
+    // Fetch Shivam's Scheduling AI
+    const fetchShivamAI = async () => {
+      try {
+        const url = `http://${window.location.hostname}:8000/shivam/api/get-schedule?location=${encodeURIComponent(locationName)}`;
+        const response = await fetch(url);
+        if (response.ok) {
+          const data = await response.json();
+          setShivamAlert(data);
+        }
+      } catch (err) {
+        console.error("Failed to fetch Shivam AI:", err);
+      }
+    };
+
+    fetchEquipment();
+    fetchShivamAI();
+    const interval = setInterval(fetchEquipment, 5000);
+    return () => clearInterval(interval);
+  }, [zone]);
 
   // Kriging Reserve Estimation State (FastAPI Backend at localhost:8000)
   const [cutoffGrade, setCutoffGrade] = useState<number>(25.0);
@@ -264,6 +308,19 @@ export const ConfidenceInspector: React.FC<ConfidenceInspectorProps> = ({
               API
             </span>
           </button>
+          <button
+            onClick={() => setActiveTab('equipment')}
+            className={`pb-2 px-3 font-semibold transition-colors border-b-2 flex items-center gap-1.5 ${
+              activeTab === 'equipment'
+                ? 'border-emerald-500 text-emerald-400'
+                : 'border-transparent text-slate-400 hover:text-slate-200'
+            }`}
+          >
+            <span>Equipment & AI</span>
+            <span className="text-[9px] font-mono px-1 py-0.2 rounded bg-amber-950 text-amber-300 border border-amber-500/30">
+              API
+            </span>
+          </button>
         </div>
 
         {/* Tab 1: Geological Indicators */}
@@ -477,6 +534,80 @@ export const ConfidenceInspector: React.FC<ConfidenceInspectorProps> = ({
                 )}
               </div>
             )}
+          </div>
+        )}
+
+        {/* Tab 5: Equipment & AI Scheduling */}
+        {activeTab === 'equipment' && (
+          <div className="space-y-3.5 text-xs">
+            {/* Shivam's AI Alert */}
+            {shivamAlert && shivamAlert.Requires_Rescheduling && (
+              <div className="p-3 rounded-xl bg-amber-950/40 border border-amber-500/40 space-y-2">
+                <div className="flex items-center gap-1.5 font-bold text-amber-400">
+                  <AlertCircle className="w-4 h-4" />
+                  <span>AI Weather Rescheduling Alert</span>
+                </div>
+                <div className="text-[11px] text-slate-300">
+                  <span className="text-slate-400">Constraint:</span> {shivamAlert.Alert || 'Heavy Rain Alert'}
+                </div>
+                <div className="text-[11px] text-slate-300">
+                  <span className="text-slate-400">Recommendation:</span> {shivamAlert.Recommendation}
+                </div>
+              </div>
+            )}
+
+            {/* Equipment Telemetry */}
+            <div className="space-y-2">
+              <span className="font-bold text-slate-300 text-xs">Live Fleet Status</span>
+              {fleet.length === 0 ? (
+                <div className="text-slate-500 text-[11px] py-4 text-center">
+                  Loading telemetry or no equipment deployed at this mine.
+                </div>
+              ) : (
+                <div className="space-y-2 max-h-[300px] overflow-y-auto pr-1">
+                  {fleet.map((eq: any) => (
+                    <div key={eq.id} className="p-2.5 rounded-lg bg-slate-900/60 border border-slate-800 space-y-1.5">
+                      <div className="flex items-center justify-between">
+                        <span className="font-bold text-slate-200">{eq.machine_id}</span>
+                        <span className={`px-1.5 py-0.5 rounded text-[9px] font-bold ${
+                          eq.status === 'Active' || eq.status === 'Operational' ? 'bg-emerald-500/20 text-emerald-400' :
+                          eq.status === 'Maintenance' ? 'bg-rose-500/20 text-rose-400' :
+                          'bg-amber-500/20 text-amber-400'
+                        }`}>
+                          {eq.status}
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between text-[10px] text-slate-400">
+                        <span>Type: {eq.type}</span>
+                        <span>Capacity: {eq.capacity}</span>
+                      </div>
+                      <div className="grid grid-cols-2 gap-2 pt-1 border-t border-slate-800/60">
+                        <div className="flex justify-between items-center text-[10px]">
+                          <span className="text-slate-500">Health:</span>
+                          <span className={`font-mono font-bold ${eq.health_score > 70 ? 'text-emerald-400' : 'text-amber-400'}`}>
+                            {eq.health_score}%
+                          </span>
+                        </div>
+                        <div className="flex justify-between items-center text-[10px]">
+                          <span className="text-slate-500">Temp:</span>
+                          <span className="font-mono text-slate-300">
+                            {eq.engine_temperature || 85}°C
+                          </span>
+                        </div>
+                        {eq.has_fuel_sensor === 1 && (
+                          <div className="flex justify-between items-center text-[10px] col-span-2">
+                            <span className="text-slate-500">Fuel Level:</span>
+                            <span className="font-mono text-slate-300">
+                              {eq.current_fuel_level}L / {eq.fuel_capacity}L
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         )}
 
