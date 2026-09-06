@@ -352,9 +352,15 @@
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <label>Available Overtime Capacity (Hrs)</label>
-                    <input type="number" id="p_overtime" placeholder="e.g. 4">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Daily Extraction Capacity (Tons)</label>
+                        <input type="number" id="p_capacity" placeholder="e.g. 200">
+                    </div>
+                    <div class="form-group">
+                        <label>Available Overtime Capacity (Hrs)</label>
+                        <input type="number" id="p_overtime" placeholder="e.g. 4">
+                    </div>
                 </div>
 
                 <button class="primary-btn" id="btnPrescribe" onclick="getPrescription()">
@@ -432,6 +438,7 @@
             document.getElementById('p_soil').value = 0.55;
             document.getElementById('p_target').value = 450;
             document.getElementById('p_days').value = 2;
+            document.getElementById('p_capacity').value = 150;
             document.getElementById('p_overtime').value = 4;
         }
 
@@ -465,6 +472,7 @@
                 Rolling_72h_Rainfall: parseFloat(document.getElementById('p_rolling').value) || 0,
                 Pending_Target_Tons: parseFloat(document.getElementById('p_target').value) || 0,
                 Days_To_Deadline: parseFloat(document.getElementById('p_days').value) || 0,
+                Daily_Extraction_Capacity: parseFloat(document.getElementById('p_capacity').value) || 0,
                 Overtime_Capacity_hrs: parseFloat(document.getElementById('p_overtime').value) || 0
             };
 
