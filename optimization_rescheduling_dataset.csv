@@ -1,0 +1,1001 @@
+Predicted_Disruption_Start,Predicted_Disruption_Duration_hrs,Disruption_Type,Pending_Target_Tons,Days_To_Deadline,Available_Overtime_Capacity_hrs,Recommended_Action,Suggested_Overtime_hrs
+06:00,1,Extreme Heat,218,6,4,Shift to Indoor/Maintenance tasks,0
+16:00,4,Heavy Rain,404,6,1,Front-load Morning Shift,0
+18:00,0,None,456,5,4,Normal Operations,0
+13:00,3,Heavy Rain,442,5,3,Front-load Morning Shift,0
+22:00,0,None,328,5,3,Normal Operations,0
+13:00,1,Extreme Heat,344,8,2,Front-load Morning Shift,0
+12:00,0,None,414,1,2,Normal Operations,0
+08:00,6,Extreme Heat,284,1,4,Pre-emptive Overtime Previous Day,4
+07:00,8,Heavy Rain,377,1,3,Pre-emptive Overtime Previous Day,3
+14:00,0,None,382,2,2,Normal Operations,0
+07:00,4,Extreme Heat,380,10,3,Shift to Indoor/Maintenance tasks,0
+08:00,7,Heavy Rain,380,2,1,Pre-emptive Overtime Previous Day,1
+10:00,5,Extreme Heat,175,2,2,Pre-emptive Overtime Previous Day,2
+02:00,0,None,491,8,2,Normal Operations,0
+17:00,6,Extreme Heat,225,6,1,Front-load Morning Shift,0
+04:00,0,None,288,1,0,Normal Operations,0
+15:00,5,Heavy Rain,469,2,0,Shift to Indoor/Maintenance tasks,0
+08:00,6,Heavy Rain,480,2,1,Pre-emptive Overtime Previous Day,1
+17:00,1,Heavy Rain,408,2,1,Front-load Morning Shift,0
+09:00,1,Heavy Rain,461,8,2,Shift to Indoor/Maintenance tasks,0
+09:00,7,Extreme Heat,173,8,1,Shift to Indoor/Maintenance tasks,0
+18:00,6,Heavy Rain,122,6,1,Front-load Morning Shift,0
+12:00,7,Extreme Heat,421,8,0,Shift to Indoor/Maintenance tasks,0
+13:00,7,Heavy Rain,389,4,0,Shift to Indoor/Maintenance tasks,0
+07:00,0,None,103,5,4,Normal Operations,0
+05:00,0,None,384,7,2,Normal Operations,0
+17:00,0,None,375,9,0,Normal Operations,0
+10:00,0,None,273,4,3,Normal Operations,0
+13:00,7,Extreme Heat,358,7,2,Front-load Morning Shift,0
+11:00,5,Heavy Rain,137,1,3,Pre-emptive Overtime Previous Day,3
+18:00,4,Heavy Rain,455,2,2,Pre-emptive Overtime Previous Day,2
+10:00,8,Heavy Rain,456,8,2,Shift to Indoor/Maintenance tasks,0
+13:00,1,Heavy Rain,121,2,1,Front-load Morning Shift,0
+11:00,5,Heavy Rain,351,2,2,Pre-emptive Overtime Previous Day,2
+15:00,5,Extreme Heat,217,4,1,Front-load Morning Shift,0
+12:00,2,Heavy Rain,102,8,2,Shift to Indoor/Maintenance tasks,0
+14:00,6,Heavy Rain,198,7,2,Front-load Morning Shift,0
+10:00,0,None,358,2,3,Normal Operations,0
+15:00,8,Heavy Rain,314,10,4,Front-load Morning Shift,0
+16:00,5,Extreme Heat,343,10,1,Front-load Morning Shift,0
+03:00,0,None,252,8,1,Normal Operations,0
+11:00,0,None,479,8,0,Normal Operations,0
+18:00,2,Heavy Rain,481,6,1,Front-load Morning Shift,0
+07:00,6,Heavy Rain,153,7,1,Shift to Indoor/Maintenance tasks,0
+08:00,2,Extreme Heat,500,5,2,Shift to Indoor/Maintenance tasks,0
+10:00,6,Heavy Rain,345,6,4,Shift to Indoor/Maintenance tasks,0
+12:00,1,Heavy Rain,359,5,4,Shift to Indoor/Maintenance tasks,0
+15:00,2,Extreme Heat,351,1,3,Front-load Morning Shift,0
+08:00,8,Heavy Rain,352,1,0,Shift to Indoor/Maintenance tasks,0
+01:00,0,None,489,2,3,Normal Operations,0
+16:00,2,Extreme Heat,315,8,1,Front-load Morning Shift,0
+13:00,1,Heavy Rain,461,5,3,Front-load Morning Shift,0
+17:00,2,Extreme Heat,154,5,2,Front-load Morning Shift,0
+07:00,6,Extreme Heat,477,3,3,Shift to Indoor/Maintenance tasks,0
+09:00,3,Heavy Rain,134,5,2,Shift to Indoor/Maintenance tasks,0
+08:00,4,Extreme Heat,111,2,3,Pre-emptive Overtime Previous Day,3
+18:00,0,None,449,1,0,Normal Operations,0
+11:00,3,Heavy Rain,333,7,1,Shift to Indoor/Maintenance tasks,0
+10:00,1,Extreme Heat,355,9,4,Shift to Indoor/Maintenance tasks,0
+13:00,0,None,249,6,3,Normal Operations,0
+12:00,4,Extreme Heat,320,1,4,Pre-emptive Overtime Previous Day,4
+14:00,6,Extreme Heat,154,2,4,Pre-emptive Overtime Previous Day,4
+07:00,8,Heavy Rain,434,3,3,Shift to Indoor/Maintenance tasks,0
+14:00,8,Heavy Rain,346,3,1,Front-load Morning Shift,0
+10:00,0,None,337,10,0,Normal Operations,0
+02:00,0,None,333,7,4,Normal Operations,0
+11:00,0,None,482,1,1,Normal Operations,0
+17:00,5,Heavy Rain,203,8,2,Front-load Morning Shift,0
+08:00,5,Heavy Rain,486,8,1,Shift to Indoor/Maintenance tasks,0
+17:00,1,Heavy Rain,239,1,2,Front-load Morning Shift,0
+15:00,7,Extreme Heat,170,2,0,Shift to Indoor/Maintenance tasks,0
+18:00,1,Heavy Rain,265,10,1,Front-load Morning Shift,0
+17:00,1,Extreme Heat,458,7,3,Front-load Morning Shift,0
+17:00,0,None,352,6,1,Normal Operations,0
+09:00,7,Heavy Rain,315,7,1,Shift to Indoor/Maintenance tasks,0
+18:00,0,None,339,5,1,Normal Operations,0
+08:00,8,Extreme Heat,161,8,1,Shift to Indoor/Maintenance tasks,0
+15:00,2,Heavy Rain,455,4,3,Front-load Morning Shift,0
+12:00,3,Heavy Rain,476,8,1,Shift to Indoor/Maintenance tasks,0
+16:00,0,None,170,8,0,Normal Operations,0
+22:00,0,None,171,7,3,Normal Operations,0
+12:00,1,Heavy Rain,165,1,2,Shift to Indoor/Maintenance tasks,0
+19:00,0,None,397,9,3,Normal Operations,0
+03:00,0,None,155,4,3,Normal Operations,0
+13:00,4,Heavy Rain,352,4,1,Front-load Morning Shift,0
+14:00,5,Extreme Heat,290,9,4,Front-load Morning Shift,0
+12:00,2,Extreme Heat,316,9,4,Shift to Indoor/Maintenance tasks,0
+00:00,0,None,312,7,4,Normal Operations,0
+09:00,1,Heavy Rain,379,3,4,Shift to Indoor/Maintenance tasks,0
+05:00,0,None,281,10,0,Normal Operations,0
+14:00,6,Heavy Rain,116,4,1,Front-load Morning Shift,0
+08:00,6,Heavy Rain,263,10,0,Shift to Indoor/Maintenance tasks,0
+13:00,1,Heavy Rain,452,10,1,Front-load Morning Shift,0
+18:00,1,Extreme Heat,416,8,3,Front-load Morning Shift,0
+13:00,5,Heavy Rain,345,2,2,Pre-emptive Overtime Previous Day,2
+12:00,1,Heavy Rain,231,6,2,Shift to Indoor/Maintenance tasks,0
+08:00,7,Extreme Heat,269,5,3,Shift to Indoor/Maintenance tasks,0
+08:00,6,Extreme Heat,100,3,1,Shift to Indoor/Maintenance tasks,0
+08:00,6,Extreme Heat,279,10,2,Shift to Indoor/Maintenance tasks,0
+07:00,0,None,414,8,4,Normal Operations,0
+13:00,0,None,282,3,4,Normal Operations,0
+10:00,6,Heavy Rain,143,8,1,Shift to Indoor/Maintenance tasks,0
+08:00,8,Heavy Rain,342,7,4,Shift to Indoor/Maintenance tasks,0
+00:00,0,None,223,1,4,Normal Operations,0
+15:00,8,Extreme Heat,139,9,0,Shift to Indoor/Maintenance tasks,0
+18:00,4,Heavy Rain,147,7,3,Front-load Morning Shift,0
+08:00,2,Heavy Rain,154,3,0,Shift to Indoor/Maintenance tasks,0
+06:00,0,None,500,5,1,Normal Operations,0
+11:00,3,Heavy Rain,357,1,4,Shift to Indoor/Maintenance tasks,0
+06:00,2,Extreme Heat,201,8,1,Shift to Indoor/Maintenance tasks,0
+09:00,4,Extreme Heat,131,4,3,Shift to Indoor/Maintenance tasks,0
+08:00,0,None,250,5,3,Normal Operations,0
+12:00,6,Heavy Rain,347,7,0,Shift to Indoor/Maintenance tasks,0
+15:00,5,Heavy Rain,404,7,1,Front-load Morning Shift,0
+17:00,5,Extreme Heat,432,4,0,Shift to Indoor/Maintenance tasks,0
+17:00,6,Extreme Heat,296,9,3,Front-load Morning Shift,0
+04:00,0,None,199,4,1,Normal Operations,0
+10:00,8,Extreme Heat,189,6,4,Shift to Indoor/Maintenance tasks,0
+15:00,6,Heavy Rain,438,10,1,Front-load Morning Shift,0
+09:00,1,Heavy Rain,228,6,1,Shift to Indoor/Maintenance tasks,0
+07:00,0,None,477,3,2,Normal Operations,0
+06:00,2,Extreme Heat,252,8,3,Shift to Indoor/Maintenance tasks,0
+12:00,4,Extreme Heat,313,10,1,Shift to Indoor/Maintenance tasks,0
+04:00,0,None,409,4,2,Normal Operations,0
+16:00,8,Extreme Heat,426,8,0,Shift to Indoor/Maintenance tasks,0
+08:00,1,Extreme Heat,486,1,3,Shift to Indoor/Maintenance tasks,0
+11:00,5,Extreme Heat,318,9,3,Shift to Indoor/Maintenance tasks,0
+15:00,0,None,329,10,0,Normal Operations,0
+15:00,8,Extreme Heat,291,9,0,Shift to Indoor/Maintenance tasks,0
+12:00,0,None,400,4,3,Normal Operations,0
+19:00,0,None,492,7,0,Normal Operations,0
+15:00,1,Extreme Heat,269,10,4,Front-load Morning Shift,0
+11:00,7,Heavy Rain,405,5,4,Shift to Indoor/Maintenance tasks,0
+08:00,5,Heavy Rain,228,9,2,Shift to Indoor/Maintenance tasks,0
+06:00,0,None,220,5,3,Normal Operations,0
+10:00,0,None,168,2,3,Normal Operations,0
+00:00,0,None,345,8,2,Normal Operations,0
+14:00,4,Heavy Rain,117,7,0,Shift to Indoor/Maintenance tasks,0
+06:00,5,Heavy Rain,142,3,3,Shift to Indoor/Maintenance tasks,0
+17:00,8,Extreme Heat,332,10,1,Front-load Morning Shift,0
+08:00,0,None,416,3,4,Normal Operations,0
+15:00,8,Heavy Rain,162,7,0,Shift to Indoor/Maintenance tasks,0
+14:00,7,Extreme Heat,161,4,2,Front-load Morning Shift,0
+14:00,2,Heavy Rain,259,8,2,Front-load Morning Shift,0
+00:00,0,None,116,9,4,Normal Operations,0
+09:00,5,Heavy Rain,297,9,2,Shift to Indoor/Maintenance tasks,0
+15:00,6,Heavy Rain,429,1,3,Pre-emptive Overtime Previous Day,3
+02:00,0,None,209,10,4,Normal Operations,0
+02:00,0,None,137,9,3,Normal Operations,0
+04:00,0,None,140,7,1,Normal Operations,0
+19:00,0,None,387,8,0,Normal Operations,0
+18:00,6,Heavy Rain,337,1,4,Pre-emptive Overtime Previous Day,4
+09:00,0,None,239,4,1,Normal Operations,0
+05:00,0,None,155,7,1,Normal Operations,0
+16:00,1,Heavy Rain,389,4,1,Front-load Morning Shift,0
+01:00,0,None,439,1,3,Normal Operations,0
+21:00,0,None,126,7,4,Normal Operations,0
+08:00,6,Extreme Heat,273,3,1,Shift to Indoor/Maintenance tasks,0
+12:00,0,None,278,9,4,Normal Operations,0
+16:00,0,None,457,3,0,Normal Operations,0
+08:00,8,Extreme Heat,264,7,3,Shift to Indoor/Maintenance tasks,0
+16:00,0,None,345,6,3,Normal Operations,0
+08:00,7,Extreme Heat,299,4,3,Shift to Indoor/Maintenance tasks,0
+15:00,5,Extreme Heat,254,2,0,Shift to Indoor/Maintenance tasks,0
+10:00,7,Extreme Heat,469,3,4,Shift to Indoor/Maintenance tasks,0
+13:00,0,None,111,4,0,Normal Operations,0
+06:00,0,None,318,5,2,Normal Operations,0
+16:00,0,None,494,7,3,Normal Operations,0
+18:00,7,Heavy Rain,297,9,0,Shift to Indoor/Maintenance tasks,0
+06:00,2,Heavy Rain,184,3,4,Shift to Indoor/Maintenance tasks,0
+17:00,5,Extreme Heat,226,10,2,Front-load Morning Shift,0
+10:00,2,Heavy Rain,142,4,4,Shift to Indoor/Maintenance tasks,0
+10:00,0,None,232,8,0,Normal Operations,0
+15:00,5,Heavy Rain,446,5,2,Front-load Morning Shift,0
+10:00,2,Heavy Rain,435,10,3,Shift to Indoor/Maintenance tasks,0
+19:00,0,None,126,9,1,Normal Operations,0
+15:00,5,Extreme Heat,274,10,4,Front-load Morning Shift,0
+13:00,7,Heavy Rain,296,10,2,Front-load Morning Shift,0
+10:00,0,None,293,4,1,Normal Operations,0
+10:00,3,Extreme Heat,272,7,0,Shift to Indoor/Maintenance tasks,0
+18:00,0,None,330,3,2,Normal Operations,0
+08:00,5,Extreme Heat,428,3,4,Shift to Indoor/Maintenance tasks,0
+04:00,0,None,228,1,2,Normal Operations,0
+20:00,0,None,469,5,3,Normal Operations,0
+18:00,0,None,375,5,3,Normal Operations,0
+07:00,7,Extreme Heat,454,4,1,Shift to Indoor/Maintenance tasks,0
+17:00,4,Heavy Rain,221,9,0,Shift to Indoor/Maintenance tasks,0
+13:00,2,Extreme Heat,467,1,2,Front-load Morning Shift,0
+06:00,5,Heavy Rain,388,2,1,Pre-emptive Overtime Previous Day,1
+20:00,0,None,300,2,0,Normal Operations,0
+16:00,4,Heavy Rain,158,10,2,Front-load Morning Shift,0
+07:00,7,Heavy Rain,239,8,4,Shift to Indoor/Maintenance tasks,0
+03:00,0,None,304,8,0,Normal Operations,0
+19:00,0,None,398,1,2,Normal Operations,0
+15:00,2,Extreme Heat,106,10,4,Front-load Morning Shift,0
+18:00,8,Heavy Rain,169,1,0,Shift to Indoor/Maintenance tasks,0
+03:00,0,None,203,7,4,Normal Operations,0
+04:00,0,None,356,10,1,Normal Operations,0
+10:00,0,None,413,8,2,Normal Operations,0
+15:00,5,Heavy Rain,353,6,4,Front-load Morning Shift,0
+02:00,0,None,427,7,4,Normal Operations,0
+14:00,1,Heavy Rain,165,8,0,Shift to Indoor/Maintenance tasks,0
+18:00,0,None,378,4,3,Normal Operations,0
+12:00,4,Heavy Rain,106,6,0,Shift to Indoor/Maintenance tasks,0
+15:00,0,None,437,2,3,Normal Operations,0
+06:00,5,Extreme Heat,157,10,3,Shift to Indoor/Maintenance tasks,0
+01:00,0,None,399,7,1,Normal Operations,0
+12:00,6,Heavy Rain,243,4,1,Shift to Indoor/Maintenance tasks,0
+09:00,4,Heavy Rain,497,7,2,Shift to Indoor/Maintenance tasks,0
+13:00,4,Heavy Rain,356,6,0,Shift to Indoor/Maintenance tasks,0
+07:00,8,Heavy Rain,108,5,4,Shift to Indoor/Maintenance tasks,0
+15:00,7,Heavy Rain,121,7,2,Front-load Morning Shift,0
+11:00,0,None,364,2,1,Normal Operations,0
+16:00,5,Extreme Heat,158,6,2,Front-load Morning Shift,0
+22:00,0,None,182,8,3,Normal Operations,0
+06:00,5,Extreme Heat,443,10,4,Shift to Indoor/Maintenance tasks,0
+11:00,7,Heavy Rain,366,1,3,Pre-emptive Overtime Previous Day,3
+19:00,0,None,111,3,1,Normal Operations,0
+08:00,0,None,420,7,1,Normal Operations,0
+10:00,1,Heavy Rain,411,3,1,Shift to Indoor/Maintenance tasks,0
+17:00,8,Heavy Rain,433,3,0,Shift to Indoor/Maintenance tasks,0
+16:00,6,Extreme Heat,303,6,4,Front-load Morning Shift,0
+03:00,0,None,250,4,1,Normal Operations,0
+18:00,2,Extreme Heat,213,4,1,Front-load Morning Shift,0
+12:00,0,None,409,1,0,Normal Operations,0
+15:00,2,Heavy Rain,264,4,2,Front-load Morning Shift,0
+07:00,5,Heavy Rain,191,3,0,Shift to Indoor/Maintenance tasks,0
+15:00,8,Extreme Heat,287,4,4,Front-load Morning Shift,0
+14:00,3,Heavy Rain,116,2,0,Shift to Indoor/Maintenance tasks,0
+07:00,0,None,192,8,3,Normal Operations,0
+15:00,6,Extreme Heat,375,5,3,Front-load Morning Shift,0
+13:00,1,Extreme Heat,133,1,3,Front-load Morning Shift,0
+17:00,5,Extreme Heat,432,2,2,Pre-emptive Overtime Previous Day,2
+15:00,2,Extreme Heat,175,8,3,Front-load Morning Shift,0
+14:00,3,Extreme Heat,349,5,2,Front-load Morning Shift,0
+13:00,8,Heavy Rain,393,8,0,Shift to Indoor/Maintenance tasks,0
+13:00,6,Heavy Rain,294,9,2,Front-load Morning Shift,0
+01:00,0,None,437,5,1,Normal Operations,0
+22:00,0,None,364,7,4,Normal Operations,0
+00:00,0,None,235,2,3,Normal Operations,0
+06:00,0,None,304,9,2,Normal Operations,0
+16:00,7,Heavy Rain,119,9,4,Front-load Morning Shift,0
+22:00,0,None,169,4,3,Normal Operations,0
+10:00,6,Heavy Rain,181,2,4,Pre-emptive Overtime Previous Day,4
+07:00,1,Extreme Heat,298,1,0,Shift to Indoor/Maintenance tasks,0
+15:00,1,Extreme Heat,234,6,1,Front-load Morning Shift,0
+04:00,0,None,486,1,3,Normal Operations,0
+13:00,7,Heavy Rain,337,10,0,Shift to Indoor/Maintenance tasks,0
+13:00,0,None,214,7,2,Normal Operations,0
+19:00,0,None,306,9,2,Normal Operations,0
+15:00,0,None,426,4,4,Normal Operations,0
+06:00,1,Extreme Heat,159,10,0,Shift to Indoor/Maintenance tasks,0
+11:00,8,Heavy Rain,160,1,1,Pre-emptive Overtime Previous Day,1
+13:00,2,Extreme Heat,199,5,4,Front-load Morning Shift,0
+06:00,8,Heavy Rain,466,4,2,Shift to Indoor/Maintenance tasks,0
+09:00,8,Heavy Rain,181,7,4,Shift to Indoor/Maintenance tasks,0
+08:00,3,Heavy Rain,254,4,0,Shift to Indoor/Maintenance tasks,0
+18:00,6,Heavy Rain,250,5,1,Front-load Morning Shift,0
+16:00,0,None,318,4,4,Normal Operations,0
+15:00,8,Heavy Rain,187,8,3,Front-load Morning Shift,0
+12:00,0,None,298,4,4,Normal Operations,0
+09:00,0,None,434,4,1,Normal Operations,0
+17:00,5,Heavy Rain,147,1,2,Pre-emptive Overtime Previous Day,2
+15:00,6,Heavy Rain,419,1,3,Pre-emptive Overtime Previous Day,3
+09:00,0,None,401,9,4,Normal Operations,0
+15:00,5,Heavy Rain,455,6,0,Shift to Indoor/Maintenance tasks,0
+20:00,0,None,184,5,4,Normal Operations,0
+16:00,0,None,286,6,3,Normal Operations,0
+20:00,0,None,185,3,1,Normal Operations,0
+22:00,0,None,429,1,1,Normal Operations,0
+16:00,0,None,480,6,0,Normal Operations,0
+10:00,2,Heavy Rain,181,8,1,Shift to Indoor/Maintenance tasks,0
+10:00,1,Extreme Heat,262,4,2,Shift to Indoor/Maintenance tasks,0
+11:00,1,Heavy Rain,344,10,4,Shift to Indoor/Maintenance tasks,0
+01:00,0,None,138,3,1,Normal Operations,0
+06:00,6,Extreme Heat,458,4,1,Shift to Indoor/Maintenance tasks,0
+12:00,1,Heavy Rain,276,7,3,Shift to Indoor/Maintenance tasks,0
+08:00,6,Heavy Rain,498,9,3,Shift to Indoor/Maintenance tasks,0
+06:00,4,Extreme Heat,148,5,4,Shift to Indoor/Maintenance tasks,0
+03:00,0,None,297,8,3,Normal Operations,0
+11:00,0,None,465,8,2,Normal Operations,0
+09:00,4,Heavy Rain,409,9,4,Shift to Indoor/Maintenance tasks,0
+18:00,4,Extreme Heat,265,9,4,Front-load Morning Shift,0
+07:00,2,Heavy Rain,192,1,4,Shift to Indoor/Maintenance tasks,0
+08:00,4,Extreme Heat,277,5,2,Shift to Indoor/Maintenance tasks,0
+11:00,0,None,171,10,4,Normal Operations,0
+17:00,2,Heavy Rain,105,9,2,Front-load Morning Shift,0
+08:00,4,Extreme Heat,129,3,0,Shift to Indoor/Maintenance tasks,0
+09:00,5,Heavy Rain,487,5,2,Shift to Indoor/Maintenance tasks,0
+03:00,0,None,152,3,0,Normal Operations,0
+06:00,8,Heavy Rain,145,7,4,Shift to Indoor/Maintenance tasks,0
+19:00,0,None,384,3,1,Normal Operations,0
+18:00,0,None,200,7,2,Normal Operations,0
+12:00,2,Extreme Heat,215,10,2,Shift to Indoor/Maintenance tasks,0
+15:00,6,Extreme Heat,214,6,2,Front-load Morning Shift,0
+15:00,7,Heavy Rain,430,9,0,Shift to Indoor/Maintenance tasks,0
+14:00,7,Extreme Heat,187,6,4,Front-load Morning Shift,0
+08:00,4,Heavy Rain,336,3,2,Shift to Indoor/Maintenance tasks,0
+01:00,0,None,359,3,0,Normal Operations,0
+01:00,0,None,258,5,2,Normal Operations,0
+22:00,0,None,330,3,4,Normal Operations,0
+18:00,5,Heavy Rain,430,4,1,Front-load Morning Shift,0
+20:00,0,None,278,7,4,Normal Operations,0
+14:00,1,Heavy Rain,493,9,4,Front-load Morning Shift,0
+22:00,0,None,235,1,2,Normal Operations,0
+09:00,6,Heavy Rain,167,10,0,Shift to Indoor/Maintenance tasks,0
+07:00,5,Heavy Rain,167,6,2,Shift to Indoor/Maintenance tasks,0
+23:00,0,None,193,9,4,Normal Operations,0
+18:00,8,Heavy Rain,346,9,2,Front-load Morning Shift,0
+08:00,2,Extreme Heat,183,9,4,Shift to Indoor/Maintenance tasks,0
+17:00,5,Heavy Rain,355,8,4,Front-load Morning Shift,0
+14:00,6,Heavy Rain,477,6,4,Front-load Morning Shift,0
+17:00,0,None,132,10,4,Normal Operations,0
+16:00,2,Heavy Rain,112,4,3,Front-load Morning Shift,0
+12:00,0,None,302,5,1,Normal Operations,0
+06:00,7,Heavy Rain,145,2,2,Pre-emptive Overtime Previous Day,2
+06:00,5,Heavy Rain,466,4,2,Shift to Indoor/Maintenance tasks,0
+17:00,8,Extreme Heat,469,10,4,Front-load Morning Shift,0
+20:00,0,None,128,8,2,Normal Operations,0
+13:00,7,Heavy Rain,307,3,0,Shift to Indoor/Maintenance tasks,0
+11:00,2,Heavy Rain,111,8,1,Shift to Indoor/Maintenance tasks,0
+16:00,4,Heavy Rain,394,10,1,Front-load Morning Shift,0
+07:00,7,Extreme Heat,167,8,3,Shift to Indoor/Maintenance tasks,0
+09:00,7,Extreme Heat,442,1,2,Pre-emptive Overtime Previous Day,2
+18:00,3,Heavy Rain,152,9,1,Front-load Morning Shift,0
+14:00,3,Extreme Heat,421,2,0,Shift to Indoor/Maintenance tasks,0
+17:00,0,None,295,10,2,Normal Operations,0
+18:00,2,Heavy Rain,451,3,1,Front-load Morning Shift,0
+15:00,8,Extreme Heat,104,8,3,Front-load Morning Shift,0
+00:00,0,None,197,9,4,Normal Operations,0
+16:00,1,Heavy Rain,242,10,0,Shift to Indoor/Maintenance tasks,0
+06:00,4,Extreme Heat,229,5,2,Shift to Indoor/Maintenance tasks,0
+10:00,0,None,176,10,4,Normal Operations,0
+10:00,8,Heavy Rain,316,7,0,Shift to Indoor/Maintenance tasks,0
+08:00,8,Extreme Heat,326,9,0,Shift to Indoor/Maintenance tasks,0
+16:00,8,Heavy Rain,188,9,1,Front-load Morning Shift,0
+02:00,0,None,379,9,2,Normal Operations,0
+18:00,5,Heavy Rain,109,5,2,Front-load Morning Shift,0
+14:00,4,Extreme Heat,446,10,2,Front-load Morning Shift,0
+09:00,3,Extreme Heat,155,6,2,Shift to Indoor/Maintenance tasks,0
+14:00,7,Heavy Rain,192,7,1,Front-load Morning Shift,0
+09:00,1,Extreme Heat,218,5,1,Shift to Indoor/Maintenance tasks,0
+22:00,0,None,137,3,1,Normal Operations,0
+06:00,0,None,164,1,0,Normal Operations,0
+02:00,0,None,400,1,1,Normal Operations,0
+14:00,1,Extreme Heat,490,4,1,Front-load Morning Shift,0
+05:00,0,None,117,6,3,Normal Operations,0
+15:00,4,Extreme Heat,166,8,2,Front-load Morning Shift,0
+22:00,0,None,419,4,4,Normal Operations,0
+10:00,6,Extreme Heat,321,10,1,Shift to Indoor/Maintenance tasks,0
+15:00,6,Extreme Heat,222,4,0,Shift to Indoor/Maintenance tasks,0
+06:00,6,Heavy Rain,106,3,1,Shift to Indoor/Maintenance tasks,0
+12:00,6,Heavy Rain,455,9,0,Shift to Indoor/Maintenance tasks,0
+07:00,8,Heavy Rain,392,9,2,Shift to Indoor/Maintenance tasks,0
+09:00,8,Heavy Rain,323,10,2,Shift to Indoor/Maintenance tasks,0
+08:00,5,Heavy Rain,352,6,1,Shift to Indoor/Maintenance tasks,0
+17:00,0,None,201,7,1,Normal Operations,0
+21:00,0,None,127,9,4,Normal Operations,0
+13:00,0,None,404,6,4,Normal Operations,0
+10:00,3,Heavy Rain,271,9,2,Shift to Indoor/Maintenance tasks,0
+07:00,5,Extreme Heat,149,4,1,Shift to Indoor/Maintenance tasks,0
+16:00,1,Heavy Rain,280,6,1,Front-load Morning Shift,0
+08:00,4,Extreme Heat,100,3,1,Shift to Indoor/Maintenance tasks,0
+20:00,0,None,415,5,2,Normal Operations,0
+09:00,2,Extreme Heat,455,7,4,Shift to Indoor/Maintenance tasks,0
+12:00,8,Extreme Heat,475,6,4,Shift to Indoor/Maintenance tasks,0
+15:00,0,None,330,1,2,Normal Operations,0
+16:00,8,Extreme Heat,436,2,1,Pre-emptive Overtime Previous Day,1
+15:00,2,Heavy Rain,387,8,1,Front-load Morning Shift,0
+16:00,7,Heavy Rain,365,9,0,Shift to Indoor/Maintenance tasks,0
+09:00,3,Extreme Heat,430,3,1,Shift to Indoor/Maintenance tasks,0
+22:00,0,None,218,4,2,Normal Operations,0
+06:00,6,Extreme Heat,295,5,3,Shift to Indoor/Maintenance tasks,0
+09:00,5,Extreme Heat,413,7,0,Shift to Indoor/Maintenance tasks,0
+19:00,0,None,483,3,2,Normal Operations,0
+06:00,6,Extreme Heat,112,4,3,Shift to Indoor/Maintenance tasks,0
+09:00,0,None,242,10,1,Normal Operations,0
+19:00,0,None,168,10,0,Normal Operations,0
+22:00,0,None,186,5,0,Normal Operations,0
+00:00,0,None,380,10,1,Normal Operations,0
+17:00,7,Extreme Heat,263,1,4,Pre-emptive Overtime Previous Day,4
+07:00,0,None,161,2,0,Normal Operations,0
+08:00,0,None,289,8,3,Normal Operations,0
+16:00,8,Heavy Rain,259,7,4,Front-load Morning Shift,0
+16:00,0,None,241,3,4,Normal Operations,0
+12:00,7,Heavy Rain,337,5,2,Shift to Indoor/Maintenance tasks,0
+11:00,3,Heavy Rain,430,4,3,Shift to Indoor/Maintenance tasks,0
+08:00,1,Extreme Heat,434,5,0,Shift to Indoor/Maintenance tasks,0
+07:00,0,None,385,6,0,Normal Operations,0
+19:00,0,None,111,7,0,Normal Operations,0
+19:00,0,None,280,3,3,Normal Operations,0
+11:00,6,Extreme Heat,121,2,3,Pre-emptive Overtime Previous Day,3
+16:00,5,Extreme Heat,252,10,3,Front-load Morning Shift,0
+12:00,2,Heavy Rain,230,2,3,Shift to Indoor/Maintenance tasks,0
+13:00,1,Extreme Heat,274,3,1,Front-load Morning Shift,0
+07:00,7,Heavy Rain,172,7,3,Shift to Indoor/Maintenance tasks,0
+13:00,7,Heavy Rain,374,2,4,Pre-emptive Overtime Previous Day,4
+15:00,1,Extreme Heat,160,1,1,Front-load Morning Shift,0
+13:00,0,None,387,5,3,Normal Operations,0
+17:00,1,Heavy Rain,400,7,0,Shift to Indoor/Maintenance tasks,0
+11:00,5,Extreme Heat,289,4,3,Shift to Indoor/Maintenance tasks,0
+12:00,2,Heavy Rain,371,1,1,Shift to Indoor/Maintenance tasks,0
+12:00,4,Heavy Rain,359,10,0,Shift to Indoor/Maintenance tasks,0
+11:00,0,None,136,8,4,Normal Operations,0
+07:00,7,Extreme Heat,188,10,3,Shift to Indoor/Maintenance tasks,0
+15:00,0,None,495,10,3,Normal Operations,0
+16:00,8,Heavy Rain,105,8,4,Front-load Morning Shift,0
+10:00,2,Extreme Heat,142,7,2,Shift to Indoor/Maintenance tasks,0
+00:00,0,None,218,2,4,Normal Operations,0
+05:00,0,None,188,6,4,Normal Operations,0
+10:00,5,Extreme Heat,441,1,0,Shift to Indoor/Maintenance tasks,0
+12:00,3,Extreme Heat,100,9,0,Shift to Indoor/Maintenance tasks,0
+22:00,0,None,202,8,4,Normal Operations,0
+15:00,1,Heavy Rain,404,3,4,Front-load Morning Shift,0
+15:00,4,Extreme Heat,377,1,1,Pre-emptive Overtime Previous Day,1
+00:00,0,None,435,9,1,Normal Operations,0
+16:00,6,Extreme Heat,203,4,4,Front-load Morning Shift,0
+17:00,7,Extreme Heat,363,10,0,Shift to Indoor/Maintenance tasks,0
+10:00,1,Extreme Heat,225,1,3,Shift to Indoor/Maintenance tasks,0
+10:00,0,None,188,8,2,Normal Operations,0
+13:00,1,Heavy Rain,310,8,0,Shift to Indoor/Maintenance tasks,0
+02:00,0,None,261,2,1,Normal Operations,0
+16:00,0,None,233,9,4,Normal Operations,0
+06:00,8,Heavy Rain,484,1,0,Shift to Indoor/Maintenance tasks,0
+11:00,4,Extreme Heat,363,3,0,Shift to Indoor/Maintenance tasks,0
+16:00,6,Extreme Heat,291,1,3,Pre-emptive Overtime Previous Day,3
+07:00,0,None,258,3,4,Normal Operations,0
+06:00,0,None,474,10,3,Normal Operations,0
+12:00,8,Heavy Rain,182,9,2,Shift to Indoor/Maintenance tasks,0
+14:00,0,None,332,6,1,Normal Operations,0
+01:00,0,None,292,5,3,Normal Operations,0
+11:00,0,None,451,7,3,Normal Operations,0
+12:00,6,Extreme Heat,471,5,4,Shift to Indoor/Maintenance tasks,0
+03:00,0,None,467,5,4,Normal Operations,0
+06:00,0,None,350,3,3,Normal Operations,0
+19:00,0,None,414,4,0,Normal Operations,0
+14:00,6,Heavy Rain,183,2,0,Shift to Indoor/Maintenance tasks,0
+12:00,1,Heavy Rain,221,8,4,Shift to Indoor/Maintenance tasks,0
+17:00,0,None,182,8,1,Normal Operations,0
+13:00,2,Extreme Heat,372,5,4,Front-load Morning Shift,0
+07:00,0,None,337,1,3,Normal Operations,0
+17:00,6,Heavy Rain,235,10,1,Front-load Morning Shift,0
+11:00,0,None,420,10,4,Normal Operations,0
+16:00,2,Extreme Heat,284,1,4,Front-load Morning Shift,0
+16:00,8,Heavy Rain,278,6,3,Front-load Morning Shift,0
+15:00,1,Extreme Heat,468,5,2,Front-load Morning Shift,0
+09:00,2,Heavy Rain,430,3,4,Shift to Indoor/Maintenance tasks,0
+12:00,7,Heavy Rain,362,6,3,Shift to Indoor/Maintenance tasks,0
+07:00,7,Heavy Rain,105,2,0,Shift to Indoor/Maintenance tasks,0
+14:00,2,Extreme Heat,446,6,2,Front-load Morning Shift,0
+06:00,7,Extreme Heat,455,9,3,Shift to Indoor/Maintenance tasks,0
+12:00,5,Extreme Heat,238,2,0,Shift to Indoor/Maintenance tasks,0
+15:00,1,Heavy Rain,359,2,1,Front-load Morning Shift,0
+16:00,4,Heavy Rain,343,2,2,Pre-emptive Overtime Previous Day,2
+08:00,7,Extreme Heat,426,5,4,Shift to Indoor/Maintenance tasks,0
+09:00,0,None,260,3,1,Normal Operations,0
+10:00,4,Extreme Heat,104,2,1,Pre-emptive Overtime Previous Day,1
+22:00,0,None,277,10,3,Normal Operations,0
+10:00,6,Heavy Rain,438,10,1,Shift to Indoor/Maintenance tasks,0
+15:00,0,None,339,1,4,Normal Operations,0
+13:00,0,None,413,7,3,Normal Operations,0
+10:00,2,Heavy Rain,260,1,0,Shift to Indoor/Maintenance tasks,0
+18:00,6,Heavy Rain,125,7,3,Front-load Morning Shift,0
+15:00,3,Heavy Rain,105,7,3,Front-load Morning Shift,0
+08:00,8,Heavy Rain,261,5,4,Shift to Indoor/Maintenance tasks,0
+05:00,0,None,406,9,1,Normal Operations,0
+12:00,3,Extreme Heat,131,7,2,Shift to Indoor/Maintenance tasks,0
+16:00,4,Heavy Rain,272,8,4,Front-load Morning Shift,0
+07:00,8,Heavy Rain,467,3,0,Shift to Indoor/Maintenance tasks,0
+01:00,0,None,222,5,4,Normal Operations,0
+23:00,0,None,133,3,3,Normal Operations,0
+10:00,6,Heavy Rain,160,9,2,Shift to Indoor/Maintenance tasks,0
+12:00,1,Extreme Heat,100,4,1,Shift to Indoor/Maintenance tasks,0
+12:00,4,Extreme Heat,309,2,2,Pre-emptive Overtime Previous Day,2
+12:00,5,Extreme Heat,107,10,2,Shift to Indoor/Maintenance tasks,0
+18:00,1,Heavy Rain,224,10,3,Front-load Morning Shift,0
+18:00,4,Heavy Rain,139,3,1,Front-load Morning Shift,0
+01:00,0,None,305,1,0,Normal Operations,0
+07:00,0,None,477,8,3,Normal Operations,0
+00:00,0,None,274,6,0,Normal Operations,0
+17:00,0,None,295,6,2,Normal Operations,0
+17:00,6,Heavy Rain,278,5,2,Front-load Morning Shift,0
+12:00,1,Heavy Rain,150,4,2,Shift to Indoor/Maintenance tasks,0
+15:00,0,None,214,5,0,Normal Operations,0
+18:00,6,Extreme Heat,499,9,1,Front-load Morning Shift,0
+18:00,2,Heavy Rain,353,2,2,Front-load Morning Shift,0
+15:00,0,None,191,7,4,Normal Operations,0
+14:00,3,Heavy Rain,159,9,1,Front-load Morning Shift,0
+05:00,0,None,389,6,1,Normal Operations,0
+17:00,1,Extreme Heat,158,1,0,Shift to Indoor/Maintenance tasks,0
+08:00,4,Extreme Heat,124,8,0,Shift to Indoor/Maintenance tasks,0
+08:00,7,Extreme Heat,415,2,4,Pre-emptive Overtime Previous Day,4
+08:00,5,Heavy Rain,361,5,3,Shift to Indoor/Maintenance tasks,0
+16:00,0,None,165,3,0,Normal Operations,0
+06:00,0,None,240,9,1,Normal Operations,0
+10:00,5,Extreme Heat,285,7,4,Shift to Indoor/Maintenance tasks,0
+10:00,0,None,479,8,1,Normal Operations,0
+12:00,4,Heavy Rain,217,1,2,Pre-emptive Overtime Previous Day,2
+23:00,0,None,130,4,1,Normal Operations,0
+07:00,7,Heavy Rain,110,10,0,Shift to Indoor/Maintenance tasks,0
+08:00,3,Heavy Rain,237,10,1,Shift to Indoor/Maintenance tasks,0
+06:00,6,Extreme Heat,102,4,3,Shift to Indoor/Maintenance tasks,0
+14:00,8,Extreme Heat,100,2,3,Pre-emptive Overtime Previous Day,3
+12:00,8,Extreme Heat,355,8,0,Shift to Indoor/Maintenance tasks,0
+12:00,7,Extreme Heat,203,4,4,Shift to Indoor/Maintenance tasks,0
+22:00,0,None,130,9,4,Normal Operations,0
+05:00,0,None,374,7,1,Normal Operations,0
+17:00,8,Heavy Rain,417,6,1,Front-load Morning Shift,0
+12:00,0,None,146,4,0,Normal Operations,0
+08:00,7,Extreme Heat,319,4,4,Shift to Indoor/Maintenance tasks,0
+17:00,8,Extreme Heat,207,9,1,Front-load Morning Shift,0
+05:00,0,None,304,6,2,Normal Operations,0
+09:00,7,Extreme Heat,168,6,2,Shift to Indoor/Maintenance tasks,0
+16:00,5,Extreme Heat,147,9,4,Front-load Morning Shift,0
+06:00,2,Extreme Heat,432,10,4,Shift to Indoor/Maintenance tasks,0
+11:00,1,Extreme Heat,307,2,4,Shift to Indoor/Maintenance tasks,0
+18:00,3,Extreme Heat,355,7,3,Front-load Morning Shift,0
+07:00,0,None,397,6,1,Normal Operations,0
+11:00,0,None,352,1,0,Normal Operations,0
+12:00,3,Heavy Rain,213,9,1,Shift to Indoor/Maintenance tasks,0
+06:00,3,Heavy Rain,351,5,0,Shift to Indoor/Maintenance tasks,0
+06:00,4,Extreme Heat,449,6,3,Shift to Indoor/Maintenance tasks,0
+09:00,5,Heavy Rain,284,5,4,Shift to Indoor/Maintenance tasks,0
+11:00,4,Extreme Heat,100,8,0,Shift to Indoor/Maintenance tasks,0
+15:00,1,Extreme Heat,422,10,0,Shift to Indoor/Maintenance tasks,0
+07:00,8,Heavy Rain,305,9,1,Shift to Indoor/Maintenance tasks,0
+13:00,7,Extreme Heat,145,2,4,Pre-emptive Overtime Previous Day,4
+15:00,6,Extreme Heat,229,4,1,Front-load Morning Shift,0
+15:00,6,Heavy Rain,495,6,1,Front-load Morning Shift,0
+17:00,7,Extreme Heat,421,7,1,Front-load Morning Shift,0
+09:00,0,None,339,4,0,Normal Operations,0
+23:00,0,None,416,7,0,Normal Operations,0
+09:00,0,None,218,3,1,Normal Operations,0
+23:00,0,None,178,5,1,Normal Operations,0
+10:00,7,Extreme Heat,156,9,3,Shift to Indoor/Maintenance tasks,0
+07:00,5,Heavy Rain,221,5,4,Shift to Indoor/Maintenance tasks,0
+10:00,0,None,498,9,0,Normal Operations,0
+18:00,6,Extreme Heat,484,10,3,Front-load Morning Shift,0
+18:00,2,Heavy Rain,121,9,0,Shift to Indoor/Maintenance tasks,0
+16:00,0,None,285,10,3,Normal Operations,0
+10:00,7,Extreme Heat,186,3,3,Shift to Indoor/Maintenance tasks,0
+06:00,3,Heavy Rain,125,8,4,Shift to Indoor/Maintenance tasks,0
+18:00,1,Extreme Heat,138,5,2,Front-load Morning Shift,0
+16:00,4,Extreme Heat,122,2,4,Pre-emptive Overtime Previous Day,4
+15:00,5,Extreme Heat,200,10,1,Front-load Morning Shift,0
+09:00,0,None,352,6,0,Normal Operations,0
+09:00,2,Heavy Rain,137,1,1,Shift to Indoor/Maintenance tasks,0
+15:00,8,Extreme Heat,424,7,4,Front-load Morning Shift,0
+15:00,0,None,168,4,1,Normal Operations,0
+09:00,3,Extreme Heat,275,4,1,Shift to Indoor/Maintenance tasks,0
+16:00,3,Heavy Rain,294,5,1,Front-load Morning Shift,0
+06:00,5,Extreme Heat,287,6,1,Shift to Indoor/Maintenance tasks,0
+22:00,0,None,491,2,1,Normal Operations,0
+02:00,0,None,102,7,4,Normal Operations,0
+09:00,1,Heavy Rain,396,1,2,Shift to Indoor/Maintenance tasks,0
+08:00,5,Extreme Heat,216,1,3,Pre-emptive Overtime Previous Day,3
+01:00,0,None,316,7,3,Normal Operations,0
+07:00,8,Heavy Rain,235,3,2,Shift to Indoor/Maintenance tasks,0
+01:00,0,None,499,6,3,Normal Operations,0
+04:00,0,None,179,1,2,Normal Operations,0
+09:00,8,Extreme Heat,201,1,0,Shift to Indoor/Maintenance tasks,0
+10:00,2,Extreme Heat,182,1,2,Shift to Indoor/Maintenance tasks,0
+08:00,7,Heavy Rain,443,6,2,Shift to Indoor/Maintenance tasks,0
+17:00,5,Heavy Rain,429,1,3,Pre-emptive Overtime Previous Day,3
+12:00,6,Extreme Heat,353,5,0,Shift to Indoor/Maintenance tasks,0
+13:00,8,Heavy Rain,421,9,0,Shift to Indoor/Maintenance tasks,0
+15:00,1,Heavy Rain,168,10,0,Shift to Indoor/Maintenance tasks,0
+08:00,4,Heavy Rain,368,1,4,Pre-emptive Overtime Previous Day,4
+13:00,2,Extreme Heat,225,5,4,Front-load Morning Shift,0
+18:00,1,Extreme Heat,428,10,0,Shift to Indoor/Maintenance tasks,0
+12:00,6,Extreme Heat,173,4,0,Shift to Indoor/Maintenance tasks,0
+14:00,5,Heavy Rain,277,7,1,Front-load Morning Shift,0
+06:00,1,Heavy Rain,203,5,1,Shift to Indoor/Maintenance tasks,0
+12:00,2,Heavy Rain,398,8,1,Shift to Indoor/Maintenance tasks,0
+10:00,2,Extreme Heat,116,5,3,Shift to Indoor/Maintenance tasks,0
+07:00,0,None,236,4,4,Normal Operations,0
+04:00,0,None,482,3,2,Normal Operations,0
+04:00,0,None,161,4,2,Normal Operations,0
+19:00,0,None,216,7,4,Normal Operations,0
+06:00,8,Heavy Rain,207,1,3,Pre-emptive Overtime Previous Day,3
+04:00,0,None,183,3,3,Normal Operations,0
+09:00,4,Heavy Rain,198,8,3,Shift to Indoor/Maintenance tasks,0
+09:00,5,Extreme Heat,269,9,2,Shift to Indoor/Maintenance tasks,0
+04:00,0,None,336,5,4,Normal Operations,0
+17:00,2,Heavy Rain,280,3,0,Shift to Indoor/Maintenance tasks,0
+20:00,0,None,151,5,3,Normal Operations,0
+18:00,4,Heavy Rain,295,4,4,Front-load Morning Shift,0
+03:00,0,None,460,10,2,Normal Operations,0
+06:00,2,Extreme Heat,254,6,2,Shift to Indoor/Maintenance tasks,0
+14:00,4,Extreme Heat,119,10,2,Front-load Morning Shift,0
+11:00,4,Heavy Rain,165,6,1,Shift to Indoor/Maintenance tasks,0
+06:00,5,Extreme Heat,378,1,2,Pre-emptive Overtime Previous Day,2
+08:00,3,Heavy Rain,271,9,4,Shift to Indoor/Maintenance tasks,0
+12:00,2,Heavy Rain,209,4,3,Shift to Indoor/Maintenance tasks,0
+23:00,0,None,355,7,0,Normal Operations,0
+22:00,0,None,122,6,1,Normal Operations,0
+19:00,0,None,217,1,1,Normal Operations,0
+13:00,0,None,220,7,0,Normal Operations,0
+03:00,0,None,368,5,4,Normal Operations,0
+14:00,5,Extreme Heat,123,2,4,Pre-emptive Overtime Previous Day,4
+10:00,5,Heavy Rain,256,3,2,Shift to Indoor/Maintenance tasks,0
+17:00,0,None,340,10,0,Normal Operations,0
+12:00,0,None,448,6,4,Normal Operations,0
+16:00,6,Heavy Rain,324,4,4,Front-load Morning Shift,0
+00:00,0,None,166,6,1,Normal Operations,0
+18:00,0,None,354,3,4,Normal Operations,0
+12:00,7,Extreme Heat,127,1,0,Shift to Indoor/Maintenance tasks,0
+17:00,5,Extreme Heat,299,7,1,Front-load Morning Shift,0
+21:00,0,None,169,5,4,Normal Operations,0
+18:00,2,Heavy Rain,100,10,1,Front-load Morning Shift,0
+14:00,7,Heavy Rain,357,9,0,Shift to Indoor/Maintenance tasks,0
+08:00,8,Heavy Rain,206,4,0,Shift to Indoor/Maintenance tasks,0
+14:00,6,Extreme Heat,488,6,3,Front-load Morning Shift,0
+08:00,6,Heavy Rain,211,5,4,Shift to Indoor/Maintenance tasks,0
+09:00,2,Heavy Rain,445,7,1,Shift to Indoor/Maintenance tasks,0
+04:00,0,None,466,5,1,Normal Operations,0
+15:00,0,None,466,9,1,Normal Operations,0
+09:00,0,None,294,7,4,Normal Operations,0
+07:00,4,Extreme Heat,113,10,1,Shift to Indoor/Maintenance tasks,0
+16:00,2,Heavy Rain,282,9,3,Front-load Morning Shift,0
+15:00,0,None,228,4,2,Normal Operations,0
+14:00,1,Heavy Rain,265,9,4,Front-load Morning Shift,0
+20:00,0,None,495,8,4,Normal Operations,0
+06:00,4,Extreme Heat,483,8,1,Shift to Indoor/Maintenance tasks,0
+10:00,5,Heavy Rain,482,3,0,Shift to Indoor/Maintenance tasks,0
+11:00,2,Extreme Heat,102,10,3,Shift to Indoor/Maintenance tasks,0
+06:00,5,Heavy Rain,226,5,3,Shift to Indoor/Maintenance tasks,0
+18:00,0,None,301,8,4,Normal Operations,0
+08:00,2,Extreme Heat,270,9,4,Shift to Indoor/Maintenance tasks,0
+17:00,5,Heavy Rain,112,8,3,Front-load Morning Shift,0
+02:00,0,None,158,3,3,Normal Operations,0
+10:00,3,Heavy Rain,497,9,0,Shift to Indoor/Maintenance tasks,0
+12:00,4,Extreme Heat,236,9,2,Shift to Indoor/Maintenance tasks,0
+16:00,5,Heavy Rain,383,1,1,Pre-emptive Overtime Previous Day,1
+09:00,7,Heavy Rain,299,1,1,Pre-emptive Overtime Previous Day,1
+14:00,1,Extreme Heat,121,8,0,Shift to Indoor/Maintenance tasks,0
+23:00,0,None,341,6,2,Normal Operations,0
+15:00,3,Heavy Rain,380,8,3,Front-load Morning Shift,0
+17:00,0,None,266,10,3,Normal Operations,0
+06:00,5,Extreme Heat,330,1,2,Pre-emptive Overtime Previous Day,2
+13:00,0,None,262,5,0,Normal Operations,0
+22:00,0,None,356,7,4,Normal Operations,0
+12:00,0,None,252,4,4,Normal Operations,0
+06:00,4,Extreme Heat,344,5,4,Shift to Indoor/Maintenance tasks,0
+13:00,2,Heavy Rain,361,2,2,Front-load Morning Shift,0
+04:00,0,None,156,8,2,Normal Operations,0
+07:00,0,None,415,2,3,Normal Operations,0
+12:00,2,Extreme Heat,339,9,4,Shift to Indoor/Maintenance tasks,0
+09:00,0,None,164,1,2,Normal Operations,0
+17:00,1,Extreme Heat,391,10,2,Front-load Morning Shift,0
+08:00,1,Heavy Rain,295,8,3,Shift to Indoor/Maintenance tasks,0
+10:00,5,Extreme Heat,463,2,3,Pre-emptive Overtime Previous Day,3
+10:00,8,Extreme Heat,151,2,3,Pre-emptive Overtime Previous Day,3
+13:00,8,Heavy Rain,368,1,1,Pre-emptive Overtime Previous Day,1
+14:00,2,Extreme Heat,247,6,3,Front-load Morning Shift,0
+12:00,5,Extreme Heat,465,9,3,Shift to Indoor/Maintenance tasks,0
+16:00,0,None,188,4,4,Normal Operations,0
+11:00,5,Extreme Heat,455,7,0,Shift to Indoor/Maintenance tasks,0
+17:00,1,Extreme Heat,373,5,0,Shift to Indoor/Maintenance tasks,0
+12:00,5,Extreme Heat,317,8,0,Shift to Indoor/Maintenance tasks,0
+18:00,6,Extreme Heat,402,5,1,Front-load Morning Shift,0
+11:00,0,None,485,3,1,Normal Operations,0
+16:00,5,Extreme Heat,351,10,4,Front-load Morning Shift,0
+08:00,7,Heavy Rain,388,6,1,Shift to Indoor/Maintenance tasks,0
+12:00,6,Extreme Heat,217,7,2,Shift to Indoor/Maintenance tasks,0
+02:00,0,None,278,10,3,Normal Operations,0
+14:00,6,Heavy Rain,345,6,2,Front-load Morning Shift,0
+14:00,5,Extreme Heat,194,4,4,Front-load Morning Shift,0
+15:00,2,Extreme Heat,154,6,1,Front-load Morning Shift,0
+00:00,0,None,330,10,2,Normal Operations,0
+12:00,8,Heavy Rain,182,7,3,Shift to Indoor/Maintenance tasks,0
+02:00,0,None,405,7,4,Normal Operations,0
+09:00,3,Heavy Rain,322,7,1,Shift to Indoor/Maintenance tasks,0
+21:00,0,None,110,1,4,Normal Operations,0
+17:00,3,Extreme Heat,314,2,4,Front-load Morning Shift,0
+07:00,0,None,269,2,0,Normal Operations,0
+14:00,5,Extreme Heat,295,2,1,Pre-emptive Overtime Previous Day,1
+15:00,5,Heavy Rain,253,10,1,Front-load Morning Shift,0
+13:00,2,Extreme Heat,308,3,2,Front-load Morning Shift,0
+13:00,0,None,298,4,4,Normal Operations,0
+18:00,8,Extreme Heat,378,9,2,Front-load Morning Shift,0
+09:00,6,Heavy Rain,305,6,3,Shift to Indoor/Maintenance tasks,0
+14:00,2,Extreme Heat,242,1,3,Front-load Morning Shift,0
+18:00,6,Extreme Heat,163,10,1,Front-load Morning Shift,0
+22:00,0,None,457,9,2,Normal Operations,0
+21:00,0,None,323,9,0,Normal Operations,0
+13:00,7,Heavy Rain,221,9,1,Front-load Morning Shift,0
+07:00,7,Heavy Rain,107,2,3,Pre-emptive Overtime Previous Day,3
+12:00,0,None,405,10,3,Normal Operations,0
+15:00,7,Extreme Heat,499,4,1,Front-load Morning Shift,0
+13:00,0,None,381,10,1,Normal Operations,0
+09:00,0,None,379,5,1,Normal Operations,0
+16:00,3,Extreme Heat,247,4,3,Front-load Morning Shift,0
+06:00,7,Heavy Rain,228,5,1,Shift to Indoor/Maintenance tasks,0
+07:00,1,Heavy Rain,180,7,3,Shift to Indoor/Maintenance tasks,0
+20:00,0,None,124,1,0,Normal Operations,0
+00:00,0,None,285,1,4,Normal Operations,0
+17:00,8,Heavy Rain,402,7,1,Front-load Morning Shift,0
+18:00,0,None,110,8,3,Normal Operations,0
+16:00,6,Heavy Rain,461,1,3,Pre-emptive Overtime Previous Day,3
+18:00,5,Heavy Rain,316,2,4,Pre-emptive Overtime Previous Day,4
+17:00,7,Heavy Rain,244,5,0,Shift to Indoor/Maintenance tasks,0
+06:00,1,Heavy Rain,185,10,4,Shift to Indoor/Maintenance tasks,0
+11:00,8,Heavy Rain,483,6,2,Shift to Indoor/Maintenance tasks,0
+02:00,0,None,472,7,2,Normal Operations,0
+09:00,7,Extreme Heat,145,1,1,Pre-emptive Overtime Previous Day,1
+14:00,0,None,411,6,1,Normal Operations,0
+18:00,8,Heavy Rain,139,1,3,Pre-emptive Overtime Previous Day,3
+08:00,5,Extreme Heat,334,1,1,Pre-emptive Overtime Previous Day,1
+08:00,0,None,459,10,3,Normal Operations,0
+12:00,4,Extreme Heat,441,5,1,Shift to Indoor/Maintenance tasks,0
+09:00,1,Extreme Heat,315,7,4,Shift to Indoor/Maintenance tasks,0
+10:00,0,None,124,7,3,Normal Operations,0
+10:00,1,Heavy Rain,109,8,1,Shift to Indoor/Maintenance tasks,0
+17:00,1,Extreme Heat,216,6,0,Shift to Indoor/Maintenance tasks,0
+20:00,0,None,332,2,1,Normal Operations,0
+10:00,7,Heavy Rain,316,7,4,Shift to Indoor/Maintenance tasks,0
+13:00,8,Heavy Rain,411,7,1,Front-load Morning Shift,0
+14:00,0,None,395,8,4,Normal Operations,0
+09:00,8,Extreme Heat,304,6,3,Shift to Indoor/Maintenance tasks,0
+01:00,0,None,420,10,2,Normal Operations,0
+13:00,1,Extreme Heat,296,9,0,Shift to Indoor/Maintenance tasks,0
+22:00,0,None,286,3,0,Normal Operations,0
+00:00,0,None,466,5,4,Normal Operations,0
+01:00,0,None,301,7,1,Normal Operations,0
+18:00,1,Heavy Rain,479,6,4,Front-load Morning Shift,0
+14:00,4,Heavy Rain,278,3,0,Shift to Indoor/Maintenance tasks,0
+06:00,7,Heavy Rain,340,5,2,Shift to Indoor/Maintenance tasks,0
+17:00,3,Extreme Heat,298,4,2,Front-load Morning Shift,0
+16:00,6,Extreme Heat,194,5,0,Shift to Indoor/Maintenance tasks,0
+09:00,8,Extreme Heat,232,8,0,Shift to Indoor/Maintenance tasks,0
+12:00,8,Extreme Heat,144,9,1,Shift to Indoor/Maintenance tasks,0
+22:00,0,None,155,3,2,Normal Operations,0
+15:00,4,Heavy Rain,444,10,0,Shift to Indoor/Maintenance tasks,0
+11:00,0,None,381,6,4,Normal Operations,0
+17:00,5,Heavy Rain,264,6,3,Front-load Morning Shift,0
+15:00,0,None,303,7,3,Normal Operations,0
+08:00,0,None,303,2,4,Normal Operations,0
+16:00,0,None,413,9,2,Normal Operations,0
+14:00,4,Extreme Heat,337,9,3,Front-load Morning Shift,0
+10:00,1,Extreme Heat,484,7,2,Shift to Indoor/Maintenance tasks,0
+11:00,8,Extreme Heat,490,3,2,Shift to Indoor/Maintenance tasks,0
+16:00,0,None,233,2,3,Normal Operations,0
+07:00,2,Extreme Heat,443,9,3,Shift to Indoor/Maintenance tasks,0
+08:00,1,Extreme Heat,275,6,2,Shift to Indoor/Maintenance tasks,0
+14:00,6,Heavy Rain,256,2,1,Pre-emptive Overtime Previous Day,1
+09:00,4,Heavy Rain,482,1,1,Pre-emptive Overtime Previous Day,1
+14:00,3,Heavy Rain,253,7,4,Front-load Morning Shift,0
+08:00,2,Extreme Heat,488,5,2,Shift to Indoor/Maintenance tasks,0
+08:00,2,Heavy Rain,302,6,4,Shift to Indoor/Maintenance tasks,0
+10:00,6,Extreme Heat,286,1,2,Pre-emptive Overtime Previous Day,2
+09:00,5,Extreme Heat,333,1,2,Pre-emptive Overtime Previous Day,2
+18:00,4,Extreme Heat,421,10,1,Front-load Morning Shift,0
+09:00,8,Heavy Rain,397,10,4,Shift to Indoor/Maintenance tasks,0
+08:00,8,Extreme Heat,339,3,2,Shift to Indoor/Maintenance tasks,0
+16:00,3,Heavy Rain,430,9,2,Front-load Morning Shift,0
+13:00,1,Extreme Heat,232,7,3,Front-load Morning Shift,0
+07:00,2,Extreme Heat,150,9,2,Shift to Indoor/Maintenance tasks,0
+16:00,5,Heavy Rain,187,7,0,Shift to Indoor/Maintenance tasks,0
+15:00,0,None,276,2,3,Normal Operations,0
+00:00,0,None,115,9,3,Normal Operations,0
+15:00,0,None,102,9,4,Normal Operations,0
+14:00,4,Extreme Heat,479,7,0,Shift to Indoor/Maintenance tasks,0
+06:00,4,Extreme Heat,417,2,4,Pre-emptive Overtime Previous Day,4
+17:00,2,Heavy Rain,489,7,3,Front-load Morning Shift,0
+14:00,0,None,314,10,2,Normal Operations,0
+05:00,0,None,406,7,4,Normal Operations,0
+07:00,2,Extreme Heat,104,10,2,Shift to Indoor/Maintenance tasks,0
+17:00,6,Heavy Rain,348,5,3,Front-load Morning Shift,0
+12:00,0,None,182,1,3,Normal Operations,0
+09:00,8,Extreme Heat,462,8,1,Shift to Indoor/Maintenance tasks,0
+13:00,6,Heavy Rain,125,4,1,Front-load Morning Shift,0
+15:00,2,Extreme Heat,470,2,0,Shift to Indoor/Maintenance tasks,0
+00:00,0,None,270,4,0,Normal Operations,0
+11:00,0,None,393,10,2,Normal Operations,0
+10:00,2,Extreme Heat,180,3,1,Shift to Indoor/Maintenance tasks,0
+18:00,0,None,134,3,2,Normal Operations,0
+15:00,2,Heavy Rain,379,2,3,Front-load Morning Shift,0
+14:00,7,Extreme Heat,353,10,3,Front-load Morning Shift,0
+16:00,0,None,470,7,1,Normal Operations,0
+09:00,2,Heavy Rain,154,4,4,Shift to Indoor/Maintenance tasks,0
+07:00,0,None,155,6,2,Normal Operations,0
+12:00,8,Heavy Rain,354,7,3,Shift to Indoor/Maintenance tasks,0
+06:00,8,Extreme Heat,408,8,1,Shift to Indoor/Maintenance tasks,0
+20:00,0,None,500,5,0,Normal Operations,0
+11:00,0,None,429,10,1,Normal Operations,0
+00:00,0,None,264,1,1,Normal Operations,0
+01:00,0,None,165,10,4,Normal Operations,0
+11:00,0,None,289,1,3,Normal Operations,0
+14:00,2,Heavy Rain,329,10,1,Front-load Morning Shift,0
+11:00,8,Heavy Rain,286,7,3,Shift to Indoor/Maintenance tasks,0
+23:00,0,None,307,9,1,Normal Operations,0
+12:00,1,Extreme Heat,172,1,1,Shift to Indoor/Maintenance tasks,0
+22:00,0,None,350,9,3,Normal Operations,0
+10:00,0,None,110,4,4,Normal Operations,0
+18:00,0,None,325,6,4,Normal Operations,0
+06:00,3,Extreme Heat,411,8,1,Shift to Indoor/Maintenance tasks,0
+13:00,6,Extreme Heat,164,10,2,Front-load Morning Shift,0
+17:00,0,None,233,5,0,Normal Operations,0
+20:00,0,None,110,6,0,Normal Operations,0
+15:00,7,Extreme Heat,394,10,0,Shift to Indoor/Maintenance tasks,0
+06:00,5,Extreme Heat,155,3,4,Shift to Indoor/Maintenance tasks,0
+07:00,8,Extreme Heat,203,6,2,Shift to Indoor/Maintenance tasks,0
+13:00,0,None,174,7,4,Normal Operations,0
+11:00,4,Heavy Rain,375,8,1,Shift to Indoor/Maintenance tasks,0
+11:00,3,Extreme Heat,319,3,0,Shift to Indoor/Maintenance tasks,0
+06:00,0,None,177,3,1,Normal Operations,0
+06:00,7,Extreme Heat,244,3,4,Shift to Indoor/Maintenance tasks,0
+13:00,6,Extreme Heat,479,6,0,Shift to Indoor/Maintenance tasks,0
+22:00,0,None,122,2,1,Normal Operations,0
+07:00,6,Extreme Heat,300,9,1,Shift to Indoor/Maintenance tasks,0
+07:00,2,Extreme Heat,209,6,1,Shift to Indoor/Maintenance tasks,0
+18:00,6,Extreme Heat,382,7,2,Front-load Morning Shift,0
+11:00,0,None,207,10,2,Normal Operations,0
+07:00,4,Extreme Heat,214,2,3,Pre-emptive Overtime Previous Day,3
+06:00,3,Heavy Rain,153,1,2,Shift to Indoor/Maintenance tasks,0
+08:00,3,Extreme Heat,387,6,0,Shift to Indoor/Maintenance tasks,0
+18:00,8,Extreme Heat,426,6,4,Front-load Morning Shift,0
+21:00,0,None,143,3,0,Normal Operations,0
+09:00,8,Extreme Heat,344,8,4,Shift to Indoor/Maintenance tasks,0
+08:00,8,Extreme Heat,380,1,3,Pre-emptive Overtime Previous Day,3
+18:00,4,Heavy Rain,327,8,0,Shift to Indoor/Maintenance tasks,0
+06:00,0,None,234,9,4,Normal Operations,0
+18:00,3,Heavy Rain,371,5,2,Front-load Morning Shift,0
+11:00,0,None,155,2,1,Normal Operations,0
+18:00,6,Extreme Heat,321,3,0,Shift to Indoor/Maintenance tasks,0
+06:00,7,Heavy Rain,105,2,1,Pre-emptive Overtime Previous Day,1
+09:00,2,Heavy Rain,437,5,1,Shift to Indoor/Maintenance tasks,0
+09:00,6,Extreme Heat,378,2,4,Pre-emptive Overtime Previous Day,4
+03:00,0,None,253,7,2,Normal Operations,0
+15:00,0,None,189,2,2,Normal Operations,0
+16:00,5,Heavy Rain,353,3,1,Front-load Morning Shift,0
+15:00,8,Extreme Heat,155,1,3,Pre-emptive Overtime Previous Day,3
+18:00,5,Extreme Heat,432,9,1,Front-load Morning Shift,0
+07:00,6,Extreme Heat,344,5,3,Shift to Indoor/Maintenance tasks,0
+17:00,2,Extreme Heat,379,3,2,Front-load Morning Shift,0
+01:00,0,None,159,6,1,Normal Operations,0
+17:00,8,Heavy Rain,252,2,2,Pre-emptive Overtime Previous Day,2
+16:00,4,Heavy Rain,493,1,0,Shift to Indoor/Maintenance tasks,0
+15:00,7,Extreme Heat,422,2,3,Pre-emptive Overtime Previous Day,3
+10:00,2,Heavy Rain,205,10,3,Shift to Indoor/Maintenance tasks,0
+07:00,6,Extreme Heat,244,4,1,Shift to Indoor/Maintenance tasks,0
+09:00,4,Heavy Rain,494,4,2,Shift to Indoor/Maintenance tasks,0
+16:00,4,Heavy Rain,120,9,0,Shift to Indoor/Maintenance tasks,0
+08:00,5,Extreme Heat,110,3,2,Shift to Indoor/Maintenance tasks,0
+14:00,5,Extreme Heat,451,2,4,Pre-emptive Overtime Previous Day,4
+13:00,3,Extreme Heat,188,3,0,Shift to Indoor/Maintenance tasks,0
+07:00,3,Heavy Rain,248,4,4,Shift to Indoor/Maintenance tasks,0
+15:00,1,Heavy Rain,136,2,1,Front-load Morning Shift,0
+08:00,6,Extreme Heat,138,7,1,Shift to Indoor/Maintenance tasks,0
+07:00,5,Heavy Rain,212,8,1,Shift to Indoor/Maintenance tasks,0
+12:00,7,Extreme Heat,188,2,1,Pre-emptive Overtime Previous Day,1
+17:00,8,Heavy Rain,443,9,1,Front-load Morning Shift,0
+03:00,0,None,166,10,0,Normal Operations,0
+07:00,7,Extreme Heat,459,10,2,Shift to Indoor/Maintenance tasks,0
+00:00,0,None,335,9,0,Normal Operations,0
+14:00,1,Extreme Heat,469,6,0,Shift to Indoor/Maintenance tasks,0
+06:00,3,Extreme Heat,169,10,1,Shift to Indoor/Maintenance tasks,0
+13:00,4,Extreme Heat,439,5,2,Front-load Morning Shift,0
+14:00,4,Extreme Heat,188,8,4,Front-load Morning Shift,0
+18:00,6,Extreme Heat,299,4,1,Front-load Morning Shift,0
+14:00,8,Extreme Heat,369,2,1,Pre-emptive Overtime Previous Day,1
+06:00,6,Extreme Heat,232,8,3,Shift to Indoor/Maintenance tasks,0
+10:00,1,Extreme Heat,370,4,2,Shift to Indoor/Maintenance tasks,0
+08:00,3,Heavy Rain,363,9,2,Shift to Indoor/Maintenance tasks,0
+23:00,0,None,462,9,0,Normal Operations,0
+13:00,0,None,161,7,2,Normal Operations,0
+14:00,0,None,363,3,4,Normal Operations,0
+16:00,2,Heavy Rain,136,4,4,Front-load Morning Shift,0
+21:00,0,None,258,8,0,Normal Operations,0
+15:00,1,Extreme Heat,225,5,1,Front-load Morning Shift,0
+10:00,2,Heavy Rain,434,2,1,Shift to Indoor/Maintenance tasks,0
+14:00,0,None,117,7,4,Normal Operations,0
+16:00,2,Heavy Rain,283,6,2,Front-load Morning Shift,0
+11:00,6,Heavy Rain,267,8,4,Shift to Indoor/Maintenance tasks,0
+03:00,0,None,447,2,2,Normal Operations,0
+12:00,3,Heavy Rain,390,7,3,Shift to Indoor/Maintenance tasks,0
+09:00,6,Heavy Rain,293,4,1,Shift to Indoor/Maintenance tasks,0
+22:00,0,None,265,9,0,Normal Operations,0
+06:00,8,Heavy Rain,192,7,0,Shift to Indoor/Maintenance tasks,0
+09:00,6,Heavy Rain,224,1,3,Pre-emptive Overtime Previous Day,3
+21:00,0,None,287,4,0,Normal Operations,0
+14:00,4,Heavy Rain,300,3,4,Front-load Morning Shift,0
+01:00,0,None,308,1,2,Normal Operations,0
+11:00,0,None,451,5,0,Normal Operations,0
+16:00,4,Extreme Heat,403,5,3,Front-load Morning Shift,0
+10:00,5,Extreme Heat,275,9,1,Shift to Indoor/Maintenance tasks,0
+14:00,7,Extreme Heat,111,9,3,Front-load Morning Shift,0
+10:00,8,Heavy Rain,378,2,2,Pre-emptive Overtime Previous Day,2
+10:00,2,Heavy Rain,388,5,3,Shift to Indoor/Maintenance tasks,0
+11:00,1,Extreme Heat,120,10,4,Shift to Indoor/Maintenance tasks,0
+18:00,5,Extreme Heat,120,4,2,Front-load Morning Shift,0
+02:00,0,None,447,7,2,Normal Operations,0
+23:00,0,None,228,1,4,Normal Operations,0
+06:00,2,Extreme Heat,146,1,3,Shift to Indoor/Maintenance tasks,0
+08:00,1,Extreme Heat,493,8,4,Shift to Indoor/Maintenance tasks,0
+14:00,6,Extreme Heat,389,4,2,Front-load Morning Shift,0
+14:00,2,Extreme Heat,359,5,3,Front-load Morning Shift,0
+10:00,1,Extreme Heat,335,10,3,Shift to Indoor/Maintenance tasks,0
+10:00,3,Heavy Rain,261,5,0,Shift to Indoor/Maintenance tasks,0
+11:00,0,None,435,1,1,Normal Operations,0
+14:00,5,Heavy Rain,459,2,1,Pre-emptive Overtime Previous Day,1
+03:00,0,None,409,8,4,Normal Operations,0
+14:00,3,Heavy Rain,281,1,4,Front-load Morning Shift,0
+14:00,7,Extreme Heat,333,7,2,Front-load Morning Shift,0
+16:00,4,Heavy Rain,184,5,1,Front-load Morning Shift,0
+16:00,0,None,319,9,2,Normal Operations,0
+09:00,4,Extreme Heat,250,5,3,Shift to Indoor/Maintenance tasks,0
+10:00,0,None,356,1,4,Normal Operations,0
+16:00,3,Extreme Heat,175,9,1,Front-load Morning Shift,0
+12:00,0,None,218,3,3,Normal Operations,0
+14:00,0,None,354,9,4,Normal Operations,0
+04:00,0,None,209,3,0,Normal Operations,0
+06:00,7,Extreme Heat,329,6,2,Shift to Indoor/Maintenance tasks,0
+10:00,8,Extreme Heat,455,6,2,Shift to Indoor/Maintenance tasks,0
+12:00,3,Extreme Heat,286,6,1,Shift to Indoor/Maintenance tasks,0
+13:00,7,Heavy Rain,302,2,2,Pre-emptive Overtime Previous Day,2
+18:00,4,Heavy Rain,457,4,0,Shift to Indoor/Maintenance tasks,0
+21:00,0,None,209,5,1,Normal Operations,0
+17:00,2,Extreme Heat,291,8,4,Front-load Morning Shift,0
+15:00,3,Heavy Rain,203,4,0,Shift to Indoor/Maintenance tasks,0
+10:00,0,None,166,4,2,Normal Operations,0
+01:00,0,None,182,4,0,Normal Operations,0
+02:00,0,None,273,3,3,Normal Operations,0
+16:00,7,Extreme Heat,145,7,4,Front-load Morning Shift,0
+12:00,2,Extreme Heat,130,8,1,Shift to Indoor/Maintenance tasks,0
+17:00,4,Extreme Heat,411,4,0,Shift to Indoor/Maintenance tasks,0
+16:00,4,Heavy Rain,355,7,4,Front-load Morning Shift,0
+12:00,3,Extreme Heat,360,8,0,Shift to Indoor/Maintenance tasks,0
+10:00,7,Extreme Heat,340,10,1,Shift to Indoor/Maintenance tasks,0
+01:00,0,None,202,7,2,Normal Operations,0
+03:00,0,None,446,3,4,Normal Operations,0
+09:00,8,Extreme Heat,500,9,3,Shift to Indoor/Maintenance tasks,0
+17:00,0,None,175,6,0,Normal Operations,0
+13:00,2,Heavy Rain,365,8,2,Front-load Morning Shift,0
+13:00,3,Extreme Heat,346,7,3,Front-load Morning Shift,0
+12:00,0,None,499,4,3,Normal Operations,0
+10:00,6,Heavy Rain,352,2,4,Pre-emptive Overtime Previous Day,4
+15:00,0,None,457,5,1,Normal Operations,0
+14:00,0,None,228,6,1,Normal Operations,0
+18:00,7,Extreme Heat,366,10,3,Front-load Morning Shift,0
+22:00,0,None,145,10,3,Normal Operations,0
+14:00,7,Extreme Heat,106,4,1,Front-load Morning Shift,0
+15:00,1,Heavy Rain,250,3,3,Front-load Morning Shift,0
+15:00,7,Heavy Rain,409,5,1,Front-load Morning Shift,0
+12:00,1,Extreme Heat,480,5,4,Shift to Indoor/Maintenance tasks,0
+11:00,2,Heavy Rain,440,8,2,Shift to Indoor/Maintenance tasks,0
+14:00,5,Heavy Rain,169,4,2,Front-load Morning Shift,0
+08:00,0,None,341,5,4,Normal Operations,0
+07:00,4,Extreme Heat,123,7,0,Shift to Indoor/Maintenance tasks,0
+14:00,1,Extreme Heat,309,5,0,Shift to Indoor/Maintenance tasks,0
+14:00,3,Heavy Rain,131,6,3,Front-load Morning Shift,0
+15:00,0,None,249,8,3,Normal Operations,0
+18:00,4,Heavy Rain,356,2,1,Pre-emptive Overtime Previous Day,1
+18:00,6,Heavy Rain,295,5,2,Front-load Morning Shift,0
+11:00,4,Extreme Heat,462,8,2,Shift to Indoor/Maintenance tasks,0
+06:00,8,Heavy Rain,399,3,3,Shift to Indoor/Maintenance tasks,0
+06:00,6,Heavy Rain,216,1,4,Pre-emptive Overtime Previous Day,4
+08:00,5,Extreme Heat,205,5,1,Shift to Indoor/Maintenance tasks,0
+06:00,6,Extreme Heat,157,2,4,Pre-emptive Overtime Previous Day,4
+21:00,0,None,358,7,2,Normal Operations,0
+11:00,3,Heavy Rain,500,5,2,Shift to Indoor/Maintenance tasks,0
+12:00,4,Heavy Rain,381,9,3,Shift to Indoor/Maintenance tasks,0
+07:00,5,Extreme Heat,456,4,1,Shift to Indoor/Maintenance tasks,0
+08:00,3,Extreme Heat,301,5,1,Shift to Indoor/Maintenance tasks,0
+23:00,0,None,308,8,0,Normal Operations,0
+20:00,0,None,321,1,3,Normal Operations,0
+08:00,5,Extreme Heat,104,5,3,Shift to Indoor/Maintenance tasks,0
+03:00,0,None,480,6,0,Normal Operations,0
+11:00,0,None,196,5,2,Normal Operations,0
+09:00,1,Extreme Heat,287,4,0,Shift to Indoor/Maintenance tasks,0
+11:00,4,Extreme Heat,295,5,0,Shift to Indoor/Maintenance tasks,0
+14:00,4,Heavy Rain,480,2,4,Pre-emptive Overtime Previous Day,4
+10:00,0,None,210,6,1,Normal Operations,0
+06:00,0,None,259,5,1,Normal Operations,0
+08:00,3,Heavy Rain,131,1,2,Shift to Indoor/Maintenance tasks,0
+17:00,0,None,483,7,1,Normal Operations,0
+16:00,7,Heavy Rain,179,7,3,Front-load Morning Shift,0
+06:00,7,Extreme Heat,298,10,2,Shift to Indoor/Maintenance tasks,0
+07:00,8,Heavy Rain,380,1,1,Pre-emptive Overtime Previous Day,1
+06:00,2,Heavy Rain,369,2,3,Shift to Indoor/Maintenance tasks,0
+11:00,4,Heavy Rain,182,7,3,Shift to Indoor/Maintenance tasks,0
+11:00,6,Extreme Heat,431,4,2,Shift to Indoor/Maintenance tasks,0
+16:00,3,Extreme Heat,133,3,2,Front-load Morning Shift,0
+06:00,0,None,365,9,1,Normal Operations,0
+10:00,6,Heavy Rain,150,1,0,Shift to Indoor/Maintenance tasks,0
+10:00,3,Heavy Rain,232,2,3,Shift to Indoor/Maintenance tasks,0
+08:00,3,Heavy Rain,490,9,4,Shift to Indoor/Maintenance tasks,0
+11:00,3,Extreme Heat,259,8,0,Shift to Indoor/Maintenance tasks,0
+06:00,1,Heavy Rain,250,10,2,Shift to Indoor/Maintenance tasks,0
+07:00,1,Extreme Heat,366,6,2,Shift to Indoor/Maintenance tasks,0
+12:00,0,None,146,8,4,Normal Operations,0
+02:00,0,None,256,9,2,Normal Operations,0
+12:00,1,Heavy Rain,206,4,3,Shift to Indoor/Maintenance tasks,0
+09:00,3,Heavy Rain,487,10,3,Shift to Indoor/Maintenance tasks,0
+16:00,6,Extreme Heat,236,10,4,Front-load Morning Shift,0
+18:00,3,Extreme Heat,158,1,2,Front-load Morning Shift,0
+07:00,4,Extreme Heat,164,2,4,Pre-emptive Overtime Previous Day,4
+11:00,0,None,260,9,1,Normal Operations,0
+09:00,4,Heavy Rain,454,4,1,Shift to Indoor/Maintenance tasks,0

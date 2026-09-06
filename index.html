@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MOIL AI Prescriptive Platform</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #10b981;
+            --primary-glow: rgba(16, 185, 129, 0.4);
+            --secondary: #3b82f6;
+            --bg-dark: #09090b;
+            --card-bg: rgba(24, 24, 27, 0.7);
+            --card-border: rgba(63, 63, 70, 0.4);
+            --text-main: #f4f4f5;
+            --text-muted: #a1a1aa;
+            --danger: #ef4444;
+            --danger-glow: rgba(239, 68, 68, 0.4);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            min-height: 100vh;
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(16, 185, 129, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 85% 30%, rgba(59, 130, 246, 0.08) 0%, transparent 50%);
+            background-attachment: fixed;
+            display: flex;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 260px;
+            background: rgba(9, 9, 11, 0.8);
+            border-right: 1px solid var(--card-border);
+            padding: 30px 20px;
+            backdrop-filter: blur(12px);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 20px;
+            font-weight: 700;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 40px;
+        }
+
+        .brand i {
+            -webkit-text-fill-color: var(--primary);
+        }
+
+        .nav-item {
+            padding: 12px 16px;
+            border-radius: 8px;
+            color: var(--text-muted);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 500;
+            margin-bottom: 10px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-main);
+        }
+
+        .nav-item.active {
+            border-left: 3px solid var(--primary);
+            background: linear-gradient(90deg, rgba(16, 185, 129, 0.1) 0%, transparent 100%);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 40px;
+            overflow-y: auto;
+            height: 100vh;
+        }
+
+        .header {
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            color: var(--text-muted);
+            font-size: 15px;
+        }
+
+        /* Cards */
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 25px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .card:hover::before {
+            opacity: 1;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-title i {
+            color: var(--secondary);
+        }
+
+        /* Forms */
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-bottom: 15px;
+        }
+
+        label {
+            font-size: 13px;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        input, select {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: white;
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        input:focus, select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px var(--primary-glow);
+        }
+
+        button.primary-btn {
+            background: linear-gradient(135deg, var(--primary), #059669);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        button.primary-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px var(--primary-glow);
+        }
+
+        .btn-sm {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: var(--text-muted);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            float: right;
+            transition: all 0.2s ease;
+        }
+
+        .btn-sm:hover {
+            background: rgba(255,255,255,0.1);
+            color: white;
+        }
+
+        /* Result Area */
+        .result-box {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 10px;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.05);
+            display: none;
+            animation: fadeIn 0.4s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .badge.success { background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
+        .badge.warning { background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); }
+        .badge.danger { background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); }
+        .badge.info { background: rgba(59, 130, 246, 0.2); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); }
+
+        .result-text {
+            font-size: 14px;
+            color: var(--text-main);
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <div class="brand">
+            <i class="fa-solid fa-gem"></i>
+            MOIL Nexus AI
+        </div>
+        
+        <a href="/" class="nav-item active" style="text-decoration: none;">
+            <i class="fa-solid fa-chart-pie"></i>
+            AI Dashboard 1
+        </a>
+        <a href="/dashboard2" class="nav-item" style="text-decoration: none;">
+            <i class="fa-solid fa-layer-group"></i>
+            AI Dashboard 2 (Integrated)
+        </a>
+        <div class="nav-item">
+            <i class="fa-solid fa-map-location-dot"></i>
+            Reserve Mapping
+        </div>
+        <div class="nav-item">
+            <i class="fa-solid fa-truck-fast"></i>
+            Fleet Tracking
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="header">
+            <h1>Prescriptive Intelligence Hub</h1>
+            <p>Optimize mining operations, predict weather risks, and autonomously reschedule tasks.</p>
+        </div>
+
+        <div class="grid">
+            
+            <!-- AI Rescheduling Card -->
+            <div class="card" id="prescriptiveCard">
+                <button class="btn-sm" onclick="fillDemoData()"><i class="fa-solid fa-wand-magic-sparkles"></i> Demo Data</button>
+                <div class="card-title"><i class="fa-solid fa-brain"></i> AI Rescheduling Engine</div>
+                
+                <div class="form-group">
+                    <label>Select Mine Location</label>
+                    <select id="mineName">
+                        <option value="" disabled selected>Loading mines...</option>
+                    </select>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Temperature (°C)</label>
+                        <input type="number" id="p_temp" step="0.1" placeholder="e.g. 30.5">
+                    </div>
+                    <div class="form-group">
+                        <label>Precipitation (mm)</label>
+                        <input type="number" id="p_precip" step="0.1" placeholder="e.g. 3.5">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>72h Rolling Rain (mm)</label>
+                        <input type="number" id="p_rolling" step="0.1" placeholder="e.g. 60.0">
+                    </div>
+                    <div class="form-group">
+                        <label>Soil Moisture</label>
+                        <input type="number" id="p_soil" step="0.01" placeholder="e.g. 0.5">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Pending Target (Tons)</label>
+                        <input type="number" id="p_target" placeholder="e.g. 500">
+                    </div>
+                    <div class="form-group">
+                        <label>Days to Deadline</label>
+                        <input type="number" id="p_days" placeholder="e.g. 3">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Available Overtime Capacity (Hrs)</label>
+                    <input type="number" id="p_overtime" placeholder="e.g. 4">
+                </div>
+
+                <button class="primary-btn" id="btnPrescribe" onclick="getPrescription()">
+                    <i class="fa-solid fa-microchip"></i> Generate Recommendation
+                </button>
+
+                <div class="result-box" id="resPrescribe">
+                    <div class="badge info" id="badgePrescribe"><i class="fa-solid fa-circle-check"></i> Action</div>
+                    <div class="result-text" id="txtPrescribe">AI recommendation will appear here.</div>
+                </div>
+            </div>
+
+            <!-- Weather Risk Card -->
+            <div class="card">
+                <button class="btn-sm" onclick="fillWeatherDemo()"><i class="fa-solid fa-wand-magic-sparkles"></i> Demo Data</button>
+                <div class="card-title"><i class="fa-solid fa-cloud-bolt"></i> Weather Risk Predictor</div>
+                
+                <div class="form-group">
+                    <label>Temp Max (°C)</label>
+                    <input type="number" id="w_tempMax" step="0.1" placeholder="e.g., 35.5">
+                </div>
+                <div class="form-group">
+                    <label>Temp Min (°C)</label>
+                    <input type="number" id="w_tempMin" step="0.1" placeholder="e.g., 22.0">
+                </div>
+                <div class="form-group">
+                    <label>Soil Moisture</label>
+                    <input type="number" id="w_soil" step="0.01" placeholder="e.g., 0.6">
+                </div>
+                <div class="form-group">
+                    <label>Month (1-12)</label>
+                    <input type="number" id="w_month" min="1" max="12" placeholder="e.g., 8">
+                </div>
+
+                <button class="primary-btn" id="btnWeather" onclick="predictWeather()" style="background: linear-gradient(135deg, var(--secondary), #2563eb);">
+                    <i class="fa-solid fa-satellite-dish"></i> Predict Risk
+                </button>
+
+                <div class="result-box" id="resWeather">
+                    <div class="badge" id="badgeWeather">Risk Level</div>
+                    <div class="result-text" id="txtWeather">Risk prediction will appear here.</div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // Load locations
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                const response = await fetch('/api/locations');
+                if (response.ok) {
+                    const locations = await response.json();
+                    const select = document.getElementById('mineName');
+                    select.innerHTML = '<option value="" disabled selected>Select a mining location...</option>';
+                    
+                    for (const [name, info] of Object.entries(locations)) {
+                        const option = document.createElement('option');
+                        option.value = name;
+                        option.textContent = `${name} (${info.type})`;
+                        select.appendChild(option);
+                    }
+                }
+            } catch (error) {
+                console.error("Failed to load locations:", error);
+            }
+        });
+
+        function fillDemoData() {
+            document.getElementById('mineName').selectedIndex = 1; // Pick first available
+            document.getElementById('p_temp').value = 28.5;
+            document.getElementById('p_precip').value = 4.2;
+            document.getElementById('p_rolling').value = 85.0;
+            document.getElementById('p_soil').value = 0.55;
+            document.getElementById('p_target').value = 450;
+            document.getElementById('p_days').value = 2;
+            document.getElementById('p_overtime').value = 4;
+        }
+
+        function fillWeatherDemo() {
+            document.getElementById('w_tempMax').value = 38.5;
+            document.getElementById('w_tempMin').value = 26.0;
+            document.getElementById('w_soil').value = 0.85;
+            document.getElementById('w_month').value = 7;
+        }
+
+        async function getPrescription() {
+            const btn = document.getElementById('btnPrescribe');
+            const resBox = document.getElementById('resPrescribe');
+            const badge = document.getElementById('badgePrescribe');
+            const txt = document.getElementById('txtPrescribe');
+
+            const mineName = document.getElementById('mineName').value;
+            if (!mineName) {
+                alert("Please select a mine location first.");
+                return;
+            }
+
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Analyzing...';
+            btn.disabled = true;
+
+            const payload = {
+                Mine_Name: mineName,
+                temperature_2m: parseFloat(document.getElementById('p_temp').value) || 0,
+                precipitation: parseFloat(document.getElementById('p_precip').value) || 0,
+                soil_moisture_0_to_7cm: parseFloat(document.getElementById('p_soil').value) || 0,
+                Rolling_72h_Rainfall: parseFloat(document.getElementById('p_rolling').value) || 0,
+                Pending_Target_Tons: parseFloat(document.getElementById('p_target').value) || 0,
+                Days_To_Deadline: parseFloat(document.getElementById('p_days').value) || 0,
+                Overtime_Capacity_hrs: parseFloat(document.getElementById('p_overtime').value) || 0
+            };
+
+            try {
+                const response = await fetch('/api/recommend-schedule', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    
+                    // Style badge based on action
+                    badge.className = 'badge';
+                    if (result.Recommended_Action.includes("Normal")) {
+                        badge.classList.add('success');
+                        badge.innerHTML = '<i class="fa-solid fa-check"></i> ' + result.Recommended_Action;
+                    } else if (result.Recommended_Action.includes("Pause")) {
+                        badge.classList.add('danger');
+                        badge.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> ' + result.Recommended_Action;
+                    } else {
+                        badge.classList.add('warning');
+                        badge.innerHTML = '<i class="fa-solid fa-clock"></i> ' + result.Recommended_Action;
+                    }
+
+                    txt.textContent = result.Message;
+                    resBox.style.display = 'block';
+                    
+                    // Re-trigger animation
+                    resBox.style.animation = 'none';
+                    resBox.offsetHeight; 
+                    resBox.style.animation = null;
+                } else {
+                    alert("Error from server.");
+                }
+            } catch (error) {
+                alert("Failed to connect to backend API.");
+            } finally {
+                btn.innerHTML = '<i class="fa-solid fa-microchip"></i> Generate Recommendation';
+                btn.disabled = false;
+            }
+        }
+
+        async function predictWeather() {
+            const btn = document.getElementById('btnWeather');
+            const resBox = document.getElementById('resWeather');
+            const badge = document.getElementById('badgeWeather');
+            const txt = document.getElementById('txtWeather');
+
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Predicting...';
+            btn.disabled = true;
+
+            const payload = {
+                Temp_Max: parseFloat(document.getElementById('w_tempMax').value) || 0,
+                Temp_Min: parseFloat(document.getElementById('w_tempMin').value) || 0,
+                Soil_Moisture: parseFloat(document.getElementById('w_soil').value) || 0,
+                Month: parseInt(document.getElementById('w_month').value) || 1
+            };
+
+            try {
+                const response = await fetch('/api/predict-weather', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    
+                    badge.className = 'badge';
+                    if (result.High_Risk_Weather) {
+                        badge.classList.add('danger');
+                        badge.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> HIGH RISK';
+                    } else {
+                        badge.classList.add('success');
+                        badge.innerHTML = '<i class="fa-solid fa-check"></i> LOW RISK';
+                    }
+
+                    txt.textContent = result.Message;
+                    resBox.style.display = 'block';
+                }
+            } catch (error) {
+                alert("Failed to connect.");
+            } finally {
+                btn.innerHTML = '<i class="fa-solid fa-satellite-dish"></i> Predict Risk';
+                btn.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>
