@@ -791,6 +791,45 @@ export const AI_HEATMAP_CLUSTERS: HeatmapPolygon[] = [
       [21.950, 80.505],
       [21.940, 80.445]
     ]
+  },
+  {
+    id: 'poly-balaghat-north-extension',
+    name: 'Balaghat Deep North Extension Target (84%)',
+    probability: 84,
+    color: '#eab308',
+    fillColor: '#eab308',
+    coordinates: [
+      [21.870, 80.200],
+      [21.890, 80.260],
+      [21.860, 80.280],
+      [21.850, 80.230]
+    ]
+  },
+  {
+    id: 'poly-tirodi-south-corridor',
+    name: 'Tirodi South Blind Ore Corridor (79%)',
+    probability: 79,
+    color: '#eab308',
+    fillColor: '#eab308',
+    coordinates: [
+      [21.650, 79.680],
+      [21.660, 79.730],
+      [21.630, 79.740],
+      [21.620, 79.690]
+    ]
+  },
+  {
+    id: 'poly-dongri-west-flank',
+    name: 'Dongri Buzurg West Flank (76%)',
+    probability: 76,
+    color: '#fbbf24',
+    fillColor: '#fbbf24',
+    coordinates: [
+      [21.540, 79.620],
+      [21.560, 79.650],
+      [21.520, 79.660],
+      [21.510, 79.630]
+    ]
   }
 ];
 
