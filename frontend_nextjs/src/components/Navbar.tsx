@@ -78,20 +78,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           </span>
         </button>
 
-        <button
-          onClick={() => setActiveView('training')}
-          className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200 ${
-            activeView === 'training'
-              ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md shadow-blue-900/40 border border-blue-400/30'
-              : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
-          }`}
-        >
-          <Cpu className="w-3.5 h-3.5" />
-          <span>AI Studio</span>
-          <span className="text-[9px] font-mono px-1 py-0.2 rounded bg-blue-950 text-blue-300 border border-blue-500/30">
-            GEE
-          </span>
-        </button>
+
     </div>
   );
 };
