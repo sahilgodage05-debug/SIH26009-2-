@@ -94,24 +94,42 @@ export default function Home() {
       {/* 2. Body Workspace: Seamlessly Switch Between Unified Views */}
       {activeView === 'exploration' ? (
         <div className="relative flex-1 flex h-[calc(100vh-64px)] overflow-hidden">
-          {/* Geospatial Intelligence Sidebar (Includes integrated SAM & MSV controls) */}
-          <RemoteSensingSidebar
-            layers={layers}
-            setLayers={setLayers}
-            isGeneratingAI={isGeneratingAI}
-            onGenerateAIHeatmap={handleGenerateAIHeatmap}
-            msvOpacity={msvOpacity}
-            setMsvOpacity={setMsvOpacity}
-            msvAnomalyScore={msvAnomalyScore}
-            setMsvAnomalyScore={setMsvAnomalyScore}
-            msvClipOutOfRange={msvClipOutOfRange}
-            setMsvClipOutOfRange={setMsvClipOutOfRange}
-            msvRasterMode={msvRasterMode}
-            setMsvRasterMode={setMsvRasterMode}
-          />
-
           {/* Center Main Leaflet GIS Map (Clean & Unobstructed) */}
           <main className="relative flex-1 h-full bg-[#070b12] overflow-hidden">
+            {/* Floating Generate AI Heatmap Button */}
+            <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-[500]">
+              <button
+                onClick={handleGenerateAIHeatmap}
+                disabled={isGeneratingAI}
+                className={`flex items-center justify-center gap-2 px-6 py-3 rounded-full text-sm font-bold text-white shadow-2xl transition-all ${
+                  isGeneratingAI 
+                    ? 'bg-slate-700 cursor-not-allowed opacity-80' 
+                    : layers.aiHeatmap 
+                      ? 'bg-rose-600 hover:bg-rose-500 shadow-rose-900/50' 
+                      : 'bg-emerald-600 hover:bg-emerald-500 shadow-emerald-900/50 hover:scale-105'
+                }`}
+              >
+                {isGeneratingAI ? (
+                  <>
+                    <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Synthesizing ML...
+                  </>
+                ) : layers.aiHeatmap ? (
+                  <>
+                    <Sparkles className="w-4 h-4" />
+                    Disable AI Heatmap
+                  </>
+                ) : (
+                  <>
+                    <Sparkles className="w-4 h-4" />
+                    Generate AI Heatmap
+                  </>
+                )}
+              </button>
+            </div>
             <MapWrapper
               layers={layers}
               selectedZone={selectedZone}
