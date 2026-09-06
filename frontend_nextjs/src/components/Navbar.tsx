@@ -104,7 +104,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           }`}
         >
           <Truck className="w-3.5 h-3.5" />
-          <span>Production & Shortfall</span>
+          <span>Equipment & AI Scheduling</span>
           <span className="text-[9px] font-mono px-1 py-0.2 rounded bg-amber-950 text-amber-300 border border-amber-500/30">
             PS 26009
           </span>

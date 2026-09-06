@@ -63,7 +63,6 @@ export const OperationsControlRoom: React.FC<{
   const [fleet, setFleet] = useState<FleetEquipment[]>(FLEET_DATA);
   const [activeFilter, setActiveFilter] = useState<'all' | 'warning' | 'operational'>('all');
   const [notification, setNotification] = useState<string | null>(null);
-  const [debugMsg, setDebugMsg] = useState<string>('');
   const [selectedStateFilter, setSelectedStateFilter] = useState<'ALL' | 'MH' | 'MP'>('ALL');
   const [expandedMineId, setExpandedMineId] = useState<string | null>(null);
   const [showMinesRoster, setShowMinesRoster] = useState<boolean>(true);
@@ -110,11 +109,9 @@ export const OperationsControlRoom: React.FC<{
     const fetchEquipment = async () => {
       try {
         const url = `http://${window.location.hostname}:8000/user/api/equipment/Balaghat%20Mine`;
-        setDebugMsg(prev => prev + `\nFetching: ${url}`);
         const response = await fetch(url);
         if (response.ok) {
           const data = await response.json();
-          setDebugMsg(prev => prev + `\nSuccess: fetched ${data.length} items`);
           const mappedFleet = data.map((eq: any) => ({
             id: eq.id.toString(),
             name: eq.machine_id,
@@ -130,11 +127,8 @@ export const OperationsControlRoom: React.FC<{
             fuelCapacity: eq.fuel_capacity,
           }));
           setFleet(mappedFleet);
-        } else {
-          setDebugMsg(prev => prev + `\nError: HTTP ${response.status}`);
         }
       } catch (err: any) {
-        setDebugMsg(prev => prev + `\nException: ${err.message}`);
         console.error("Failed to fetch equipment:", err);
       }
     };
@@ -226,11 +220,6 @@ export const OperationsControlRoom: React.FC<{
       {/* ───────────────────────────────────────────────────────────── */}
       {/* 0. PROBLEM STATEMENT 26009 OFFICIAL HEADER BANNER */}
       {/* ───────────────────────────────────────────────────────────── */}
-      {debugMsg && (
-        <div className="bg-red-900/80 text-white p-4 font-mono text-xs whitespace-pre-wrap rounded">
-          DEBUG INFO: {debugMsg}
-        </div>
-      )}
       <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-slate-900 via-emerald-950/40 to-slate-900 border border-emerald-500/40 p-5 shadow-2xl backdrop-blur-xl">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           <div className="space-y-1.5">
