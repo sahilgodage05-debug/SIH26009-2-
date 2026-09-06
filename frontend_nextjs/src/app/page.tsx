@@ -93,7 +93,7 @@ export default function Home() {
 
       {/* 2. Body Workspace: Seamlessly Switch Between Unified Views */}
       {activeView === 'exploration' ? (
-        <div className="relative flex-1 flex h-[calc(100vh-64px)] overflow-hidden">
+        <div className="relative flex-1 flex h-screen overflow-hidden">
           {/* Center Main Leaflet GIS Map (Clean & Unobstructed) */}
           <main className="relative flex-1 h-full bg-[#070b12] overflow-hidden">
             {/* Floating Generate AI Heatmap Button */}

@@ -43,40 +43,8 @@ export const Navbar: React.FC<NavbarProps> = ({
   }, []);
 
   return (
-    <header className="h-16 bg-[#090d16]/95 border-b border-slate-800/80 px-4 sm:px-6 flex items-center justify-between z-40 backdrop-blur-md select-none shrink-0 shadow-lg shadow-black/40">
-      {/* Brand & Title */}
-      <div className="flex items-center gap-3">
-        <div className="relative flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-600 via-teal-700 to-emerald-900 border border-emerald-500/40 shadow-md shadow-emerald-950/60 group">
-          <Layers className="w-5 h-5 text-emerald-100 group-hover:scale-110 transition-transform" />
-          <span className="absolute -top-1 -right-1 flex h-3 w-3">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
-          </span>
-        </div>
+    <div className="absolute top-4 left-1/2 -translate-x-1/2 z-[1000] flex items-center bg-slate-900/90 p-1.5 rounded-2xl border border-slate-700/80 shadow-2xl backdrop-blur-xl">
 
-        <div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-base sm:text-lg font-bold tracking-tight text-white flex items-center gap-2">
-              <span className="bg-gradient-to-r from-white via-slate-100 to-slate-300 bg-clip-text text-transparent">
-                MOIL AI
-              </span>
-              <span className="text-emerald-400 font-mono text-xs px-1.5 py-0.5 rounded border border-emerald-500/30 bg-emerald-950/40 hidden sm:inline-block">
-                GEO-CORE v2.4
-              </span>
-            </h1>
-            <span className="text-slate-600">|</span>
-            <span className="text-xs sm:text-sm font-medium text-slate-300 hidden md:inline-block">
-              Geo-Spatial Reserve Explorer
-            </span>
-          </div>
-          <p className="text-[11px] text-slate-400 hidden sm:block">
-            Autonomous Earth Observation & ML Mineral Prospecting • Manganese Ore India Ltd.
-          </p>
-        </div>
-      </div>
-
-      {/* Center View Mode Switcher (Unified 4 Enterprise Pillars) */}
-      <div className="flex items-center bg-slate-900/90 p-1 rounded-xl border border-slate-800 shadow-inner">
         <button
           onClick={() => setActiveView('exploration')}
           className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200 ${
@@ -124,35 +92,6 @@ export const Navbar: React.FC<NavbarProps> = ({
             GEE
           </span>
         </button>
-      </div>
-
-      {/* Right Telemetry & Status Badges */}
-      <div className="flex items-center gap-2 sm:gap-3">
-        {/* Reset Extent Button */}
-        {activeView === 'exploration' && onResetMap && (
-          <button
-            onClick={onResetMap}
-            title="Recenter Map to MOIL Manganese Belt"
-            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-slate-900/80 hover:bg-slate-800 text-slate-300 border border-slate-700/60 text-xs transition-colors"
-          >
-            <Compass className="w-3.5 h-3.5 text-teal-400" />
-            <span className="hidden lg:inline">Recenter Belt</span>
-          </button>
-        )}
-
-        {/* Satellite Sync Pill */}
-        <div className="hidden xl:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-900/70 border border-slate-800 text-xs text-slate-300">
-          <Satellite className="w-3.5 h-3.5 text-emerald-400 animate-pulse" />
-          <span className="font-mono text-slate-400 text-[11px]">Sentinel-2 / Landsat-9:</span>
-          <span className="text-emerald-400 font-medium">99.8% Sync</span>
-        </div>
-
-        {/* Live Clock */}
-        <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-900/90 border border-slate-800/80 font-mono text-xs text-emerald-300">
-          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-          <span>{time || 'LIVE'}</span>
-        </div>
-      </div>
-    </header>
+    </div>
   );
 };
