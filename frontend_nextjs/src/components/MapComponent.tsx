@@ -242,39 +242,7 @@ export const MapComponent: React.FC<MapComponentProps> = ({
           OSM Standard
         </button>
 
-        {/* Quick Fly-To Dropdown for All 11 Mines */}
-        <div className="h-4 w-[1px] bg-slate-700 mx-1 hidden sm:block" />
-        <div className="hidden sm:flex items-center gap-1 pl-1">
-          <MapPin className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-          <select
-            value={selectedZone?.id || 'center'}
-            onChange={(e) => {
-              if (e.target.value === 'center') {
-                setFlyTarget(MOIL_MAP_CENTER);
-              } else {
-                const found = RESERVE_ZONES.find(z => z.id === e.target.value);
-                if (found) handleZoneClick(found);
-              }
-            }}
-            className="bg-slate-950/90 text-xs font-mono text-emerald-300 rounded-lg px-2 py-1 border border-slate-700/80 focus:outline-none focus:border-emerald-500 cursor-pointer"
-          >
-            <option value="center">All 11 Mines (Overview)</option>
-            <optgroup label="Madhya Pradesh (5 Mines)">
-              {RESERVE_ZONES.filter(z => z.leaseArea.includes('-MP')).map(z => (
-                <option key={z.id} value={z.id}>
-                  {z.name.split(' (')[0]} ({z.coordinates[0].toFixed(4)}°N, {z.coordinates[1].toFixed(4)}°E)
-                </option>
-              ))}
-            </optgroup>
-            <optgroup label="Maharashtra (6 Mines)">
-              {RESERVE_ZONES.filter(z => z.leaseArea.includes('-MH')).map(z => (
-                <option key={z.id} value={z.id}>
-                  {z.name.split(' (')[0]} ({z.coordinates[0].toFixed(4)}°N, {z.coordinates[1].toFixed(4)}°E)
-                </option>
-              ))}
-            </optgroup>
-          </select>
-        </div>
+
       </div>
 
       {/* Region Tag / Precise Geolocation Telemetry HUD */}
