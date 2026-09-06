@@ -1,0 +1,200 @@
+{
+  "model_name": "Random Forest Ensemble (Machine Prospector v2.4)",
+  "dataset_size": 3000,
+  "train_samples": 2400,
+  "test_samples": 600,
+  "accuracy": 100.0,
+  "precision": 100.0,
+  "recall": 100.0,
+  "f1_score": 100.0,
+  "roc_auc": 1.0,
+  "confusion_matrix": {
+    "true_negative": 459,
+    "false_positive": 0,
+    "false_negative": 0,
+    "true_positive": 141
+  },
+  "feature_importances": [
+    {
+      "key": "bouguer_gravity_anomaly_mgal",
+      "name": "Bouguer Gravity Anomaly (GSI NGDR)",
+      "importance": 32.97
+    },
+    {
+      "key": "ndvi_sentinel2",
+      "name": "Sentinel-2 NDVI (Chlorosis Stress)",
+      "importance": 24.28
+    },
+    {
+      "key": "swir_alteration_ratio",
+      "name": "Landsat-9 SWIR Alteration Mineral Ratio",
+      "importance": 21.99
+    },
+    {
+      "key": "magnetic_susceptibility_si",
+      "name": "Magnetic Susceptibility (SI)",
+      "importance": 10.92
+    },
+    {
+      "key": "soil_moisture_sar_pct",
+      "name": "Sentinel-1 SAR Soil Moisture (%)",
+      "importance": 6.24
+    },
+    {
+      "key": "lst_celsius_landsat9",
+      "name": "Land Surface Temp (Thermal Inertia)",
+      "importance": 3.49
+    },
+    {
+      "key": "elevation_m",
+      "name": "SRTM Digital Elevation Model (m)",
+      "importance": 0.08
+    },
+    {
+      "key": "rainfall_annual_chirps_mm",
+      "name": "CHIRPS Annual Rainfall (mm)",
+      "importance": 0.04
+    }
+  ],
+  "roc_curve": [
+    {
+      "fpr": 0.0,
+      "tpr": 0.0
+    },
+    {
+      "fpr": 0.0,
+      "tpr": 0.73
+    },
+    {
+      "fpr": 0.0,
+      "tpr": 0.752
+    },
+    {
+      "fpr": 0.0,
+      "tpr": 0.816
+    },
+    {
+      "fpr": 0.0,
+      "tpr": 0.83
+    },
+    {
+      "fpr": 0.0,
+      "tpr": 0.844
+    },
+    {
+      "fpr": 0.0,
+      "tpr": 0.851
+    },
+    {
+      "fpr": 0.0,
+      "tpr": 0.865
+    },
+    {
+      "fpr": 0.0,
+      "tpr": 0.887
+    },
+    {
+      "fpr": 0.0,
+      "tpr": 0.908
+    },
+    {
+      "fpr": 0.0,
+      "tpr": 0.929
+    },
+    {
+      "fpr": 0.0,
+      "tpr": 0.943
+    },
+    {
+      "fpr": 0.0,
+      "tpr": 0.979
+    },
+    {
+      "fpr": 0.0,
+      "tpr": 0.993
+    },
+    {
+      "fpr": 0.0,
+      "tpr": 1.0
+    },
+    {
+      "fpr": 0.024,
+      "tpr": 1.0
+    },
+    {
+      "fpr": 0.037,
+      "tpr": 1.0
+    },
+    {
+      "fpr": 0.041,
+      "tpr": 1.0
+    },
+    {
+      "fpr": 0.046,
+      "tpr": 1.0
+    },
+    {
+      "fpr": 0.05,
+      "tpr": 1.0
+    },
+    {
+      "fpr": 0.052,
+      "tpr": 1.0
+    },
+    {
+      "fpr": 0.085,
+      "tpr": 1.0
+    },
+    {
+      "fpr": 0.089,
+      "tpr": 1.0
+    },
+    {
+      "fpr": 0.094,
+      "tpr": 1.0
+    },
+    {
+      "fpr": 0.098,
+      "tpr": 1.0
+    },
+    {
+      "fpr": 0.1,
+      "tpr": 1.0
+    },
+    {
+      "fpr": 1.0,
+      "tpr": 1.0
+    },
+    {
+      "fpr": 1.0,
+      "tpr": 1.0
+    }
+  ],
+  "satellite_sources": [
+    {
+      "sensor": "Sentinel-2 L2A",
+      "feature": "NDVI Canopy Stress",
+      "gee_id": "COPERNICUS/S2_SR_HARMONIZED"
+    },
+    {
+      "sensor": "Sentinel-1 GRD",
+      "feature": "SAR Soil Moisture",
+      "gee_id": "COPERNICUS/S1_GRD"
+    },
+    {
+      "sensor": "Landsat-9 TIR",
+      "feature": "Land Surface Temperature",
+      "gee_id": "LANDSAT/LC09/C02/T1_L2"
+    },
+    {
+      "sensor": "CHIRPS Daily",
+      "feature": "Annual Precipitation",
+      "gee_id": "UCSB-CHG/CHIRPS/DAILY"
+    },
+    {
+      "sensor": "GSI NGDR Data",
+      "feature": "Bouguer Gravity & Magnetic Map",
+      "portal": "geodataindia.gov.in"
+    }
+  ]
+}
