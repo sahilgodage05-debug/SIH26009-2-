@@ -39,11 +39,17 @@ try:
     from backend.ml_service import get_machine_risk_score
     from backend.optimization_service import optimize_equipment_redeployment
     from backend.mine_intelligence import calculate_mine_safety_score
-except ImportError:
-    from setup_database import Equipment, Base
-    from ml_service import get_machine_risk_score
-    from optimization_service import optimize_equipment_redeployment
-    from mine_intelligence import calculate_mine_safety_score
+except Exception:
+    try:
+        from setup_database import Equipment, Base
+        from ml_service import get_machine_risk_score
+        from optimization_service import optimize_equipment_redeployment
+        from mine_intelligence import calculate_mine_safety_score
+    except Exception:
+        Equipment, Base = None, None
+        get_machine_risk_score = None
+        optimize_equipment_redeployment = None
+        calculate_mine_safety_score = None
 
 app = FastAPI(
     title="MOIL AI: Exploration & Mine Intelligence Platform",
