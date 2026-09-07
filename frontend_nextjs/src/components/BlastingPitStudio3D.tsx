@@ -1,11 +1,12 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, Text, Html } from '@react-three/drei';
+import { Canvas, useThree } from '@react-three/fiber';
+import { OrbitControls, Html } from '@react-three/drei';
 import * as THREE from 'three';
 import { 
   Play, 
+  Pause,
   RotateCcw, 
   Zap, 
   Sliders, 
@@ -15,7 +16,15 @@ import {
   Activity, 
   Compass, 
   Layers, 
-  Flame 
+  Flame,
+  Eye,
+  Camera,
+  Maximize2,
+  Minimize2,
+  Box,
+  FastForward,
+  Sparkles,
+  Info
 } from 'lucide-react';
 
 interface BlastHoleData {
@@ -34,6 +43,32 @@ interface BlastHoleData {
 }
 
 // -------------------------------------------------------------
+// CAMERA CONTROLLER COMPONENT (SMOOTH PRESET SWITCHING)
+// -------------------------------------------------------------
+function CameraController({ cameraPreset }: { cameraPreset: '3d' | 'top' | 'front' | 'side' }) {
+  const { camera } = useThree();
+  const controlsRef = useRef<any>(null);
+
+  useEffect(() => {
+    if (cameraPreset === 'top') {
+      camera.position.set(18, 48, 10.1);
+    } else if (cameraPreset === 'front') {
+      camera.position.set(18, 8, 38);
+    } else if (cameraPreset === 'side') {
+      camera.position.set(48, 8, 10);
+    } else {
+      camera.position.set(25, 22, 25);
+    }
+    if (controlsRef.current) {
+      controlsRef.current.target.set(18, 4, 10);
+      controlsRef.current.update();
+    }
+  }, [cameraPreset, camera]);
+
+  return <OrbitControls ref={controlsRef} makeDefault maxPolarAngle={Math.PI / 2.02} />;
+}
+
+// -------------------------------------------------------------
 // 3D OPEN-PIT BENCH MESH & BLAST HOLES
 // -------------------------------------------------------------
 function BenchAndBlastGrid3D({ 
@@ -41,93 +76,135 @@ function BenchAndBlastGrid3D({
   benchHeight, 
   burden, 
   spacing, 
-  detonatingHoles 
+  detonatingHoles,
+  showWireframe,
+  showDelayBadges,
+  viewMode,
+  hoveredHole,
+  setHoveredHole
 }: { 
   holes: BlastHoleData[]; 
   benchHeight: number; 
   burden: number; 
   spacing: number; 
   detonatingHoles: Set<string>;
+  showWireframe: boolean;
+  showDelayBadges: boolean;
+  viewMode: 'solid' | 'transparent_rock' | 'explosive_only';
+  hoveredHole: string | null;
+  setHoveredHole: (id: string | null) => void;
 }) {
   const meshRef = useRef<THREE.Group>(null);
 
-  // Calculate grid dimensions
   const numRows = Math.max(...holes.map(h => h.row_index), 0) + 1;
   const numCols = Math.max(...holes.map(h => h.col_index), 0) + 1;
   
   const widthX = numCols * spacing + spacing;
   const depthY = numRows * burden + burden * 2;
 
+  const rockOpacity = viewMode === 'transparent_rock' ? 0.35 : viewMode === 'explosive_only' ? 0.05 : 0.95;
+  const isRockVisible = viewMode !== 'explosive_only';
+
   return (
     <group ref={meshRef} position={[-widthX / 2, 0, -depthY / 2]}>
       {/* Open-Pit Bench Rock Mass (Terraced Geometry) */}
-      {/* Top Operating Bench Surface */}
-      <mesh position={[widthX / 2, benchHeight / 2, depthY / 2]} receiveShadow castShadow>
-        <boxGeometry args={[widthX + 6, benchHeight, depthY + 6]} />
-        <meshStandardMaterial color="#2d3748" roughness={0.85} metalness={0.2} />
-      </mesh>
+      {isRockVisible && (
+        <>
+          {/* Top Operating Bench Surface */}
+          <mesh position={[widthX / 2, benchHeight / 2, depthY / 2]} receiveShadow castShadow>
+            <boxGeometry args={[widthX + 6, benchHeight, depthY + 6]} />
+            <meshStandardMaterial 
+              color="#2d3748" 
+              roughness={0.85} 
+              metalness={0.2} 
+              transparent={viewMode === 'transparent_rock'}
+              opacity={rockOpacity}
+            />
+          </mesh>
 
-      {/* Pit Bench Slope Wall */}
-      <mesh position={[widthX / 2, benchHeight / 4, -2]} rotation={[Math.PI / 6, 0, 0]}>
-        <boxGeometry args={[widthX + 6, benchHeight * 0.7, 4]} />
-        <meshStandardMaterial color="#1a202c" roughness={0.9} />
-      </mesh>
+          {/* Pit Bench Slope Wall */}
+          <mesh position={[widthX / 2, benchHeight / 4, -2]} rotation={[Math.PI / 6, 0, 0]}>
+            <boxGeometry args={[widthX + 6, benchHeight * 0.7, 4]} />
+            <meshStandardMaterial 
+              color="#1a202c" 
+              roughness={0.9} 
+              transparent={viewMode === 'transparent_rock'}
+              opacity={rockOpacity}
+            />
+          </mesh>
+        </>
+      )}
 
       {/* Bench Grid Coordinates / Wireframe Overlay */}
-      <gridHelper 
-        args={[Math.max(widthX, depthY) * 1.5, 20, '#10b981', '#334155']} 
-        position={[widthX / 2, benchHeight + 0.05, depthY / 2]} 
-      />
+      {showWireframe && (
+        <gridHelper 
+          args={[Math.max(widthX, depthY) * 1.6, 24, '#10b981', '#334155']} 
+          position={[widthX / 2, benchHeight + 0.05, depthY / 2]} 
+        />
+      )}
 
       {/* 3D Blast Holes */}
       {holes.map((hole) => {
         const isDetonating = detonatingHoles.has(hole.hole_id);
+        const isHovered = hoveredHole === hole.hole_id;
         const stemmingLength = hole.stemming_top_z - hole.stemming_bottom_z;
         const chargeLength = hole.charge_top_z - hole.charge_bottom_z;
 
         return (
-          <group key={hole.hole_id} position={[hole.x + spacing / 2, 0, hole.y + burden]}>
+          <group 
+            key={hole.hole_id} 
+            position={[hole.x + spacing / 2, 0, hole.y + burden]}
+            onPointerOver={(e) => { e.stopPropagation(); setHoveredHole(hole.hole_id); }}
+            onPointerOut={() => setHoveredHole(null)}
+          >
             {/* Detonation Shockwave Ring Animation */}
             {isDetonating && (
               <mesh position={[0, benchHeight + 0.2, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-                <ringGeometry args={[0.2, 2.5, 32]} />
-                <meshBasicMaterial color="#f59e0b" transparent opacity={0.85} side={THREE.DoubleSide} />
+                <ringGeometry args={[0.2, 3.2, 32]} />
+                <meshBasicMaterial color="#f59e0b" transparent opacity={0.9} side={THREE.DoubleSide} />
               </mesh>
             )}
 
             {/* Stemming Top Column (Crushed Gravel / Gold) */}
             <mesh position={[0, benchHeight - stemmingLength / 2, 0]}>
-              <cylinderGeometry args={[0.25, 0.25, stemmingLength, 16]} />
-              <meshStandardMaterial color={isDetonating ? '#ef4444' : '#eab308'} roughness={0.4} />
+              <cylinderGeometry args={[0.26, 0.26, stemmingLength, 16]} />
+              <meshStandardMaterial 
+                color={isDetonating ? '#ef4444' : isHovered ? '#facc15' : '#eab308'} 
+                roughness={0.4} 
+              />
             </mesh>
 
             {/* Explosive Emulsion Charge Column (Orange/Red) */}
             <mesh position={[0, (hole.charge_top_z + hole.charge_bottom_z) / 2, 0]}>
-              <cylinderGeometry args={[0.22, 0.22, Math.max(0.5, chargeLength), 16]} />
+              <cylinderGeometry args={[0.24, 0.24, Math.max(0.5, chargeLength), 16]} />
               <meshStandardMaterial 
-                color={isDetonating ? '#ff0000' : '#f97316'} 
-                emissive={isDetonating ? '#ff4500' : '#000000'}
-                emissiveIntensity={isDetonating ? 2.5 : 0}
+                color={isDetonating ? '#ff0000' : isHovered ? '#fb923c' : '#f97316'} 
+                emissive={isDetonating ? '#ff4500' : isHovered ? '#ea580c' : '#000000'}
+                emissiveIntensity={isDetonating ? 3.0 : isHovered ? 1.0 : 0}
                 roughness={0.3} 
               />
             </mesh>
 
             {/* Drillhole Surface Marker Collar */}
             <mesh position={[0, benchHeight + 0.1, 0]}>
-              <cylinderGeometry args={[0.4, 0.4, 0.15, 16]} />
-              <meshStandardMaterial color={isDetonating ? '#f59e0b' : '#10b981'} />
+              <cylinderGeometry args={[0.42, 0.42, 0.15, 16]} />
+              <meshStandardMaterial color={isDetonating ? '#f59e0b' : isHovered ? '#34d399' : '#10b981'} />
             </mesh>
 
             {/* Hole Delay MS Badge in 3D Space */}
-            <Html position={[0, benchHeight + 1.2, 0]} center distanceFactor={25}>
-              <div className={`px-1.5 py-0.5 rounded text-[9px] font-mono font-bold whitespace-nowrap shadow-md border ${
-                isDetonating 
-                  ? 'bg-red-500 text-white border-red-400 animate-ping' 
-                  : 'bg-slate-900/90 text-emerald-400 border-slate-700'
-              }`}>
-                {hole.delay_ms}ms
-              </div>
-            </Html>
+            {showDelayBadges && (
+              <Html position={[0, benchHeight + 1.3, 0]} center distanceFactor={24}>
+                <div className={`px-1.5 py-0.5 rounded text-[9px] font-mono font-bold whitespace-nowrap shadow-md border transition-all ${
+                  isDetonating 
+                    ? 'bg-red-500 text-white border-red-400 animate-ping' 
+                    : isHovered
+                      ? 'bg-emerald-500 text-slate-950 border-emerald-300 scale-125 z-50'
+                      : 'bg-slate-900/90 text-emerald-400 border-slate-700'
+                }`}>
+                  {hole.delay_ms}ms
+                </div>
+              </Html>
+            )}
           </group>
         );
       })}
@@ -151,9 +228,18 @@ export function BlastingPitStudio3D() {
   const [loading, setLoading] = useState<boolean>(false);
   const [results, setResults] = useState<any>(null);
 
-  // Detonation Animation Simulation
+  // Simulation controls
   const [isSimulating, setIsSimulating] = useState<boolean>(false);
   const [detonatingHoles, setDetonatingHoles] = useState<Set<string>>(new Set());
+  const [simSpeed, setSimSpeed] = useState<number>(1.0); // 0.5x, 1x, 2x
+
+  // View & Render Display Settings
+  const [cameraPreset, setCameraPreset] = useState<'3d' | 'top' | 'front' | 'side'>('3d');
+  const [viewMode, setViewMode] = useState<'solid' | 'transparent_rock' | 'explosive_only'>('solid');
+  const [showWireframe, setShowWireframe] = useState<boolean>(true);
+  const [showDelayBadges, setShowDelayBadges] = useState<boolean>(true);
+  const [isExpandedHeight, setIsExpandedHeight] = useState<boolean>(false);
+  const [hoveredHole, setHoveredHole] = useState<string | null>(null);
 
   // Fetch optimization API from backend
   const fetchBlastingOptimization = async () => {
@@ -193,32 +279,52 @@ export function BlastingPitStudio3D() {
   }, [holeDiameter, burden, spacing, benchHeight, powderFactor, rmrRating]);
 
   // Detonation Animation Trigger
+  const timeoutsRef = useRef<NodeJS.Timeout[]>([]);
+
+  const clearSimTimeouts = () => {
+    timeoutsRef.current.forEach(t => clearTimeout(t));
+    timeoutsRef.current = [];
+  };
+
   const handleStartSimulation = () => {
     if (!results?.blast_pattern_3d?.holes) return;
+    clearSimTimeouts();
     setIsSimulating(true);
     setDetonatingHoles(new Set());
 
     const holes: BlastHoleData[] = results.blast_pattern_3d.holes;
     const sortedDelays = Array.from(new Set(holes.map(h => h.delay_ms))).sort((a, b) => a - b);
 
+    // Scale delay by speed factor
+    const speedMultiplier = 8.0 / simSpeed;
+
     sortedDelays.forEach((delay, idx) => {
-      setTimeout(() => {
+      const t = setTimeout(() => {
         const active = new Set(holes.filter(h => h.delay_ms === delay).map(h => h.hole_id));
         setDetonatingHoles(active);
 
         if (idx === sortedDelays.length - 1) {
-          setTimeout(() => {
+          const tEnd = setTimeout(() => {
             setDetonatingHoles(new Set());
             setIsSimulating(false);
-          }, 600);
+          }, 600 / simSpeed);
+          timeoutsRef.current.push(tEnd);
         }
-      }, delay * 8); // Scale milliseconds for visual clarity
+      }, delay * speedMultiplier);
+      timeoutsRef.current.push(t);
     });
+  };
+
+  const handleStopSimulation = () => {
+    clearSimTimeouts();
+    setDetonatingHoles(new Set());
+    setIsSimulating(false);
   };
 
   const holes: BlastHoleData[] = results?.blast_pattern_3d?.holes || [];
   const kuzRam = results?.fragmentation_kuz_ram;
   const vibration = results?.vibration_ppv;
+  const hoveredData = holes.find(h => h.hole_id === hoveredHole);
 
   return (
     <div className="w-full bg-[#0c121e]/95 border border-slate-800 rounded-2xl p-6 shadow-2xl space-y-6 text-slate-100 backdrop-blur-md">
@@ -237,28 +343,48 @@ export function BlastingPitStudio3D() {
           </p>
         </div>
 
-        <button
-          onClick={handleStartSimulation}
-          disabled={isSimulating || loading}
-          className={`px-5 py-2.5 rounded-xl font-bold text-xs flex items-center gap-2 transition-all shadow-lg ${
-            isSimulating
-              ? 'bg-amber-500 text-slate-950 animate-pulse'
-              : 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-emerald-600/20'
-          }`}
-        >
-          {isSimulating ? <Zap className="w-4 h-4 animate-spin" /> : <Play className="w-4 h-4 fill-current" />}
-          <span>{isSimulating ? 'Detonating Sequence...' : 'Simulate Detonation Sequence'}</span>
-        </button>
+        {/* Action Controls */}
+        <div className="flex items-center gap-2 flex-wrap">
+          {isSimulating ? (
+            <button
+              onClick={handleStopSimulation}
+              className="px-4 py-2 rounded-xl font-bold text-xs bg-rose-600 hover:bg-rose-500 text-white flex items-center gap-2 shadow-lg transition-all"
+            >
+              <Pause className="w-4 h-4 fill-current" />
+              <span>Pause Blast</span>
+            </button>
+          ) : (
+            <button
+              onClick={handleStartSimulation}
+              disabled={loading || holes.length === 0}
+              className="px-5 py-2.5 rounded-xl font-bold text-xs bg-emerald-600 hover:bg-emerald-500 text-white flex items-center gap-2 shadow-lg shadow-emerald-600/20 transition-all hover:scale-105"
+            >
+              <Play className="w-4 h-4 fill-current" />
+              <span>Simulate Detonation Sequence</span>
+            </button>
+          )}
+
+          <button
+            onClick={() => fetchBlastingOptimization()}
+            className="p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition-colors"
+            title="Reset Optimization Params"
+          >
+            <RotateCcw className="w-4 h-4" />
+          </button>
+        </div>
       </div>
 
-      {/* Main Grid: Controls + 3D WebGL Canvas + KPIs */}
+      {/* Main Workspace Grid: Controls + 3D WebGL Canvas */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         
         {/* Left Column: Interactive Parameters (4 cols) */}
         <div className="lg:col-span-4 bg-slate-900/80 border border-slate-800 rounded-xl p-5 space-y-5">
-          <div className="flex items-center gap-2 text-xs font-bold text-emerald-400 border-b border-slate-800 pb-2">
-            <Sliders className="w-4 h-4" />
-            <span>Blast Design Parameters</span>
+          <div className="flex items-center justify-between border-b border-slate-800 pb-2">
+            <div className="flex items-center gap-2 text-xs font-bold text-emerald-400">
+              <Sliders className="w-4 h-4" />
+              <span>Blast Design Parameters</span>
+            </div>
+            {loading && <span className="text-[10px] text-amber-400 font-mono animate-pulse">Calculating...</span>}
           </div>
 
           {/* Slider 1: Hole Diameter */}
@@ -346,28 +472,154 @@ export function BlastingPitStudio3D() {
           </div>
         </div>
 
-        {/* Center Column: 3D WebGL Canvas (8 cols) */}
-        <div className="lg:col-span-8 bg-slate-950 border border-slate-800 rounded-xl relative h-[450px] overflow-hidden">
-          {/* Canvas Legend Overlay */}
-          <div className="absolute top-3 left-3 z-10 bg-slate-900/80 backdrop-blur border border-slate-800 rounded-lg p-2.5 text-[11px] space-y-1">
-            <div className="flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-emerald-400" />
-              <span>Drillhole Collar</span>
+        {/* Center Column: 3D WebGL Canvas + View Controls Overlay (8 cols) */}
+        <div className={`lg:col-span-8 bg-slate-950 border border-slate-800 rounded-xl relative overflow-hidden transition-all duration-300 ${
+          isExpandedHeight ? 'h-[650px]' : 'h-[480px]'
+        }`}>
+          
+          {/* Top Bar Overlay: Legend + Camera View Presets + Viewport Expand */}
+          <div className="absolute top-3 left-3 right-3 z-10 flex flex-wrap items-center justify-between gap-2 pointer-events-none">
+            {/* Legend Overlay */}
+            <div className="pointer-events-auto bg-slate-900/90 backdrop-blur border border-slate-800 rounded-xl p-2.5 text-[11px] space-y-1 shadow-xl">
+              <div className="flex items-center gap-2">
+                <span className="w-2.5 h-2.5 rounded-full bg-emerald-400" />
+                <span>Drillhole Collar</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="w-2.5 h-2.5 rounded-full bg-yellow-400" />
+                <span>Stemming Gravel</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="w-2.5 h-2.5 rounded-full bg-orange-500" />
+                <span>Bulk Emulsion Charge</span>
+              </div>
             </div>
-            <div className="flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-yellow-400" />
-              <span>Stemming Column (Gravel)</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-orange-500" />
-              <span>Bulk Emulsion Charge Column</span>
+
+            {/* Camera View Presets Bar */}
+            <div className="pointer-events-auto flex items-center bg-slate-900/90 backdrop-blur p-1 rounded-xl border border-slate-800 shadow-xl text-xs font-mono">
+              <button
+                onClick={() => setCameraPreset('3d')}
+                className={`px-2.5 py-1 rounded-lg flex items-center gap-1.5 transition-all ${
+                  cameraPreset === '3d' ? 'bg-emerald-600 text-white font-bold' : 'text-slate-400 hover:text-white'
+                }`}
+                title="3D Isometric View"
+              >
+                <Box className="w-3.5 h-3.5" />
+                <span>3D Angle</span>
+              </button>
+              <button
+                onClick={() => setCameraPreset('top')}
+                className={`px-2.5 py-1 rounded-lg flex items-center gap-1.5 transition-all ${
+                  cameraPreset === 'top' ? 'bg-cyan-600 text-white font-bold' : 'text-slate-400 hover:text-white'
+                }`}
+                title="Top Overhead Plan View"
+              >
+                <Compass className="w-3.5 h-3.5" />
+                <span>Top Plan</span>
+              </button>
+              <button
+                onClick={() => setCameraPreset('front')}
+                className={`px-2.5 py-1 rounded-lg flex items-center gap-1.5 transition-all ${
+                  cameraPreset === 'front' ? 'bg-purple-600 text-white font-bold' : 'text-slate-400 hover:text-white'
+                }`}
+                title="Bench Face Front View"
+              >
+                <Camera className="w-3.5 h-3.5" />
+                <span>Bench Face</span>
+              </button>
+
+              <div className="w-px h-4 bg-slate-800 mx-1" />
+
+              {/* Viewport Resize Toggle */}
+              <button
+                onClick={() => setIsExpandedHeight(!isExpandedHeight)}
+                className="p-1.5 rounded-lg text-slate-300 hover:bg-slate-800 transition-colors"
+                title={isExpandedHeight ? 'Minimize Canvas' : 'Expand Viewport'}
+              >
+                {isExpandedHeight ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
+              </button>
             </div>
           </div>
 
+          {/* Bottom Bar Overlay: Render Display Toggles & Speed Selector */}
+          <div className="absolute bottom-3 left-3 right-3 z-10 flex flex-wrap items-center justify-between gap-2 pointer-events-none">
+            
+            {/* Hover Tooltip Badge */}
+            <div className="pointer-events-auto">
+              {hoveredData ? (
+                <div className="bg-slate-900/95 border border-emerald-500/40 rounded-xl px-3 py-1.5 text-xs text-white shadow-2xl backdrop-blur-md flex items-center gap-3 font-mono animate-in fade-in">
+                  <Info className="w-4 h-4 text-emerald-400" />
+                  <div>
+                    <span className="font-bold text-emerald-400">{hoveredData.hole_id}</span>
+                    <span className="text-slate-400 ml-2">X: {hoveredData.x}m, Y: {hoveredData.y}m</span>
+                    <span className="text-amber-400 ml-2">Delay: {hoveredData.delay_ms}ms</span>
+                  </div>
+                </div>
+              ) : (
+                <div className="bg-slate-900/80 border border-slate-800/80 rounded-xl px-2.5 py-1 text-[10px] text-slate-400 backdrop-blur">
+                  Hover over blast holes to inspect telemetry
+                </div>
+              )}
+            </div>
+
+            {/* Display Mode Toggles */}
+            <div className="pointer-events-auto flex items-center gap-1.5 bg-slate-900/90 backdrop-blur p-1 rounded-xl border border-slate-800 shadow-xl text-xs">
+              
+              {/* Rock Transparency Mode */}
+              <button
+                onClick={() => setViewMode(v => v === 'solid' ? 'transparent_rock' : v === 'transparent_rock' ? 'explosive_only' : 'solid')}
+                className={`px-2.5 py-1 rounded-lg flex items-center gap-1 font-mono transition-all ${
+                  viewMode !== 'solid' ? 'bg-amber-600/30 text-amber-300 border border-amber-500/40' : 'text-slate-400 hover:text-white'
+                }`}
+                title="Toggle Rock Opacity (See Underground Charge)"
+              >
+                <Eye className="w-3.5 h-3.5" />
+                <span>{viewMode === 'solid' ? 'Solid' : viewMode === 'transparent_rock' ? 'Translucent' : 'Charge Only'}</span>
+              </button>
+
+              {/* Speed Multiplier */}
+              <div className="flex items-center gap-1 bg-slate-950 px-2 py-0.5 rounded-lg border border-slate-800 text-[10px] font-mono">
+                <FastForward className="w-3 h-3 text-slate-400" />
+                {[0.5, 1.0, 2.0].map((spd) => (
+                  <button
+                    key={spd}
+                    onClick={() => setSimSpeed(spd)}
+                    className={`px-1.5 py-0.5 rounded transition-all ${
+                      simSpeed === spd ? 'bg-emerald-500 text-slate-950 font-bold' : 'text-slate-400 hover:text-white'
+                    }`}
+                  >
+                    {spd}x
+                  </button>
+                ))}
+              </div>
+
+              {/* Show Wireframe */}
+              <button
+                onClick={() => setShowWireframe(!showWireframe)}
+                className={`p-1.5 rounded-lg transition-colors ${showWireframe ? 'text-emerald-400 bg-slate-800' : 'text-slate-500'}`}
+                title="Toggle Grid Wireframe"
+              >
+                <Layers className="w-4 h-4" />
+              </button>
+
+              {/* Show Badges */}
+              <button
+                onClick={() => setShowDelayBadges(!showDelayBadges)}
+                className={`p-1.5 rounded-lg transition-colors ${showDelayBadges ? 'text-cyan-400 bg-slate-800' : 'text-slate-500'}`}
+                title="Toggle Delay MS Badges"
+              >
+                <Sparkles className="w-4 h-4" />
+              </button>
+            </div>
+
+          </div>
+
+          {/* 3D WebGL Canvas */}
           <Canvas camera={{ position: [25, 20, 25], fov: 45 }}>
-            <ambientLight intensity={0.7} />
-            <directionalLight position={[20, 30, 10]} intensity={1.2} castShadow />
-            <OrbitControls makeDefault maxPolarAngle={Math.PI / 2.1} />
+            <ambientLight intensity={0.75} />
+            <directionalLight position={[20, 35, 15]} intensity={1.3} castShadow />
+            
+            <CameraController cameraPreset={cameraPreset} />
 
             <BenchAndBlastGrid3D
               holes={holes}
@@ -375,6 +627,11 @@ export function BlastingPitStudio3D() {
               burden={burden}
               spacing={spacing}
               detonatingHoles={detonatingHoles}
+              showWireframe={showWireframe}
+              showDelayBadges={showDelayBadges}
+              viewMode={viewMode}
+              hoveredHole={hoveredHole}
+              setHoveredHole={setHoveredHole}
             />
           </Canvas>
         </div>
@@ -382,7 +639,7 @@ export function BlastingPitStudio3D() {
       </div>
 
       {/* Bottom KPI Dashboard Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-2">
         {/* Card 1: P80 Passing Fragment Size */}
         <div className="bg-slate-900/80 border border-slate-800 rounded-xl p-4 space-y-1">
           <div className="flex items-center justify-between text-xs text-slate-400">

@@ -38,7 +38,7 @@ export default function ProcessDetailPage() {
   const isBlastingProcess = processId === 'operations' || processId === 'planning';
 
   return (
-    <div className="flex flex-col min-h-screen bg-[#090d16] text-slate-100">
+    <div className="flex flex-col min-h-screen bg-[#090d16] text-slate-100 overflow-y-auto custom-scrollbar">
       {/* Top Header & Navigation */}
       <div className="flex flex-wrap items-center justify-between gap-4 p-4 px-6 border-b border-slate-800/80 bg-[#0c121e]">
         <div className="flex items-center gap-3">
