@@ -28,6 +28,7 @@ import {
   Zap,
   Info
 } from 'lucide-react';
+import { LegacyFleetTelemetry } from '@/components/LegacyFleetTelemetry';
 
 interface TruckData {
   id: string;
@@ -1233,6 +1234,8 @@ export function FleetCommandCenter({ mineId, zone }: { mineId?: string; zone?: a
         </div>
       )}
 
+      {/* Legacy Telemetry Module from main page */}
+      <LegacyFleetTelemetry zone={zone} />
     </div>
   );
 }
