@@ -34,7 +34,7 @@ export default function ProcessDetailPage() {
     );
   }
 
-  const Icon = currentProcess.icon;
+  const Icon: any = currentProcess.icon;
   const isBlastingProcess = processId === 'operations' || processId === 'planning';
 
   return (

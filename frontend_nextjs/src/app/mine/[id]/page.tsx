@@ -353,8 +353,3 @@ export default function MinePage() {
     </div>
   );
 }
-
-      </div>
-    </div>
-  );
-}

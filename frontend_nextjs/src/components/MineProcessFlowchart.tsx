@@ -23,7 +23,7 @@ export interface ProcessStep {
   category: string;
   status: 'completed' | 'active' | 'scheduled';
   description: string;
-  icon: React.ElementType;
+  icon: any;
   color: string;
   badge: string;
 }
