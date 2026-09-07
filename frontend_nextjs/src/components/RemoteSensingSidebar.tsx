@@ -63,6 +63,7 @@ export const RemoteSensingSidebar: React.FC<RemoteSensingSidebarProps> = ({
     indices: false,
     bare_earth: false,
     msv: true,
+    sentinel_predictor: true,
     lineaments: false,
     layers_quick: true
   });
@@ -81,6 +82,56 @@ export const RemoteSensingSidebar: React.FC<RemoteSensingSidebarProps> = ({
 
   const [spectralAngleTolerance, setSpectralAngleTolerance] = useState<number>(0.12);
   const [downloadNotice, setDownloadNotice] = useState<string | null>(null);
+
+  // Sentinel Ecosystem Parameters State
+  const [s2Ndvi, setS2Ndvi] = useState<number>(0.32);
+  const [s2SwirRatio, setS2SwirRatio] = useState<number>(2.15);
+  const [s1SarVv, setS1SarVv] = useState<number>(-12.5);
+  const [s1SoilMoisture, setS1SoilMoisture] = useState<number>(45.0);
+  const [s3LstAnomaly, setS3LstAnomaly] = useState<number>(2.8);
+  const [era5MonsoonRain, setEra5MonsoonRain] = useState<number>(1150.0);
+
+  const sentinelPred = (() => {
+    const baseGrade = 8.5;
+    const deltaSpectral = Math.min(22.0, Math.max(0, (s2SwirRatio - 1.0)) * 11.5 + (s2Ndvi < 0.50 ? (0.50 - s2Ndvi) * 8.0 : 0));
+    const deltaSar = Math.min(14.0, Math.max(0, (s1SarVv - (-18.0))) * 1.4 + Math.max(0, (s1SoilMoisture - 20.0)) * 0.18);
+    const deltaThermal = Math.min(10.0, Math.max(0, s3LstAnomaly) * 3.6);
+    const deltaSupergene = Math.min(8.0, (Math.max(0, era5MonsoonRain - 750.0) / 150.0) * (4.2 / 3.0) * 1.8);
+    
+    const mnPercent = Math.min(51.5, Math.max(5.0, baseGrade + deltaSpectral + deltaSar + deltaThermal + deltaSupergene));
+    
+    let classification = "Low-Grade Ferromanganese Ore";
+    let gradeCode = "LOW";
+    if (mnPercent >= 44.0) {
+      classification = "High-Grade Metallurgical Pyrolusite (>44% Mn)";
+      gradeCode = "HIGH";
+    } else if (mnPercent >= 30.0) {
+      classification = "Medium-Grade Siliceous Braunite (30-44% Mn)";
+      gradeCode = "MEDIUM";
+    }
+
+    const bulkDensity = Math.min(4.65, Math.max(3.2, 3.1 + (mnPercent / 100.0) * 2.8));
+    const inferredVolume = 45000.0 * 65.0 * 0.68;
+    const rawTonnage = inferredVolume * bulkDensity;
+    const weightedTonnage = rawTonnage * 0.85;
+    const metalTonnage = weightedTonnage * (mnPercent / 100.0);
+
+    return {
+      mnPercent: Math.round(mnPercent * 10) / 10,
+      classification,
+      gradeCode,
+      bulkDensity: Math.round(bulkDensity * 100) / 100,
+      rawTonnage: Math.round(rawTonnage),
+      weightedTonnage: Math.round(weightedTonnage),
+      metalTonnage: Math.round(metalTonnage),
+      breakdown: {
+        spectral: Math.round(deltaSpectral * 10) / 10,
+        sar: Math.round(deltaSar * 10) / 10,
+        thermal: Math.round(deltaThermal * 10) / 10,
+        supergene: Math.round(deltaSupergene * 10) / 10
+      }
+    };
+  })();
 
   const toggleMineral = (id: string) => {
     setMinerals(prev => prev.map(m => m.id === id ? { ...m, active: !m.active } : m));
@@ -309,6 +360,146 @@ export const RemoteSensingSidebar: React.FC<RemoteSensingSidebarProps> = ({
                   className="w-3.5 h-3.5 accent-emerald-500 rounded cursor-pointer"
                 />
               </label>
+            </div>
+          )}
+        </div>
+
+        {/* Accordion Item: Sentinel Ecosystem Manganese Grade & Tonnage Predictor */}
+        <div className="rounded-xl border border-emerald-500/40 bg-emerald-950/20 overflow-hidden transition-colors hover:border-emerald-500/60 shadow-lg shadow-emerald-950/30">
+          <button
+            onClick={() => toggleSection('sentinel_predictor')}
+            className="w-full p-3 flex items-center justify-between text-left text-xs font-bold text-emerald-200 hover:text-white transition-colors"
+          >
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              <span>Sentinel Ecosystem % Mn & Tonnage Predictor</span>
+            </div>
+            {openSections.sentinel_predictor ? (
+              <ChevronDown className="w-4 h-4 text-emerald-400" />
+            ) : (
+              <ChevronRight className="w-4 h-4 text-slate-400" />
+            )}
+          </button>
+
+          {openSections.sentinel_predictor && (
+            <div className="p-3 pt-0 border-t border-emerald-800/40 space-y-3 text-xs">
+              <p className="text-[10px] text-slate-300 leading-snug">
+                Fuses Sentinel-2 (NDVI/SWIR), Sentinel-1 (SAR Backscatter & Soil Moisture), Sentinel-3 (LST Thermal Anomaly), and ERA5-Land Rainfall to predict Manganese Ore Grade (% Mn) and Tonnage.
+              </p>
+
+              {/* Live Predictions Display Card */}
+              <div className="p-3 rounded-xl bg-slate-950/80 border border-emerald-500/30 space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-[11px] font-semibold text-slate-300">Predicted Mn Grade</span>
+                  <span className={`px-2 py-0.5 rounded text-[10px] font-bold border ${
+                    sentinelPred.gradeCode === 'HIGH' 
+                      ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/50' 
+                      : sentinelPred.gradeCode === 'MEDIUM' 
+                      ? 'bg-amber-500/20 text-amber-300 border-amber-500/50' 
+                      : 'bg-slate-800 text-slate-400 border-slate-700'
+                  }`}>
+                    {sentinelPred.gradeCode} GRADE
+                  </span>
+                </div>
+                <div className="flex items-baseline justify-between">
+                  <span className="text-2xl font-black text-emerald-400 font-mono">{sentinelPred.mnPercent}% <span className="text-xs font-normal text-slate-400">Mn</span></span>
+                  <span className="text-[10px] text-slate-400 font-mono">Density: {sentinelPred.bulkDensity} t/m³</span>
+                </div>
+                <p className="text-[10px] text-slate-400 border-t border-slate-800 pt-1.5">{sentinelPred.classification}</p>
+                
+                {/* Ore Tonnage Estimate */}
+                <div className="grid grid-cols-2 gap-2 pt-1 border-t border-slate-800/80">
+                  <div className="bg-slate-900/80 p-2 rounded-lg border border-slate-800">
+                    <div className="text-[9px] text-slate-400">Est. Reserve Tonnage</div>
+                    <div className="text-xs font-bold font-mono text-cyan-300">{(sentinelPred.weightedTonnage / 1e6).toFixed(2)}M MT</div>
+                  </div>
+                  <div className="bg-slate-900/80 p-2 rounded-lg border border-slate-800">
+                    <div className="text-[9px] text-slate-400">Recoverable Mn Metal</div>
+                    <div className="text-xs font-bold font-mono text-purple-300">{(sentinelPred.metalTonnage / 1e6).toFixed(2)}M MT</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Parameter Controls */}
+              <div className="space-y-2">
+                {/* Sentinel-2 NDVI */}
+                <div className="space-y-1">
+                  <div className="flex justify-between text-[10px] text-slate-300">
+                    <span>Sentinel-2 Plant NDVI (Veg Stress)</span>
+                    <span className="font-mono text-emerald-400">{s2Ndvi.toFixed(2)}</span>
+                  </div>
+                  <input
+                    type="range" min="0.05" max="0.75" step="0.01"
+                    value={s2Ndvi} onChange={(e) => setS2Ndvi(parseFloat(e.target.value))}
+                    className="w-full h-1 bg-slate-800 rounded-lg accent-emerald-400 cursor-pointer"
+                  />
+                </div>
+
+                {/* Sentinel-2 SWIR Pyrolusite Ratio */}
+                <div className="space-y-1">
+                  <div className="flex justify-between text-[10px] text-slate-300">
+                    <span>Sentinel-2 SWIR 2.2µm Ratio (Pyrolusite)</span>
+                    <span className="font-mono text-emerald-400">{s2SwirRatio.toFixed(2)}</span>
+                  </div>
+                  <input
+                    type="range" min="1.0" max="3.5" step="0.05"
+                    value={s2SwirRatio} onChange={(e) => setS2SwirRatio(parseFloat(e.target.value))}
+                    className="w-full h-1 bg-slate-800 rounded-lg accent-emerald-400 cursor-pointer"
+                  />
+                </div>
+
+                {/* Sentinel-1 SAR Backscatter */}
+                <div className="space-y-1">
+                  <div className="flex justify-between text-[10px] text-slate-300">
+                    <span>Sentinel-1 SAR VV Backscatter σ° (dB)</span>
+                    <span className="font-mono text-cyan-400">{s1SarVv.toFixed(1)} dB</span>
+                  </div>
+                  <input
+                    type="range" min="-25.0" max="-5.0" step="0.5"
+                    value={s1SarVv} onChange={(e) => setS1SarVv(parseFloat(e.target.value))}
+                    className="w-full h-1 bg-slate-800 rounded-lg accent-cyan-400 cursor-pointer"
+                  />
+                </div>
+
+                {/* Sentinel-1 Soil Moisture */}
+                <div className="space-y-1">
+                  <div className="flex justify-between text-[10px] text-slate-300">
+                    <span>Sentinel-1 Soil Moisture (SSM %)</span>
+                    <span className="font-mono text-cyan-400">{s1SoilMoisture.toFixed(0)}%</span>
+                  </div>
+                  <input
+                    type="range" min="10.0" max="80.0" step="1.0"
+                    value={s1SoilMoisture} onChange={(e) => setS1SoilMoisture(parseFloat(e.target.value))}
+                    className="w-full h-1 bg-slate-800 rounded-lg accent-cyan-400 cursor-pointer"
+                  />
+                </div>
+
+                {/* Sentinel-3 LST Anomaly */}
+                <div className="space-y-1">
+                  <div className="flex justify-between text-[10px] text-slate-300">
+                    <span>Sentinel-3 Surface Temp Anomaly (LST)</span>
+                    <span className="font-mono text-amber-400">+{s3LstAnomaly.toFixed(1)}°C</span>
+                  </div>
+                  <input
+                    type="range" min="0.0" max="5.0" step="0.1"
+                    value={s3LstAnomaly} onChange={(e) => setS3LstAnomaly(parseFloat(e.target.value))}
+                    className="w-full h-1 bg-slate-800 rounded-lg accent-amber-400 cursor-pointer"
+                  />
+                </div>
+
+                {/* ERA5 Monsoonal Rain */}
+                <div className="space-y-1">
+                  <div className="flex justify-between text-[10px] text-slate-300">
+                    <span>ERA5 Monsoon Rain (Supergene Leaching)</span>
+                    <span className="font-mono text-blue-400">{era5MonsoonRain.toFixed(0)} mm</span>
+                  </div>
+                  <input
+                    type="range" min="500.0" max="2000.0" step="25.0"
+                    value={era5MonsoonRain} onChange={(e) => setEra5MonsoonRain(parseFloat(e.target.value))}
+                    className="w-full h-1 bg-slate-800 rounded-lg accent-blue-400 cursor-pointer"
+                  />
+                </div>
+              </div>
             </div>
           )}
         </div>

@@ -20,8 +20,9 @@ from geostatistics import (
     calculate_reserves
 )
 from services.parameter_engine import ParameterEngine
-from services.prospector_engine import ProspectorEngine
+from services.prospector_engine import ProspectorEngine, SentinelManganeseEstimator
 from services.block_model import BlockModelEngine
+from services.blasting_engine import BlastingEngine
 
 app = FastAPI(
     title="MOIL AI: Exploration & Reserve Estimation Platform",
@@ -41,7 +42,9 @@ app.add_middleware(
 # Initialize engines
 parameter_engine = ParameterEngine(base_lat=21.80, base_lng=79.80)
 prospector_engine = ProspectorEngine(risk_aversion_lambda=0.25)
+sentinel_estimator = SentinelManganeseEstimator(base_country_rock_grade=8.5)
 block_model_engine = BlockModelEngine(block_size_x=12.0, block_size_y=12.0, block_size_z=6.0)
+blasting_engine = BlastingEngine(default_rock_density=3.65)
 drillholes_cache = generate_dongri_drillholes()
 
 # Mount User and Shivam Backends
@@ -83,9 +86,92 @@ class BayesianPredictRequest(BaseModel):
     mansar_proximity: Optional[float] = Field(default=0.85)
 
 
+class SentinelPredictRequest(BaseModel):
+    sentinel2_ndvi: float = Field(default=0.32, ge=-0.2, le=1.0, description="Sentinel-2 Optical NDVI (Band 8 NIR / Band 4 Red)")
+    sentinel2_swir_ratio: float = Field(default=2.15, ge=0.5, le=4.0, description="Sentinel-2 2.2µm SWIR Pyrolusite Diagnostic Ratio")
+    sentinel1_sar_vv_db: float = Field(default=-12.5, ge=-30.0, le=5.0, description="Sentinel-1 SAR VV Radar Backscatter σ° (dB)")
+    sentinel1_soil_moisture_ssm: float = Field(default=45.0, ge=0.0, le=100.0, description="Sentinel-1 TU Wien Surface Soil Moisture (SSM %)")
+    sentinel3_lst_anomaly_deg: float = Field(default=2.8, ge=-5.0, le=15.0, description="Sentinel-3 SLSTR Land Surface Temp Anomaly (°C)")
+    era5_monsoon_rain_mm: float = Field(default=1150.0, ge=0.0, le=3000.0, description="ERA5-Land Cumulative Monsoonal Precipitation (P_mm)")
+    fault_lineament_density: Optional[float] = Field(default=4.2, ge=0.0, le=15.0, description="DEM Sobel Fault Vector Density")
+    anomaly_area_sq_m: Optional[float] = Field(default=45000.0, ge=1000.0, le=1000000.0, description="Exploration Target Area (m²)")
+    inferred_depth_m: Optional[float] = Field(default=65.0, ge=5.0, le=300.0, description="Inferred Lode Depth Extent (m)")
+    confidence_pct: Optional[float] = Field(default=85.0, ge=10.0, le=99.0, description="Epistemic Confidence Score (%)")
+
+
+class BlastingDesignRequest(BaseModel):
+    hole_diameter_mm: float = Field(default=150.0, ge=85.0, le=250.0, description="Drillhole Diameter (mm)")
+    burden_m: float = Field(default=4.2, ge=2.0, le=8.0, description="Burden Distance (m)")
+    spacing_m: float = Field(default=5.0, ge=2.5, le=10.0, description="Hole Spacing (m)")
+    bench_height_m: float = Field(default=10.0, ge=4.0, le=20.0, description="Bench Height (m)")
+    sub_drilling_m: float = Field(default=1.2, ge=0.5, le=3.0, description="Sub-drilling Depth (m)")
+    stemming_m: float = Field(default=3.2, ge=1.0, le=6.0, description="Stemming Height (m)")
+    powder_factor_target: float = Field(default=0.55, ge=0.25, le=1.2, description="Target Powder Factor (kg/m³)")
+    explosive_relative_strength: float = Field(default=115.0, ge=80.0, le=140.0, description="Relative Weight Strength (ANFO=100, Bulk Emulsion=115)")
+    rmr_rating: float = Field(default=65.0, ge=20.0, le=95.0, description="Rock Mass Rating (RMR)")
+    ucs_mpa: float = Field(default=120.0, ge=30.0, le=280.0, description="Unconfined Compressive Strength (MPa)")
+    distance_to_structure_m: float = Field(default=250.0, ge=50.0, le=1000.0, description="Distance to Mine Office / Structure (m)")
+
+
 # -------------------------------------------------------------
 # API ROUTES
 # -------------------------------------------------------------
+
+@app.post("/api/v1/blasting/optimize", tags=["Drilling & Blasting Engineering"])
+async def optimize_blasting_design(payload: BlastingDesignRequest):
+    """
+    Computes Kuz-Ram fragmentation size distribution, 3D open-pit blast pattern,
+    PPV ground vibration safety limits, and downstream comminution crushing cost savings.
+    """
+    try:
+        # 1. Calculate Lilly Blastability Index
+        lilly = blasting_engine.calculate_lilly_blastability(
+            rmr_rating=payload.rmr_rating,
+            unconfined_compressive_strength_mpa=payload.ucs_mpa,
+            rock_density_t_m3=3.65
+        )
+
+        # 2. Compute Kuz-Ram Fragmentation
+        kuz_ram = blasting_engine.compute_kuz_ram_fragmentation(
+            hole_diameter_mm=payload.hole_diameter_mm,
+            burden_m=payload.burden_m,
+            spacing_m=payload.spacing_m,
+            bench_height_m=payload.bench_height_m,
+            sub_drilling_m=payload.sub_drilling_m,
+            stemming_m=payload.stemming_m,
+            powder_factor_kg_m3=payload.powder_factor_target,
+            explosive_relative_weight_strength=payload.explosive_relative_strength,
+            blastability_index=lilly["blastability_index"]
+        )
+
+        # 3. Generate 3D Blast Pattern Grid
+        pattern_3d = blasting_engine.generate_blast_pattern_3d(
+            num_rows=4,
+            holes_per_row=8,
+            burden_m=payload.burden_m,
+            spacing_m=payload.spacing_m,
+            bench_height_m=payload.bench_height_m,
+            sub_drilling_m=payload.sub_drilling_m,
+            stemming_m=payload.stemming_m,
+            pattern_type="staggered"
+        )
+
+        # 4. USBM Ground Vibration PPV
+        vibration = blasting_engine.calculate_ppv_vibration(
+            max_charge_per_delay_kg=kuz_ram["explosive_mass_per_hole_kg"],
+            distance_to_structure_m=payload.distance_to_structure_m
+        )
+
+        return {
+            "status": "success",
+            "mine_type": "MOIL Open-Pit Manganese Operation",
+            "blastability": lilly,
+            "fragmentation_kuz_ram": kuz_ram,
+            "blast_pattern_3d": pattern_3d,
+            "vibration_ppv": vibration
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/api/v1/health", tags=["System"])
 async def health_check():
@@ -209,6 +295,51 @@ async def predict_bayesian_scoring(payload: BayesianPredictRequest):
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Error computing Bayesian prospectivity: {str(e)}"
+        )
+
+
+@app.post("/api/prospecting/sentinel-manganese-predict", tags=["Sentinel Multi-Satellite Engine"])
+async def predict_sentinel_manganese_reserve(payload: SentinelPredictRequest):
+    """
+    Domain-Specific Mining Engineering Algorithm:
+    Fuses Sentinel-2 (NDVI, SWIR), Sentinel-1 (SAR Backscatter σ°, Soil Moisture SSM %),
+    Sentinel-3 (LST Thermal Anomaly ΔLST), and ERA5-Land (Monsoonal Rainfall)
+    to predict Manganese Grade (% Mn) and Ore Tonnage (Metric Tons).
+    """
+    try:
+        grade_res = sentinel_estimator.predict_manganese_grade(
+            sentinel2_ndvi=payload.sentinel2_ndvi,
+            sentinel2_swir_ratio=payload.sentinel2_swir_ratio,
+            sentinel1_sar_vv_db=payload.sentinel1_sar_vv_db,
+            sentinel1_soil_moisture_ssm=payload.sentinel1_soil_moisture_ssm,
+            sentinel3_lst_anomaly_deg=payload.sentinel3_lst_anomaly_deg,
+            era5_monsoon_rain_mm=payload.era5_monsoon_rain_mm,
+            fault_lineament_density=payload.fault_lineament_density or 4.2
+        )
+
+        tonnage_res = sentinel_estimator.estimate_ore_tonnage(
+            predicted_mn_percent=grade_res["predicted_mn_percent"],
+            anomaly_area_sq_m=payload.anomaly_area_sq_m or 45000.0,
+            inferred_depth_m=payload.inferred_depth_m or 65.0,
+            epistemic_confidence_pct=payload.confidence_pct or 85.0
+        )
+
+        return {
+            "sentinel_ecosystem_inputs": {
+                "sentinel2_ndvi": payload.sentinel2_ndvi,
+                "sentinel2_swir_ratio": payload.sentinel2_swir_ratio,
+                "sentinel1_sar_vv_db": payload.sentinel1_sar_vv_db,
+                "sentinel1_soil_moisture_ssm": payload.sentinel1_soil_moisture_ssm,
+                "sentinel3_lst_anomaly_deg": payload.sentinel3_lst_anomaly_deg,
+                "era5_monsoon_rain_mm": payload.era5_monsoon_rain_mm
+            },
+            "manganese_grade": grade_res,
+            "reserve_tonnage": tonnage_res
+        }
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Error in Sentinel Manganese prediction: {str(e)}"
         )
 
 

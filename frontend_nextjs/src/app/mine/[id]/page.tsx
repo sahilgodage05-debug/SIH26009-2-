@@ -4,12 +4,14 @@ import React from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { RESERVE_ZONES } from '@/data/moilData';
 import { ConfidenceInspector } from '@/components/ConfidenceInspector';
+import { MineProcessFlowchart } from '@/components/MineProcessFlowchart';
 
 export default function MinePage() {
-  const { id } = useParams();
+  const params = useParams();
   const router = useRouter();
 
-  const zone = RESERVE_ZONES.find(z => z.id === id);
+  const mineId = params.id as string;
+  const zone = RESERVE_ZONES.find(z => z.id === mineId);
 
   if (!zone) {
     return (
@@ -26,26 +28,32 @@ export default function MinePage() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen bg-[#090d16]">
+    <div className="flex flex-col min-h-screen bg-[#090d16] text-slate-100">
       {/* Header with Back Button */}
-      <div className="flex items-center gap-4 p-4 border-b border-slate-800 bg-[#0c121e]">
+      <div className="flex items-center gap-4 p-4 px-6 border-b border-slate-800 bg-[#0c121e]">
         <button 
           onClick={() => router.push('/')}
-          className="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-emerald-400 font-semibold flex items-center gap-2 border border-slate-700 transition-all"
+          className="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-emerald-400 font-semibold flex items-center gap-2 border border-slate-700 transition-all text-xs"
         >
           <span>← Back to Dashboard</span>
         </button>
         <div>
           <h1 className="text-xl font-bold text-white">{zone.name} Details</h1>
-          <p className="text-xs text-slate-400">{zone.leaseArea} - Full Analysis</p>
+          <p className="text-xs text-slate-400">{zone.leaseArea} - End-to-End Operational Lifecycle</p>
         </div>
       </div>
       
-      {/* Container for Inspector (centered) */}
-      <div className="flex-1 flex justify-center items-start p-8">
-        <div className="w-[800px] max-w-full bg-[#0c121e]/98 border border-slate-800/90 rounded-2xl shadow-2xl shadow-black/80 overflow-hidden relative">
-          {/* We reuse ConfidenceInspector but since it might have fixed CSS, we override it or just render it inside */}
-          {/* Note: If ConfidenceInspector has fixed positioning, it might break here. Let's assume it works or we'll adjust */}
+      {/* Main Content Area */}
+      <div className="flex-1 p-6 max-w-7xl w-full mx-auto space-y-6">
+        
+        {/* Horizontal Process Flowchart */}
+        <MineProcessFlowchart 
+          mineId={mineId} 
+          mineName={zone.name} 
+        />
+
+        {/* Mine Details Inspector Container */}
+        <div className="w-full bg-[#0c121e]/98 border border-slate-800/90 rounded-2xl shadow-2xl shadow-black/80 overflow-hidden relative p-4">
           <ConfidenceInspector 
             zone={zone}
             isOpen={true}
@@ -53,6 +61,7 @@ export default function MinePage() {
             fullScreen={true}
           />
         </div>
+
       </div>
     </div>
   );

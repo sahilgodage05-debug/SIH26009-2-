@@ -158,3 +158,124 @@ class ProspectorEngine:
         cs = float(np.clip(penalized_score * 100.0, 0.0, 99.5))
 
         return round(cs, 1), round(posterior_p, 3), round(uncertainty, 3)
+
+
+class SentinelManganeseEstimator:
+    """
+    Domain-Specific Mining & Geological Prediction Algorithm using Sentinel Multi-Satellite Parameters:
+    - Sentinel-2 (10m Optical): NDVI Band 8/4 & SWIR-2/SWIR-1 Pyrolusite (2.2 µm) Diagnostic Absorption
+    - Sentinel-1 (10m SAR Radar): VV/VH Backscatter σ° & Surface Soil Moisture (SSM % via TU Wien Model)
+    - Sentinel-3 (1km SLSTR Thermal): Land Surface Temperature (LST °C) & Diurnal Thermal Inertia Anomaly ΔLST
+    - ERA5-Land (Copernicus Climate): Monsoonal Cumulative Rainfall (P_mm) driving Supergene Manganese Oxide Leaching
+    
+    Predicts:
+    1. Manganese Grade (% Mn)
+    2. Reserve Tonnage (Metric Tons)
+    3. Recoverable Metal Tonnage (Metric Tons)
+    """
+
+    def __init__(self, base_country_rock_grade: float = 8.5):
+        self.base_grade = base_country_rock_grade
+
+    def predict_manganese_grade(
+        self,
+        sentinel2_ndvi: float,
+        sentinel2_swir_ratio: float,
+        sentinel1_sar_vv_db: float,
+        sentinel1_soil_moisture_ssm: float,
+        sentinel3_lst_anomaly_deg: float,
+        era5_monsoon_rain_mm: float,
+        fault_lineament_density: float = 4.2
+    ) -> Dict[str, Any]:
+        """
+        Calculates predicted Manganese Grade (% Mn) based on satellite ecosystem physics & supergene weathering.
+        """
+        # 1. Optical & Spectral Chlorosis Stress Shift
+        # Heavy metal stress causes drop in NDVI (0.2 - 0.4) + high 2.2µm absorption (SWIR ratio > 1.8)
+        spectral_factor = max(0.0, (sentinel2_swir_ratio - 1.0)) * 11.5
+        ndvi_stress_boost = max(0.0, (0.50 - sentinel2_ndvi)) * 8.0 if sentinel2_ndvi < 0.50 else 0.0
+        delta_spectral = min(22.0, spectral_factor + ndvi_stress_boost)
+
+        # 2. Sentinel-1 SAR Radar & Soil Moisture Shift
+        # High dielectric permittivity of Mn-oxide laterites + backscatter contrast (σ°_VV > -14 dB)
+        sar_factor = max(0.0, (sentinel1_sar_vv_db - (-18.0))) * 1.4
+        moisture_factor = max(0.0, (sentinel1_soil_moisture_ssm - 20.0)) * 0.18
+        delta_sar = min(14.0, sar_factor + moisture_factor)
+
+        # 3. Sentinel-3 Thermal Inertia Shift
+        # Pyrolusite (MnO2) high specific gravity (4.7 g/cm³) generates positive thermal anomaly ΔLST
+        delta_thermal = min(10.0, max(0.0, sentinel3_lst_anomaly_deg) * 3.6)
+
+        # 4. ERA5 Monsoonal Supergene Enrichment Shift
+        # Precipitation > 800mm mobilizes Mn²⁺ into structural fault traps
+        rain_factor = max(0.0, (era5_monsoon_rain_mm - 750.0)) / 150.0
+        fault_factor = max(0.0, fault_lineament_density / 3.0)
+        delta_supergene = min(8.0, rain_factor * fault_factor * 1.8)
+
+        # Total Predicted Grade (% Mn)
+        predicted_mn_pct = self.base_grade + delta_spectral + delta_sar + delta_thermal + delta_supergene
+        predicted_mn_pct = float(np.clip(predicted_mn_pct, 5.0, 51.5))
+
+        # Metallurgical Grade Classification
+        if predicted_mn_pct >= 44.0:
+            classification = "High-Grade Metallurgical Pyrolusite (>44% Mn)"
+            grade_code = "HIGH"
+        elif predicted_mn_pct >= 30.0:
+            classification = "Medium-Grade Siliceous Braunite (30-44% Mn)"
+            grade_code = "MEDIUM"
+        elif predicted_mn_pct >= 15.0:
+            classification = "Low-Grade Ferromanganese Ore (15-30% Mn)"
+            grade_code = "LOW"
+        else:
+            classification = "Sub-economic Host Schist / Gondite (<15% Mn)"
+            grade_code = "SUB"
+
+        return {
+            "predicted_mn_percent": round(predicted_mn_pct, 2),
+            "grade_classification": classification,
+            "grade_code": grade_code,
+            "contribution_breakdown": {
+                "base_country_rock_pct": round(self.base_grade, 2),
+                "sentinel2_spectral_pct": round(delta_spectral, 2),
+                "sentinel1_sar_moisture_pct": round(delta_sar, 2),
+                "sentinel3_thermal_pct": round(delta_thermal, 2),
+                "era5_supergene_pct": round(delta_supergene, 2)
+            }
+        }
+
+    def estimate_ore_tonnage(
+        self,
+        predicted_mn_percent: float,
+        anomaly_area_sq_m: float = 45000.0,
+        inferred_depth_m: float = 65.0,
+        epistemic_confidence_pct: float = 85.0
+    ) -> Dict[str, Any]:
+        """
+        Estimates total Manganese Ore Reserve Tonnage and Recoverable Metal Tonnage (Metric Tons).
+        Bulk density varies with grade: Pyrolusite/Braunite ore = 3.6 to 4.6 t/m³.
+        """
+        # Ore Bulk Density scaling based on Mn grade
+        bulk_density_t_per_m3 = 3.1 + (predicted_mn_percent / 100.0) * 2.8
+        bulk_density_t_per_m3 = float(np.clip(bulk_density_t_per_m3, 3.2, 4.65))
+
+        # Inferred Volume with sinuosity & geological recovery factor (0.68)
+        inferred_volume_m3 = anomaly_area_sq_m * inferred_depth_m * 0.68
+        
+        # Raw & Confidence-Weighted Ore Tonnage
+        raw_ore_tonnage = inferred_volume_m3 * bulk_density_t_per_m3
+        confidence_factor = epistemic_confidence_pct / 100.0
+        weighted_ore_tonnage = raw_ore_tonnage * confidence_factor
+
+        # Recoverable Pure Mn Metal Tonnage
+        recoverable_metal_tonnage = weighted_ore_tonnage * (predicted_mn_percent / 100.0)
+
+        return {
+            "predicted_mn_percent": round(predicted_mn_percent, 2),
+            "bulk_density_t_per_m3": round(bulk_density_t_per_m3, 2),
+            "inferred_volume_m3": round(inferred_volume_m3, 0),
+            "raw_ore_tonnage_mt": round(raw_ore_tonnage, 0),
+            "confidence_weighted_ore_tonnage_mt": round(weighted_ore_tonnage, 0),
+            "recoverable_metal_tonnage_mt": round(recoverable_metal_tonnage, 0),
+            "confidence_pct": round(epistemic_confidence_pct, 1)
+        }
+
