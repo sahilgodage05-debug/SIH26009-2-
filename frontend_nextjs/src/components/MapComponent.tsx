@@ -3,24 +3,24 @@
 import React, { useEffect, useState, useRef } from 'react';
 import Map, { Source, Layer, Marker, Popup, useMap, ViewStateChangeEvent } from 'react-map-gl/maplibre';
 import 'maplibre-gl/dist/maplibre-gl.css';
-import { 
-  RESERVE_ZONES, 
-  DRILLING_SITES, 
-  AI_HEATMAP_CLUSTERS, 
-  NDVI_ANOMALY_ZONES, 
-  SOIL_MOISTURE_ZONES, 
-  LAND_TEMP_ZONES, 
-  MOIL_MAP_CENTER, 
-  DEFAULT_ZOOM 
+import {
+  RESERVE_ZONES,
+  DRILLING_SITES,
+  AI_HEATMAP_CLUSTERS,
+  NDVI_ANOMALY_ZONES,
+  SOIL_MOISTURE_ZONES,
+  LAND_TEMP_ZONES,
+  MOIL_MAP_CENTER,
+  DEFAULT_ZOOM
 } from '@/data/moilData';
 import { LayerState, ReserveZone } from '@/types/moil';
-import { 
-  Layers, 
-  Maximize2, 
-  ZoomIn, 
-  ZoomOut, 
-  Navigation, 
-  Eye, 
+import {
+  Layers,
+  Maximize2,
+  ZoomIn,
+  ZoomOut,
+  Navigation,
+  Eye,
   Sparkles,
   MapPin
 } from 'lucide-react';
@@ -67,7 +67,7 @@ export const MapComponent: React.FC<MapComponentProps> = ({
         // Use the first coordinate as the centroid for prediction
         const lat = cluster.coordinates[0][0];
         const lng = cluster.coordinates[0][1];
-        
+
         fetch('http://localhost:8000/api/v1/predict/scoring', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -84,13 +84,13 @@ export const MapComponent: React.FC<MapComponentProps> = ({
             mansar_proximity: 0.85
           })
         })
-        .then(res => res.json())
-        .then(data => {
-          if (data && data.bayesian_confidence_score) {
-            setLiveScores(prev => ({ ...prev, [cluster.id]: data.bayesian_confidence_score }));
-          }
-        })
-        .catch(err => console.error('Failed to fetch real AI score', err));
+          .then(res => res.json())
+          .then(data => {
+            if (data && data.bayesian_confidence_score) {
+              setLiveScores(prev => ({ ...prev, [cluster.id]: data.bayesian_confidence_score }));
+            }
+          })
+          .catch(err => console.error('Failed to fetch real AI score', err));
       });
     }
   }, [layers.aiHeatmap]);
@@ -148,7 +148,7 @@ export const MapComponent: React.FC<MapComponentProps> = ({
         {layers.aiHeatmap && AI_HEATMAP_CLUSTERS.map(cluster => {
           const conf = liveScores[cluster.id] || cluster.probability || 80;
           if (conf < confidenceThreshold) return null;
-          
+
           const geojson = {
             type: 'FeatureCollection',
             features: [
@@ -216,11 +216,11 @@ export const MapComponent: React.FC<MapComponentProps> = ({
           const isSelected = selectedZone?.id === zone.id;
           const prob = zone.manganeseProbability;
           const color = prob >= 88 ? '#ef4444' : prob >= 80 ? '#f97316' : '#eab308';
-          
+
           return (
-            <Marker 
-              key={zone.id} 
-              longitude={zone.coordinates[1]} 
+            <Marker
+              key={zone.id}
+              longitude={zone.coordinates[1]}
               latitude={zone.coordinates[0]}
               onClick={(e) => {
                 e.originalEvent.stopPropagation();
@@ -253,16 +253,16 @@ export const MapComponent: React.FC<MapComponentProps> = ({
 
         {/* --- Layers: Drilling Sites --- */}
         {layers.historicalDrilling && DRILLING_SITES.map(site => (
-          <Marker 
-            key={site.id} 
-            longitude={site.coordinates[1]} 
+          <Marker
+            key={site.id}
+            longitude={site.coordinates[1]}
             latitude={site.coordinates[0]}
           >
-             <div style={{
-                width: '14px', height: '14px', background: '#f59e0b',
-                border: '2px solid #ffffff', borderRadius: '3px',
-                boxShadow: '0 0 8px #f59e0b', transform: 'rotate(45deg)'
-              }}></div>
+            <div style={{
+              width: '14px', height: '14px', background: '#f59e0b',
+              border: '2px solid #ffffff', borderRadius: '3px',
+              boxShadow: '0 0 8px #f59e0b', transform: 'rotate(45deg)'
+            }}></div>
           </Marker>
         ))}
 
