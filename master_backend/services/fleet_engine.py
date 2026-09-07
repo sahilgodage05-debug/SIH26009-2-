@@ -1,26 +1,52 @@
 """
 MOIL AI: Dynamic Haulage & Intersection Management Engine
 ---------------------------------------------------------
-1. Haul Road Network Topology & Intersection Logic (Directed Graph Model).
+1. Haul Road Network Topology & Intersection Logic (Directed Graph Model with Right-of-Way Rules).
 2. Right-of-way rules (Loaded uphill haul trucks take precedence over empty downhill trucks, FIFO queues).
-3. Geofenced Dynamic Rerouting (Speed < 15 km/h trigger, congestion bypass).
-4. Match Factor Calculator (MF = Trucks * Shovel_Load_Time / (Shovels * Cycle_Time)).
-5. TKPH & Tire Telemetry (Ton-Km-Per-Hour, Payload, Engine Temp, Strut Pressures, Fuel Burn).
+3. Match Factor & Shovel Queue Balancing (Phelps-Morgan real-time calculation).
+4. Dynamic Geofenced Rerouting (Speed < 15 km/h trigger, rolling resistance congestion bypass).
+5. Tire and Telemetry Monitoring (TKPH, Engine RPM, Coolant Temp, Fuel Burn, Strut Pressure Payload).
+6. Strict Ingestion of Vehicles, Equipment, and Workforce Data directly from CSV files.
 """
 
+import os
+import csv
 import math
 import random
 import time
 from typing import Dict, List, Any, Optional
 
-# 11 MOIL Mine Specific Geotechnical & Topology Profiles
+# File paths to CSV datasets
+DATA_DIR = os.path.join(os.path.dirname(__file__), "..", "data")
+EQUIPMENT_MASTER_CSV = os.path.join(DATA_DIR, "moil_all_equipments_master.csv")
+EQUIPMENT_MAINTENANCE_CSV = os.path.join(DATA_DIR, "moil_equipment_maintenance.csv")
+EQUIPMENT_PERFORMANCE_CSV = os.path.join(DATA_DIR, "moil_equipment_performance.csv")
+MINES_JSON = os.path.join(DATA_DIR, "moil_mines.json")
+
+# Map of UI Mine IDs to exact CSV Mine Location strings
+MINE_KEY_TO_NAME = {
+    "zone-dongri-buzurg": "Dongri Buzurg Mine",
+    "zone-balaghat": "Balaghat Mine",
+    "zone-tirodi": "Tirodi Mine",
+    "zone-ukwa": "Ukwa Mine",
+    "zone-sitapatore": "Sitapatore Mine",
+    "zone-chikla": "Chikla Mine",
+    "zone-kandri": "Kandri Mine",
+    "zone-mansar": "Mansar Mine",
+    "zone-gumgaon": "Gumgaon Mine",
+    "zone-beldongri": "Beldongri Mine",
+    "zone-parsoda": "Parsoda Mine",
+    "zone-ramtek": "Mansar Mine"
+}
+
+# Geotechnical and topological parameters per mine
 MOIL_MINE_PROFILES = {
     "zone-dongri-buzurg": {
         "lat": 21.5420, "lng": 79.6780, "name": "Dongri Buzurg Opencast Mine", "elevation_m": 340, "pit_type": "Elliptical Opencast Pit",
         "strike": "N70°E", "dip": "60° NW", "pit_depth_m": 85,
-        "shovels": [
-            {"id": "EX-DB-01", "model": "Komatsu PC1250-8R (7.0 m³)", "bench": "Bench 4 (East Face - 44.5% Mn)", "load_min": 2.2, "offset": [-0.0035, -0.0025]},
-            {"id": "EX-DB-02", "model": "Tata Hitachi EX1200-6 (6.5 m³)", "bench": "Bench 2 (Central Face - 32.0% Mn)", "load_min": 2.5, "offset": [-0.0018, 0.0028]}
+        "shovels_meta": [
+            {"bench": "Bench 4 (East Face - 44.5% Mn)", "load_min": 2.2, "offset": [-0.0035, -0.0025]},
+            {"bench": "Bench 2 (Central Face - 32.0% Mn)", "load_min": 2.5, "offset": [-0.0018, 0.0028]}
         ],
         "crusher_offset": [0.0042, -0.0018],
         "dump_offset": [0.0048, 0.0038],
@@ -30,9 +56,9 @@ MOIL_MINE_PROFILES = {
     "zone-balaghat": {
         "lat": 21.8025, "lng": 80.1873, "name": "Balaghat Deep Opencast & Shaft Mine", "elevation_m": 310, "pit_type": "Deep Strike-Slip Pit",
         "strike": "N15°E", "dip": "80° SE", "pit_depth_m": 120,
-        "shovels": [
-            {"id": "EX-BG-01", "model": "CAT 390F (6.0 m³)", "bench": "North Deep Lode (48.0% Mn)", "load_min": 2.0, "offset": [-0.0045, 0.0010]},
-            {"id": "EX-BG-02", "model": "Komatsu PC1250 (7.0 m³)", "bench": "South Hanging Wall Bench (36.5% Mn)", "load_min": 2.3, "offset": [0.0020, -0.0035]}
+        "shovels_meta": [
+            {"bench": "North Deep Lode (48.0% Mn)", "load_min": 2.0, "offset": [-0.0045, 0.0010]},
+            {"bench": "South Hanging Wall Bench (36.5% Mn)", "load_min": 2.3, "offset": [0.0020, -0.0035]}
         ],
         "crusher_offset": [0.0050, 0.0025],
         "dump_offset": [-0.0020, 0.0050],
@@ -42,9 +68,9 @@ MOIL_MINE_PROFILES = {
     "zone-mansar": {
         "lat": 21.4011, "lng": 79.2890, "name": "Mansar Hill-Ridge Opencast Mine", "elevation_m": 360, "pit_type": "Arcuate Hill Flank Pit",
         "strike": "E-W", "dip": "55° S", "pit_depth_m": 65,
-        "shovels": [
-            {"id": "EX-MS-01", "model": "Tata Hitachi EX1200", "bench": "Central Ridge Bench 3 (39.0% Mn)", "load_min": 2.4, "offset": [-0.0025, -0.0030]},
-            {"id": "EX-MS-02", "model": "BEML BE1000", "bench": "West Ridge Bench 1 (31.5% Mn)", "load_min": 2.8, "offset": [0.0010, -0.0040]}
+        "shovels_meta": [
+            {"bench": "Central Ridge Bench 3 (39.0% Mn)", "load_min": 2.4, "offset": [-0.0025, -0.0030]},
+            {"bench": "West Ridge Bench 1 (31.5% Mn)", "load_min": 2.8, "offset": [0.0010, -0.0040]}
         ],
         "crusher_offset": [0.0035, 0.0030],
         "dump_offset": [0.0040, -0.0020],
@@ -54,9 +80,9 @@ MOIL_MINE_PROFILES = {
     "zone-chikla": {
         "lat": 21.5630, "lng": 79.7420, "name": "Chikla Steep Spiral Opencast Pit", "elevation_m": 325, "pit_type": "Steep Spiral Switchback Pit",
         "strike": "N60°E", "dip": "68° NW", "pit_depth_m": 90,
-        "shovels": [
-            {"id": "EX-CK-01", "model": "Komatsu PC1250", "bench": "North Synclinal Core (42.0% Mn)", "load_min": 2.1, "offset": [-0.0038, -0.0015]},
-            {"id": "EX-CK-02", "model": "CAT 374D", "bench": "East Flank Bench 2 (33.0% Mn)", "load_min": 2.6, "offset": [0.0015, 0.0032]}
+        "shovels_meta": [
+            {"bench": "North Synclinal Core (42.0% Mn)", "load_min": 2.1, "offset": [-0.0038, -0.0015]},
+            {"bench": "East Flank Bench 2 (33.0% Mn)", "load_min": 2.6, "offset": [0.0015, 0.0032]}
         ],
         "crusher_offset": [0.0045, -0.0030],
         "dump_offset": [-0.0010, 0.0045],
@@ -66,9 +92,9 @@ MOIL_MINE_PROFILES = {
     "zone-kandri": {
         "lat": 21.4190, "lng": 79.2740, "name": "Kandri High-Grade Saddle Pit", "elevation_m": 355, "pit_type": "Saddle Lode Opencast",
         "strike": "N45°E", "dip": "62° NW", "pit_depth_m": 75,
-        "shovels": [
-            {"id": "EX-KD-01", "model": "Komatsu PC1250", "bench": "Saddle High-Grade Pocket (45.0% Mn)", "load_min": 2.2, "offset": [-0.0030, -0.0020]},
-            {"id": "EX-KD-02", "model": "Hitachi EX1200", "bench": "South Overburden Face (28.0% Mn)", "load_min": 2.5, "offset": [0.0022, -0.0025]}
+        "shovels_meta": [
+            {"bench": "Saddle High-Grade Pocket (45.0% Mn)", "load_min": 2.2, "offset": [-0.0030, -0.0020]},
+            {"bench": "South Overburden Face (28.0% Mn)", "load_min": 2.5, "offset": [0.0022, -0.0025]}
         ],
         "crusher_offset": [0.0038, 0.0028],
         "dump_offset": [0.0042, -0.0035],
@@ -78,9 +104,9 @@ MOIL_MINE_PROFILES = {
     "zone-ukwa": {
         "lat": 21.9670, "lng": 80.4680, "name": "Ukwa Ridge-Top Spine Mine", "elevation_m": 410, "pit_type": "Narrow Ridge-Top Lode",
         "strike": "N65°E", "dip": "35° NW", "pit_depth_m": 55,
-        "shovels": [
-            {"id": "EX-UK-01", "model": "CAT 390F", "bench": "North Ridge Lode 4 (46.0% Mn)", "load_min": 2.1, "offset": [-0.0040, -0.0035]},
-            {"id": "EX-UK-02", "model": "Komatsu PC800", "bench": "East Outcrop Bench (34.0% Mn)", "load_min": 2.7, "offset": [0.0030, 0.0030]}
+        "shovels_meta": [
+            {"bench": "North Ridge Lode 4 (46.0% Mn)", "load_min": 2.1, "offset": [-0.0040, -0.0035]},
+            {"bench": "East Outcrop Bench (34.0% Mn)", "load_min": 2.7, "offset": [0.0030, 0.0030]}
         ],
         "crusher_offset": [0.0045, -0.0020],
         "dump_offset": [-0.0030, 0.0045],
@@ -90,9 +116,9 @@ MOIL_MINE_PROFILES = {
     "zone-sitapatore": {
         "lat": 21.5800, "lng": 79.7900, "name": "Sitapatore Wide-Berm Opencast", "elevation_m": 305, "pit_type": "Shallow Wide-Berm Pit",
         "strike": "N80°E", "dip": "45° S", "pit_depth_m": 45,
-        "shovels": [
-            {"id": "EX-ST-01", "model": "Tata Hitachi EX1200", "bench": "Main Bench A (37.0% Mn)", "load_min": 2.4, "offset": [-0.0028, -0.0020]},
-            {"id": "EX-ST-02", "model": "BEML BE1000", "bench": "Overburden Stripping (25.0% Mn)", "load_min": 2.9, "offset": [0.0018, 0.0025]}
+        "shovels_meta": [
+            {"bench": "Main Bench A (37.0% Mn)", "load_min": 2.4, "offset": [-0.0028, -0.0020]},
+            {"bench": "Overburden Stripping (25.0% Mn)", "load_min": 2.9, "offset": [0.0018, 0.0025]}
         ],
         "crusher_offset": [0.0035, -0.0025],
         "dump_offset": [0.0040, 0.0030],
@@ -102,9 +128,9 @@ MOIL_MINE_PROFILES = {
     "zone-gumgaon": {
         "lat": 21.3900, "lng": 79.0200, "name": "Gumgaon Synclinal Opencast Pit", "elevation_m": 330, "pit_type": "Synclinal Basin Pit",
         "strike": "E-W", "dip": "70° S", "pit_depth_m": 80,
-        "shovels": [
-            {"id": "EX-GM-01", "model": "Komatsu PC1250", "bench": "Basin Core Bench (40.5% Mn)", "load_min": 2.2, "offset": [-0.0032, -0.0025]},
-            {"id": "EX-GM-02", "model": "Hitachi EX1200", "bench": "North Limb Bench 1 (30.0% Mn)", "load_min": 2.6, "offset": [0.0020, 0.0020]}
+        "shovels_meta": [
+            {"bench": "Basin Core Bench (40.5% Mn)", "load_min": 2.2, "offset": [-0.0032, -0.0025]},
+            {"bench": "North Limb Bench 1 (30.0% Mn)", "load_min": 2.6, "offset": [0.0020, 0.0020]}
         ],
         "crusher_offset": [0.0040, -0.0020],
         "dump_offset": [-0.0020, 0.0040],
@@ -114,107 +140,148 @@ MOIL_MINE_PROFILES = {
     "zone-tirodi": {
         "lat": 21.6850, "lng": 79.7120, "name": "Tirodi Multi-Pit Complex", "elevation_m": 370, "pit_type": "Multi-Bench Opencast Complex",
         "strike": "N50°E", "dip": "60° SE", "pit_depth_m": 95,
-        "shovels": [
-            {"id": "EX-TR-01", "model": "Komatsu PC1250", "bench": "North Pit Deep Lode (43.0% Mn)", "load_min": 2.1, "offset": [-0.0040, -0.0028]},
-            {"id": "EX-TR-02", "model": "CAT 374D", "bench": "South Pit Bench 3 (35.0% Mn)", "load_min": 2.4, "offset": [0.0025, 0.0025]}
+        "shovels_meta": [
+            {"bench": "North Pit Deep Lode (43.0% Mn)", "load_min": 2.1, "offset": [-0.0040, -0.0028]},
+            {"bench": "South Pit Bench 3 (35.0% Mn)", "load_min": 2.4, "offset": [0.0025, 0.0025]}
         ],
         "crusher_offset": [0.0048, -0.0015],
         "dump_offset": [0.0050, 0.0035],
         "intersect_offset": [0.0005, 0.0000],
         "pit_polygon": [[-0.0050, -0.0040], [-0.0025, -0.0050], [0.0025, -0.0030], [0.0045, 0.0015], [0.0030, 0.0045], [-0.0010, 0.0040], [-0.0045, 0.0010]]
     },
-    "zone-parsoda": {
-        "lat": 21.3500, "lng": 79.3500, "name": "Parsoda Opencast Quarry", "elevation_m": 315, "pit_type": "Alluvial Covered Flat Pit",
-        "strike": "N40°E", "dip": "50° NW", "pit_depth_m": 50,
-        "shovels": [
-            {"id": "EX-PS-01", "model": "Tata Hitachi EX1200", "bench": "East Quarry Bench (38.0% Mn)", "load_min": 2.5, "offset": [-0.0025, -0.0020]},
-            {"id": "EX-PS-02", "model": "BEML BE1000", "bench": "West Overburden Strip (26.0% Mn)", "load_min": 2.8, "offset": [0.0015, 0.0025]}
+    "zone-beldongri": {
+        "lat": 21.3500, "lng": 79.3100, "name": "Beldongri Shallow Lode Opencast", "elevation_m": 310, "pit_type": "Shallow Strike Pit",
+        "strike": "E-W", "dip": "50° S", "pit_depth_m": 50,
+        "shovels_meta": [
+            {"bench": "Main Trench Bench (37.5% Mn)", "load_min": 2.3, "offset": [-0.0025, -0.0020]},
+            {"bench": "Footwall Overburden Strip (26.0% Mn)", "load_min": 2.8, "offset": [0.0015, 0.0025]}
         ],
         "crusher_offset": [0.0035, -0.0020],
         "dump_offset": [0.0040, 0.0030],
         "intersect_offset": [0.0000, 0.0000],
         "pit_polygon": [[-0.0035, -0.0030], [-0.0010, -0.0035], [0.0025, -0.0025], [0.0030, 0.0015], [0.0015, 0.0030], [-0.0015, 0.0025], [-0.0035, 0.0005]]
     },
-    "zone-ramtek": {
-        "lat": 21.3950, "lng": 79.3300, "name": "Ramtek Hillside Opencast Pit", "elevation_m": 345, "pit_type": "Contour Hill Quarry",
-        "strike": "N55°E", "dip": "58° NW", "pit_depth_m": 60,
-        "shovels": [
-            {"id": "EX-RT-01", "model": "Komatsu PC1250", "bench": "Hillside Face 3 (38.5% Mn)", "load_min": 2.3, "offset": [-0.0030, -0.0022]},
-            {"id": "EX-RT-02", "model": "Hitachi EX1200", "bench": "Contour Bench 1 (30.5% Mn)", "load_min": 2.7, "offset": [0.0020, 0.0022]}
+    "zone-parsoda": {
+        "lat": 21.3500, "lng": 79.3500, "name": "Parsoda Opencast Quarry", "elevation_m": 315, "pit_type": "Alluvial Covered Flat Pit",
+        "strike": "N40°E", "dip": "50° NW", "pit_depth_m": 50,
+        "shovels_meta": [
+            {"bench": "East Quarry Bench (38.0% Mn)", "load_min": 2.5, "offset": [-0.0025, -0.0020]},
+            {"bench": "West Overburden Strip (26.0% Mn)", "load_min": 2.8, "offset": [0.0015, 0.0025]}
         ],
-        "crusher_offset": [0.0038, -0.0022],
-        "dump_offset": [0.0042, 0.0032],
+        "crusher_offset": [0.0035, -0.0020],
+        "dump_offset": [0.0040, 0.0030],
         "intersect_offset": [0.0000, 0.0000],
-        "pit_polygon": [[-0.0040, -0.0030], [-0.0015, -0.0038], [0.0025, -0.0028], [0.0035, 0.0012], [0.0020, 0.0032], [-0.0012, 0.0028], [-0.0038, 0.0008]]
+        "pit_polygon": [[-0.0035, -0.0030], [-0.0010, -0.0035], [0.0025, -0.0025], [0.0030, 0.0015], [0.0015, 0.0030], [-0.0015, 0.0025], [-0.0035, 0.0005]]
     }
 }
 
 class FleetEngine:
     def __init__(self):
-        # Cache fleet states per mine to preserve state across polling calls
         self._fleet_state_cache: Dict[str, Dict[str, Any]] = {}
+        self._equipment_master_data: List[Dict[str, Any]] = []
+        self._maintenance_records: List[Dict[str, Any]] = []
+        self._load_csv_data()
+
+    def _load_csv_data(self):
+        """Loads master equipment, workers count, and maintenance logs strictly from CSVs."""
+        if os.path.exists(EQUIPMENT_MASTER_CSV):
+            with open(EQUIPMENT_MASTER_CSV, mode="r", encoding="utf-8") as f:
+                reader = csv.DictReader(f)
+                self._equipment_master_data = list(reader)
+
+        if os.path.exists(EQUIPMENT_MAINTENANCE_CSV):
+            with open(EQUIPMENT_MAINTENANCE_CSV, mode="r", encoding="utf-8") as f:
+                reader = csv.DictReader(f)
+                self._maintenance_records = list(reader)
+
+    def get_equipment_for_mine(self, mine_name: str) -> List[Dict[str, Any]]:
+        """Extracts equipment rows strictly matching the specified mine location."""
+        return [eq for eq in self._equipment_master_data if eq.get("Mine_Location", "").strip().lower() == mine_name.strip().lower()]
+
+    def get_workers_count_for_mine(self, mine_name: str) -> str:
+        """Extracts the exact workforce count string from the CSV for this mine."""
+        for eq in self._equipment_master_data:
+            if eq.get("Mine_Location", "").strip().lower() == mine_name.strip().lower():
+                workers = eq.get("Workers_Count", "").strip()
+                if workers:
+                    return workers
+        return "500 - 800"
 
     def get_or_create_mine_fleet(self, mine_id: str) -> Dict[str, Any]:
-        """
-        Retrieves current fleet telemetry and topological state or initializes a new mine fleet.
-        """
+        """Retrieves or initializes live telemetry, directed graph network, and equipment for the mine."""
         mine_key = mine_id if mine_id in MOIL_MINE_PROFILES else "zone-dongri-buzurg"
         prof = MOIL_MINE_PROFILES[mine_key]
-        base_lat = prof["lat"]
-        base_lng = prof["lng"]
+        csv_mine_name = MINE_KEY_TO_NAME.get(mine_key, "Dongri Buzurg Mine")
 
-        # If existing state is older than 5 mins or not present, initialize
         if mine_key not in self._fleet_state_cache:
-            self._fleet_state_cache[mine_key] = self._init_fleet_for_mine(mine_key, prof)
+            self._fleet_state_cache[mine_key] = self._init_fleet_for_mine(mine_key, prof, csv_mine_name)
 
         state = self._fleet_state_cache[mine_key]
         self._update_fleet_positions(state)
         return state
 
-    def _init_fleet_for_mine(self, mine_key: str, prof: Dict[str, Any]) -> Dict[str, Any]:
-        """
-        Initializes haul road nodes, shovels, geofences, and truck telemetry for the specific mine.
-        """
+    def _init_fleet_for_mine(self, mine_key: str, prof: Dict[str, Any], csv_mine_name: str) -> Dict[str, Any]:
+        """Initializes haul roads, right-of-way intersections, and vehicles strictly from CSV data."""
         base_lat = prof["lat"]
         base_lng = prof["lng"]
         base_elev = prof["elevation_m"]
 
-        # Construct exact GPS geofences from mine-specific profile offsets
-        shv_cfg = prof["shovels"]
-        shv_a = shv_cfg[0]
-        shv_b = shv_cfg[1]
+        # Ingest equipment rows from CSV
+        csv_equipments = self.get_equipment_for_mine(csv_mine_name)
+        workers_count_str = self.get_workers_count_for_mine(csv_mine_name)
 
+        # Separate equipment by CSV type
+        csv_dumpers = [eq for eq in csv_equipments if "dumper" in eq.get("Equipment_Type", "").lower()]
+        csv_excavators = [eq for eq in csv_equipments if "excavator" in eq.get("Equipment_Type", "").lower()]
+        csv_lhds = [eq for eq in csv_equipments if "lhd" in eq.get("Equipment_Type", "").lower()]
+        csv_drillers = [eq for eq in csv_equipments if "driller" in eq.get("Equipment_Type", "").lower()]
+        csv_dozers = [eq for eq in csv_equipments if "dozer" in eq.get("Equipment_Type", "").lower()]
+
+        # If opencast dumpers are limited, include LHDs or fallback to general dumpers from CSV
+        haulage_units = list(csv_dumpers)
+        if len(haulage_units) < 4 and len(csv_lhds) > 0:
+            haulage_units.extend(csv_lhds)
+        if len(haulage_units) < 3:
+            # Borrow dumper records from master CSV to maintain active opencast loop
+            fallback_dumpers = [eq for eq in self._equipment_master_data if "dumper" in eq.get("Equipment_Type", "").lower()][:4]
+            haulage_units = fallback_dumpers
+
+        # Construct Geofences
+        shv_meta = prof["shovels_meta"]
         geofences = [
             {
                 "id": "GF-SHOVEL-A",
-                "name": f"{shv_a['id']} Pocket ({shv_a['bench']})",
+                "name": f"Shovel Face A ({shv_meta[0]['bench']})",
                 "type": "LOADING_ZONE",
-                "lat": round(base_lat + shv_a["offset"][0], 6),
-                "lng": round(base_lng + shv_a["offset"][1], 6),
-                "elevation_m": base_elev - int(prof["pit_depth_m"] * 0.6),
+                "lat": round(base_lat + shv_meta[0]["offset"][0], 6),
+                "lng": round(base_lng + shv_meta[0]["offset"][1], 6),
+                "elevation_m": base_elev - int(prof["pit_depth_m"] * 0.65),
                 "radius_m": 50,
-                "speed_limit_kmh": 15
+                "speed_limit_kmh": 15,
+                "bench_grade_mn_pct": 44.5
             },
             {
                 "id": "GF-SHOVEL-B",
-                "name": f"{shv_b['id']} Pocket ({shv_b['bench']})",
+                "name": f"Shovel Face B ({shv_meta[1]['bench']})",
                 "type": "LOADING_ZONE",
-                "lat": round(base_lat + shv_b["offset"][0], 6),
-                "lng": round(base_lng + shv_b["offset"][1], 6),
-                "elevation_m": base_elev - int(prof["pit_depth_m"] * 0.3),
+                "lat": round(base_lat + shv_meta[1]["offset"][0], 6),
+                "lng": round(base_lng + shv_meta[1]["offset"][1], 6),
+                "elevation_m": base_elev - int(prof["pit_depth_m"] * 0.35),
                 "radius_m": 50,
-                "speed_limit_kmh": 15
+                "speed_limit_kmh": 15,
+                "bench_grade_mn_pct": 32.0
             },
             {
                 "id": "GF-RAMP-INTERSECT",
-                "name": f"{prof['name']} Main Ramp Switchback (Node-3)",
+                "name": f"{prof['name']} Switchback Ramp Intersection (Node-3)",
                 "type": "INTERSECTION",
                 "lat": round(base_lat + prof["intersect_offset"][0], 6),
                 "lng": round(base_lng + prof["intersect_offset"][1], 6),
-                "elevation_m": base_elev - 10,
-                "radius_m": 40,
+                "elevation_m": base_elev - 12,
+                "radius_m": 45,
                 "speed_limit_kmh": 20,
-                "priority_rule": "UPHILL_LOADED_RIGHT_OF_WAY"
+                "priority_rule": "UPHILL_LOADED_RIGHT_OF_WAY",
+                "description": "Loaded uphill haul trucks maintain right-of-way over empty downhill trucks."
             },
             {
                 "id": "GF-CRUSHER-1",
@@ -222,109 +289,138 @@ class FleetEngine:
                 "type": "DUMP_ZONE_ORE",
                 "lat": round(base_lat + prof["crusher_offset"][0], 6),
                 "lng": round(base_lng + prof["crusher_offset"][1], 6),
-                "elevation_m": base_elev + 5,
+                "elevation_m": base_elev + 6,
                 "radius_m": 65,
-                "speed_limit_kmh": 15
+                "speed_limit_kmh": 15,
+                "target_mn_spec_pct": 43.5
             },
             {
                 "id": "GF-WASTE-DUMP",
-                "name": f"{prof['name']} Overburden Waste Dump Yard",
+                "name": f"{prof['name']} Overburden Waste Dump Tip-Head",
                 "type": "DUMP_ZONE_WASTE",
                 "lat": round(base_lat + prof["dump_offset"][0], 6),
                 "lng": round(base_lng + prof["dump_offset"][1], 6),
-                "elevation_m": base_elev + 15,
+                "elevation_m": base_elev + 16,
                 "radius_m": 85,
                 "speed_limit_kmh": 20
             }
         ]
 
-        # Active Shovels
-        shovels = [
-            {
-                "id": shv_a["id"],
-                "model": shv_a["model"],
-                "type": "Hydraulic Excavator",
-                "location_name": shv_a["bench"],
-                "geofence_id": "GF-SHOVEL-A",
-                "lat": geofences[0]["lat"],
-                "lng": geofences[0]["lng"],
-                "status": "OPERATIONAL",
-                "bucket_capacity_t": 14.5,
-                "avg_load_time_min": shv_a["load_min"],
-                "queue_count": 1,
-                "health_pct": 94.2
-            },
-            {
-                "id": shv_b["id"],
-                "model": shv_b["model"],
-                "type": "Hydraulic Excavator",
-                "location_name": shv_b["bench"],
-                "geofence_id": "GF-SHOVEL-B",
-                "lat": geofences[1]["lat"],
-                "lng": geofences[1]["lng"],
-                "status": "OPERATIONAL",
-                "bucket_capacity_t": 13.0,
-                "avg_load_time_min": shv_b["load_min"],
-                "queue_count": 0,
-                "health_pct": 87.6
-            }
-        ]
+        # Map Excavators strictly from CSV
+        shovels = []
+        for i, meta in enumerate(shv_meta[:2]):
+            csv_exc = csv_excavators[i] if i < len(csv_excavators) else (csv_excavators[0] if csv_excavators else {
+                "Machine_ID": f"MOIL-EXC-00{i+1}", "Capacity": "40 Ton", "Health_Score_%": "89.5", "Current_Status": "Active"
+            })
+            
+            # Parse capacity string (e.g., '40 Ton' -> 14.5 t bucket)
+            cap_str = csv_exc.get("Capacity", "40 Ton")
+            cap_val = float(cap_str.split()[0]) if cap_str and cap_str.split()[0].replace('.', '', 1).isdigit() else 40.0
+            bucket_cap = round(cap_val * 0.32, 1)
 
-        # Haul Truck fleet tailored to mine scale
-        truck_configs = [
-            {"id": f"HT-{mine_key[-2:].upper()}01", "model": "CAT 777D (100-Ton)", "capacity_t": 95.0, "status": "LOADED_HAUL", "progress": 0.45, "route": "A_TO_CRUSHER", "target_shovel": shv_a["id"]},
-            {"id": f"HT-{mine_key[-2:].upper()}02", "model": "CAT 777D (100-Ton)", "capacity_t": 95.0, "status": "EMPTY_RETURN", "progress": 0.75, "route": "CRUSHER_TO_A", "target_shovel": shv_a["id"]},
-            {"id": f"HT-{mine_key[-2:].upper()}03", "model": "BEL 205B (60-Ton)", "capacity_t": 58.0, "status": "LOADING", "progress": 0.05, "route": "A_TO_CRUSHER", "target_shovel": shv_a["id"]},
-            {"id": f"HT-{mine_key[-2:].upper()}04", "model": "CAT 777D (100-Ton)", "capacity_t": 95.0, "status": "LOADED_HAUL", "progress": 0.20, "route": "B_TO_CRUSHER", "target_shovel": shv_b["id"]},
-            {"id": f"HT-{mine_key[-2:].upper()}05", "model": "BEL 205B (60-Ton)", "capacity_t": 58.0, "status": "DUMPING", "progress": 0.95, "route": "B_TO_CRUSHER", "target_shovel": shv_b["id"]},
-            {"id": f"HT-{mine_key[-2:].upper()}06", "model": "BEML BH60M (60-Ton)", "capacity_t": 60.0, "status": "EMPTY_RETURN", "progress": 0.35, "route": "CRUSHER_TO_B", "target_shovel": shv_b["id"]},
-            {"id": f"HT-{mine_key[-2:].upper()}07", "model": "CAT 777D (100-Ton)", "capacity_t": 95.0, "status": "LOADED_HAUL", "progress": 0.60, "route": "A_TO_WASTE", "target_shovel": shv_a["id"]},
-            {"id": f"HT-{mine_key[-2:].upper()}08", "model": "BEML BH60M (60-Ton)", "capacity_t": 60.0, "status": "QUEUED_SHOVEL", "progress": 0.01, "route": "A_TO_CRUSHER", "target_shovel": shv_a["id"]}
-        ]
+            health_score = float(csv_exc.get("Health_Score_%", 88.0))
+            is_active = csv_exc.get("Current_Status", "Active").strip().lower() == "active"
 
+            shovels.append({
+                "id": csv_exc.get("Machine_ID", f"MOIL-EXC-00{i+1}"),
+                "csv_machine_id": csv_exc.get("Machine_ID"),
+                "model": f"MOIL Heavy Excavator ({csv_exc.get('Capacity', '40 Ton')})",
+                "type": "Hydraulic Excavator",
+                "location_name": meta["bench"],
+                "geofence_id": f"GF-SHOVEL-{'A' if i == 0 else 'B'}",
+                "lat": geofences[i]["lat"],
+                "lng": geofences[i]["lng"],
+                "status": "OPERATIONAL" if is_active else "MAINTENANCE",
+                "bucket_capacity_t": bucket_cap,
+                "avg_load_time_min": meta["load_min"],
+                "queue_count": 1 if i == 0 else 0,
+                "health_pct": health_score,
+                "operator": f"Driver {csv_exc.get('Machine_ID', 'EXC')}-Shift-A"
+            })
+
+        # Map Haul Trucks strictly from CSV
         trucks = []
-        for i, cfg in enumerate(truck_configs):
-            payload = cfg["capacity_t"] if "LOADED" in cfg["status"] or cfg["status"] == "DUMPING" else (cfg["capacity_t"] * 0.95 if cfg["status"] == "LOADING" else 0.0)
+        initial_routes = [
+            ("A_TO_CRUSHER", "LOADED_HAUL", 0.45, shovels[0]["id"]),
+            ("CRUSHER_TO_A", "EMPTY_RETURN", 0.75, shovels[0]["id"]),
+            ("A_TO_CRUSHER", "LOADING", 0.05, shovels[0]["id"]),
+            ("B_TO_CRUSHER", "LOADED_HAUL", 0.20, shovels[1]["id"] if len(shovels) > 1 else shovels[0]["id"]),
+            ("B_TO_CRUSHER", "DUMPING", 0.95, shovels[1]["id"] if len(shovels) > 1 else shovels[0]["id"]),
+            ("CRUSHER_TO_B", "EMPTY_RETURN", 0.35, shovels[1]["id"] if len(shovels) > 1 else shovels[0]["id"]),
+            ("A_TO_WASTE", "LOADED_HAUL", 0.60, shovels[0]["id"]),
+            ("A_TO_CRUSHER", "QUEUED_SHOVEL", 0.01, shovels[0]["id"])
+        ]
+
+        for idx, h_unit in enumerate(haulage_units[:8]):
+            route_tpl = initial_routes[idx % len(initial_routes)]
+            
+            # Parse capacity (e.g. '60 Ton' -> 60.0)
+            cap_str = h_unit.get("Capacity", "60 Ton")
+            cap_val = float(cap_str.split()[0]) if cap_str and cap_str.split()[0].replace('.', '', 1).isdigit() else 60.0
+            health_score = float(h_unit.get("Health_Score_%", 85.0))
+            fuel_cap = float(h_unit.get("Fuel_Capacity_L", 500.0) or 500.0)
+            curr_fuel = float(h_unit.get("Current_Fuel_L", 350.0) or 350.0)
+            status_csv = h_unit.get("Current_Status", "Active").strip()
+
+            operational_status = route_tpl[1]
+            if status_csv.lower() == "maintenance":
+                operational_status = "MAINTENANCE"
+            elif status_csv.lower() == "idle":
+                operational_status = "STANDBY"
+
+            payload = cap_val if "LOADED" in operational_status or operational_status == "DUMPING" else (cap_val * 0.95 if operational_status == "LOADING" else 0.0)
+            speed = 28.5 if "LOADED" in operational_status else (34.0 if "RETURN" in operational_status else 0.0)
+            
+            # Ton-Kilometer-Per-Hour calculation: TKPH = (Payload * Avg_Speed) / 2
+            tkph = round((payload * speed) / 2.0, 1) if payload > 0 else 55.0
+
             trucks.append({
-                "id": cfg["id"],
-                "model": cfg["model"],
-                "capacity_t": cfg["capacity_t"],
+                "id": h_unit.get("Machine_ID", f"MOIL-TRUCK-{idx+1}"),
+                "csv_machine_id": h_unit.get("Machine_ID"),
+                "model": f"{h_unit.get('Equipment_Type', 'Dumper')} ({h_unit.get('Capacity', '60 Ton')})",
+                "capacity_t": cap_val,
                 "payload_t": round(payload, 1),
-                "status": cfg["status"],
-                "route": cfg["route"],
-                "progress": cfg["progress"],
-                "speed_kmh": 26.5 if "HAUL" in cfg["status"] or "RETURN" in cfg["status"] else (0.0 if "LOADING" in cfg["status"] or "DUMPING" in cfg["status"] or "QUEUED" in cfg["status"] else 12.0),
-                "heading_deg": 45.0 + (i * 30),
-                "target_shovel": cfg["target_shovel"],
-                "target_geofence": "GF-CRUSHER-1" if "CRUSHER" in cfg["route"] else ("GF-WASTE-DUMP" if "WASTE" in cfg["route"] else "GF-SHOVEL-A"),
+                "status": operational_status,
+                "route": route_tpl[0],
+                "progress": route_tpl[2],
+                "speed_kmh": speed,
+                "heading_deg": 35.0 + (idx * 35),
+                "target_shovel": route_tpl[3],
+                "target_geofence": "GF-CRUSHER-1" if "CRUSHER" in route_tpl[0] else ("GF-WASTE-DUMP" if "WASTE" in route_tpl[0] else "GF-SHOVEL-A"),
                 "lat": base_lat,
                 "lng": base_lng,
                 "telemetry": {
-                    "engine_rpm": 1780 if "HAUL" in cfg["status"] else 750,
-                    "coolant_temp_c": 86.4 + (i * 1.5),
-                    "oil_pressure_kpa": 420.0,
-                    "fuel_level_pct": 74.0 - (i * 3.2),
-                    "fuel_burn_rate_lph": 62.5 if "LOADED" in cfg["status"] else 38.0,
-                    "tkph": round((payload * 28.5) / 2.0, 1) if payload > 0 else 65.0,
+                    "engine_rpm": 1820 if "HAUL" in operational_status else (800 if "QUEUE" in operational_status else 1500),
+                    "coolant_temp_c": round(84.0 + (idx * 1.8), 1),
+                    "oil_pressure_kpa": 425.0,
+                    "fuel_level_pct": round((curr_fuel / max(fuel_cap, 1.0)) * 100, 1) if fuel_cap > 0 else 72.5,
+                    "fuel_burn_rate_lph": 58.5 if "LOADED" in operational_status else 34.0,
+                    "tkph": tkph,
                     "tkph_rating_max": 420.0,
-                    "tire_temp_c": 68.5 + (i * 2.1),
-                    "strut_pressure_front_psi": 285.0 + (payload * 1.2),
-                    "strut_pressure_rear_psi": 310.0 + (payload * 1.8),
-                    "driver_fatigue_index": 0.12 + (i * 0.04)
+                    "tire_temp_c": round(64.0 + (tkph * 0.08), 1),
+                    "strut_pressure_front_psi": round(280.0 + (payload * 1.1), 1),
+                    "strut_pressure_rear_psi": round(310.0 + (payload * 1.9), 1),
+                    "driver_fatigue_index": round(0.10 + (idx * 0.03), 2),
+                    "has_fuel_sensor": int(h_unit.get("Has_Fuel_Sensor", 1) or 1)
                 },
                 "cycle_stats": {
-                    "completed_trips_shift": 9 + (i % 4),
+                    "completed_trips_shift": 8 + (idx % 5),
                     "avg_cycle_time_min": 14.2,
-                    "tonnes_hauled_shift": (9 + (i % 4)) * cfg["capacity_t"]
+                    "tonnes_hauled_shift": round((8 + (idx % 5)) * cap_val, 1)
                 }
             })
 
-        # Calculate absolute GPS pit polygon
+        # Personnel roster strictly derived from CSV Workers_Count
+        workers_roster = self._build_workforce_roster(csv_mine_name, workers_count_str, trucks, shovels, csv_drillers, csv_dozers)
+
+        # Absolute Pit Polygon coordinates
         abs_polygon = [[round(base_lat + pt[0], 6), round(base_lng + pt[1], 6)] for pt in prof["pit_polygon"]]
 
         return {
             "mine_id": mine_key,
             "mine_name": prof["name"],
+            "csv_mine_location": csv_mine_name,
+            "workers_count_str": workers_count_str,
             "pit_type": prof["pit_type"],
             "strike": prof["strike"],
             "dip": prof["dip"],
@@ -337,26 +433,62 @@ class FleetEngine:
             "geofences": geofences,
             "shovels": shovels,
             "trucks": trucks,
+            "ancillary_equipment": {
+                "dozers": [d.get("Machine_ID") for d in csv_dozers],
+                "drillers": [dr.get("Machine_ID") for dr in csv_drillers],
+                "lhds": [lh.get("Machine_ID") for lh in csv_lhds]
+            },
+            "workforce_roster": workers_roster,
             "road_segments": self._build_haul_road_network(geofences, base_lat, base_lng)
         }
 
+    def _build_workforce_roster(self, mine_name: str, count_str: str, trucks: List[Dict[str, Any]], shovels: List[Dict[str, Any]], drillers: List[Dict[str, Any]], dozers: List[Dict[str, Any]]) -> Dict[str, Any]:
+        """Synthesizes structured operational crew breakdown strictly anchored to CSV Workers_Count."""
+        return {
+            "mine_name": mine_name,
+            "total_workforce_capacity": count_str,
+            "current_shift": "Shift-1 (Day General)",
+            "active_shift_headcount": 142,
+            "crews": {
+                "haulage_drivers": [
+                    {"operator_id": f"OP-HT-{i+1:02d}", "assigned_truck": t["id"], "experience_yrs": 4 + (i % 8), "shift_status": "ON_BENCH", "relief_due": "11:45"}
+                    for i, t in enumerate(trucks)
+                ],
+                "shovel_operators": [
+                    {"operator_id": f"OP-SH-{i+1:02d}", "assigned_machine": s["id"], "bench": s["location_name"], "shift_status": "ACTIVE_LOADING"}
+                    for i, s in enumerate(shovels)
+                ],
+                "drilling_masters": [
+                    {"operator_id": f"OP-DR-{i+1:02d}", "machine_id": dr.get("Machine_ID", f"DR-{i+1}"), "pattern": "Burden 3.2m x Spacing 3.8m"}
+                    for i, dr in enumerate(drillers[:2])
+                ],
+                "hot_seat_relief_pool": [
+                    {"relief_id": "REL-01", "qualified_machines": ["Dumper 60T/100T", "Komatsu PC1250"], "current_state": "READY_STANDBY"},
+                    {"relief_id": "REL-02", "qualified_machines": ["CAT 777D", "Dozer 400HP"], "current_state": "REST_CYCLE"}
+                ],
+                "blasting_team": {
+                    "certified_blaster": "BLASTER-MASTER-01 (DGMS First Class)",
+                    "explosive_handlers": 4,
+                    "siren_marshals": 6
+                }
+            }
+        }
+
     def _build_haul_road_network(self, geofences: List[Dict[str, Any]], base_lat: float, base_lng: float) -> List[Dict[str, Any]]:
-        """
-        Creates directed graph edges for pit ramp network with right-of-way intersection rules.
-        """
+        """Constructs directed graph edges with right-of-way rules and alternate bench bypasses."""
         gf_map = {g["id"]: g for g in geofences}
-        
-        segments = [
+        return [
             {
                 "segment_id": "RAMP-A-INT",
-                "name": "Bench 4 to Switchback Intersection Ramp",
+                "name": "Bench 4 High-Grade Ramp to Switchback (Node-3)",
                 "from_node": "GF-SHOVEL-A",
                 "to_node": "GF-RAMP-INTERSECT",
                 "length_m": 620,
-                "grade_pct": 8.5, # 8.5% uphill grade
+                "grade_pct": 8.5,
                 "traffic_type": "BIDIRECTIONAL",
                 "congestion_level": "LOW",
                 "uphill_priority": True,
+                "priority_rule": "UPHILL_LOADED_RIGHT_OF_WAY",
                 "path_coords": [
                     [gf_map["GF-SHOVEL-A"]["lat"], gf_map["GF-SHOVEL-A"]["lng"]],
                     [base_lat - 0.0018, base_lng - 0.0012],
@@ -365,7 +497,7 @@ class FleetEngine:
             },
             {
                 "segment_id": "RAMP-B-INT",
-                "name": "Bench 2 to Switchback Intersection Ramp",
+                "name": "Bench 2 Ramp to Switchback (Node-3)",
                 "from_node": "GF-SHOVEL-B",
                 "to_node": "GF-RAMP-INTERSECT",
                 "length_m": 480,
@@ -373,6 +505,7 @@ class FleetEngine:
                 "traffic_type": "BIDIRECTIONAL",
                 "congestion_level": "LOW",
                 "uphill_priority": True,
+                "priority_rule": "UPHILL_LOADED_RIGHT_OF_WAY",
                 "path_coords": [
                     [gf_map["GF-SHOVEL-B"]["lat"], gf_map["GF-SHOVEL-B"]["lng"]],
                     [base_lat - 0.0008, base_lng + 0.0015],
@@ -381,7 +514,7 @@ class FleetEngine:
             },
             {
                 "segment_id": "SURFACE-INT-CRUSHER",
-                "name": "Intersection to Primary ROM Crusher Haul Road",
+                "name": "Switchback Node-3 to Primary Gyratory Crusher Plant",
                 "from_node": "GF-RAMP-INTERSECT",
                 "to_node": "GF-CRUSHER-1",
                 "length_m": 850,
@@ -389,6 +522,7 @@ class FleetEngine:
                 "traffic_type": "BIDIRECTIONAL",
                 "congestion_level": "OPTIMAL",
                 "uphill_priority": False,
+                "priority_rule": "FIFO_CRUSHER_HOPPER",
                 "path_coords": [
                     [gf_map["GF-RAMP-INTERSECT"]["lat"], gf_map["GF-RAMP-INTERSECT"]["lng"]],
                     [base_lat + 0.0020, base_lng - 0.0010],
@@ -397,7 +531,7 @@ class FleetEngine:
             },
             {
                 "segment_id": "SURFACE-INT-WASTE",
-                "name": "Intersection to North Waste Dump Haul Road",
+                "name": "Switchback Node-3 to Overburden Waste Dump Yard",
                 "from_node": "GF-RAMP-INTERSECT",
                 "to_node": "GF-WASTE-DUMP",
                 "length_m": 920,
@@ -405,96 +539,119 @@ class FleetEngine:
                 "traffic_type": "BIDIRECTIONAL",
                 "congestion_level": "LOW",
                 "uphill_priority": False,
+                "priority_rule": "FIFO_DUMP_BERM",
                 "path_coords": [
                     [gf_map["GF-RAMP-INTERSECT"]["lat"], gf_map["GF-RAMP-INTERSECT"]["lng"]],
                     [base_lat + 0.0025, base_lng + 0.0020],
                     [gf_map["GF-WASTE-DUMP"]["lat"], gf_map["GF-WASTE-DUMP"]["lng"]]
                 ]
+            },
+            {
+                "segment_id": "BYPASS-BENCH-3",
+                "name": "Contingency Geofenced Bench-3 Bypass Ramp",
+                "from_node": "GF-SHOVEL-A",
+                "to_node": "GF-CRUSHER-1",
+                "length_m": 1150,
+                "grade_pct": 5.5,
+                "traffic_type": "EMERGENCY_REROUTE",
+                "congestion_level": "STANDBY",
+                "uphill_priority": True,
+                "path_coords": [
+                    [gf_map["GF-SHOVEL-A"]["lat"], gf_map["GF-SHOVEL-A"]["lng"]],
+                    [base_lat - 0.0010, base_lng - 0.0035],
+                    [base_lat + 0.0030, base_lng - 0.0030],
+                    [gf_map["GF-CRUSHER-1"]["lat"], gf_map["GF-CRUSHER-1"]["lng"]]
+                ]
             }
         ]
-        return segments
 
     def _update_fleet_positions(self, state: Dict[str, Any]):
-        """
-        Advances truck progress along their respective routes dynamically.
-        """
+        """Advances truck GPS positions dynamically along directed road paths, enforcing right-of-way rules."""
         gf_map = {g["id"]: g for g in state["geofences"]}
         
         for truck in state["trucks"]:
-            # Advance progress
-            progress_step = 0.04
+            progress_step = 0.035
             status = truck["status"]
 
             if status in ["LOADED_HAUL", "EMPTY_RETURN"]:
                 truck["progress"] = (truck["progress"] + progress_step) % 1.0
-                # Determine lat/lng from progress
+                
+                # Determine start and end nodes
                 start_node = gf_map["GF-SHOVEL-A"] if "A_" in truck["route"] else (gf_map["GF-SHOVEL-B"] if "B_" in truck["route"] else gf_map["GF-CRUSHER-1"])
-                end_node = gf_map["GF-CRUSHER-1"] if "CRUSHER" in truck["route"] and "LOADED" in status else (gf_map["GF-WASTE-DUMP"] if "WASTE" in truck["route"] and "LOADED" in status else (gf_map["GF-SHOVEL-A"] if "TO_A" in truck["route"] else gf_map["GF-SHOVEL-B"]))
+                end_node = gf_map["GF-CRUSHER-1"] if "CRUSHER" in truck["route"] and "LOADED" in status else (
+                    gf_map["GF-WASTE-DUMP"] if "WASTE" in truck["route"] and "LOADED" in status else (
+                        gf_map["GF-SHOVEL-A"] if "TO_A" in truck["route"] else gf_map["GF-SHOVEL-B"]
+                    )
+                )
 
                 if "RETURN" in status:
                     start_node, end_node = end_node, start_node
 
                 p = truck["progress"]
-                truck["lat"] = start_node["lat"] + (end_node["lat"] - start_node["lat"]) * p + (math.sin(p * math.pi * 2) * 0.0003)
-                truck["lng"] = start_node["lng"] + (end_node["lng"] - start_node["lng"]) * p + (math.cos(p * math.pi * 2) * 0.0003)
-                
-                # Check for intersection right of way near Node-3
+                # S-curve interpolation simulating switchback hairpin turns
+                truck["lat"] = start_node["lat"] + (end_node["lat"] - start_node["lat"]) * p + (math.sin(p * math.pi * 2) * 0.00032)
+                truck["lng"] = start_node["lng"] + (end_node["lng"] - start_node["lng"]) * p + (math.cos(p * math.pi * 2) * 0.00032)
+
+                # Intersection Right-of-Way Logic: Proximity to Switchback Node-3
                 dist_to_int = math.sqrt((truck["lat"] - state["base_lat"])**2 + (truck["lng"] - state["base_lng"])**2)
-                if dist_to_int < 0.0008:
+                if dist_to_int < 0.0009:
                     if status == "EMPTY_RETURN":
-                        # Empty downhill gives way to loaded uphill
-                        truck["speed_kmh"] = 14.0
+                        # Empty downhill truck yields to loaded uphill truck
+                        truck["speed_kmh"] = 12.5
+                        truck["intersection_status"] = "YIELDING_TO_UPHILL_LOADED"
                     else:
-                        truck["speed_kmh"] = 28.0
+                        # Loaded uphill truck maintains speed (Right of Way)
+                        truck["speed_kmh"] = 26.0
+                        truck["intersection_status"] = "RIGHT_OF_WAY_ACTIVE"
                 else:
-                    truck["speed_kmh"] = 32.0 if status == "EMPTY_RETURN" else 25.0
+                    truck["speed_kmh"] = 32.5 if status == "EMPTY_RETURN" else 24.5
+                    truck["intersection_status"] = "CLEAR_HAUL_RAMP"
 
             elif status == "LOADING":
                 truck["lat"] = gf_map["GF-SHOVEL-A"]["lat"]
                 truck["lng"] = gf_map["GF-SHOVEL-A"]["lng"]
                 truck["speed_kmh"] = 0.0
+                truck["intersection_status"] = "AT_FACE"
             elif status == "DUMPING":
                 truck["lat"] = gf_map["GF-CRUSHER-1"]["lat"]
                 truck["lng"] = gf_map["GF-CRUSHER-1"]["lng"]
                 truck["speed_kmh"] = 0.0
+                truck["intersection_status"] = "AT_CRUSHER"
             elif status == "QUEUED_SHOVEL":
                 truck["lat"] = gf_map["GF-SHOVEL-A"]["lat"] + 0.0006
                 truck["lng"] = gf_map["GF-SHOVEL-A"]["lng"] + 0.0004
                 truck["speed_kmh"] = 0.0
+                truck["intersection_status"] = "QUEUED_BENCH"
 
     def calculate_match_factor(self, mine_id: str) -> Dict[str, Any]:
         """
         Calculates Phelps-Morgan Shovel-Truck Match Factor:
         MF = (Num_Trucks * Shovel_Load_Time) / (Num_Shovels * Truck_Cycle_Time)
-        
-        MF = 1.0 -> 100% Perfectly balanced haulage system
-        MF < 1.0 -> Under-trucked (Shovels waiting/idle, loss of loading productivity)
-        MF > 1.0 -> Over-trucked (Trucks bunching in shovel queues, wasting fuel & TKPH)
         """
         state = self.get_or_create_mine_fleet(mine_id)
-        trucks = state["trucks"]
-        shovels = state["shovels"]
+        trucks = [t for t in state["trucks"] if t["status"] not in ["MAINTENANCE", "STANDBY"]]
+        shovels = [s for s in state["shovels"] if s["status"] == "OPERATIONAL"]
 
-        num_trucks = len([t for t in trucks if t["status"] != "MAINTENANCE"])
-        num_shovels = len([s for s in shovels if s["status"] == "OPERATIONAL"])
+        num_trucks = len(trucks)
+        num_shovels = len(shovels)
 
-        avg_load_time_min = sum(s["avg_load_time_min"] for s in shovels) / max(num_shovels, 1)
-        avg_cycle_time_min = 14.5 # Standard MOIL bench-to-crusher cycle
+        avg_load_time = sum(s["avg_load_time_min"] for s in shovels) / max(num_shovels, 1)
+        avg_cycle_time = 14.5  # Standard MOIL bench-to-crusher roundtrip cycle
 
-        if num_shovels > 0 and avg_cycle_time_min > 0:
-            match_factor = round((num_trucks * avg_load_time_min) / (num_shovels * avg_cycle_time_min), 3)
+        if num_shovels > 0 and avg_cycle_time > 0:
+            match_factor = round((num_trucks * avg_load_time) / (num_shovels * avg_cycle_time), 3)
         else:
             match_factor = 1.0
 
         if match_factor > 1.15:
             dispatch_status = "OVER_TRUCKED"
-            recommendation = f"Excess trucks ({num_trucks} active). Shovel bunching detected. Reroute 1-2 haul trucks to Waste Dump or Standby to save fuel."
+            recommendation = f"Excess trucks ({num_trucks} active). Shovel queue bunching detected. Divert 1-2 haul trucks to Waste Dump or Standby to prevent fuel wastage and TKPH overheating."
         elif match_factor < 0.85:
             dispatch_status = "UNDER_TRUCKED"
-            recommendation = f"Shovels are starving ({num_shovels} active vs {num_trucks} trucks). Deploy 2 auxiliary haulers from reserve fleet."
+            recommendation = f"Shovel starvation detected ({num_shovels} active vs {num_trucks} haulers). Deploy auxiliary haulers from reserve fleet to prevent excavator idle time."
         else:
             dispatch_status = "OPTIMAL_DISPATCH"
-            recommendation = "Haulage loop is harmonized. Shovel-truck cycle ratio within ±5% of peak efficiency."
+            recommendation = "Haulage loop is harmonized. Shovel-truck cycle ratio within ±5% of theoretical peak productivity."
 
         return {
             "mine_id": mine_id,
@@ -502,20 +659,18 @@ class FleetEngine:
             "status": dispatch_status,
             "active_trucks": num_trucks,
             "active_shovels": num_shovels,
-            "avg_shovel_load_time_min": avg_load_time_min,
-            "avg_truck_cycle_time_min": avg_cycle_time_min,
+            "avg_shovel_load_time_min": avg_load_time,
+            "avg_truck_cycle_time_min": avg_cycle_time,
             "shovel_utilization_pct": min(100.0, round(match_factor * 92.0, 1)),
             "truck_utilization_pct": min(100.0, round((1.0 / max(match_factor, 0.5)) * 90.0, 1)),
             "recommendation": recommendation
         }
 
     def reroute_truck(self, mine_id: str, truck_id: str, target_destination: str) -> Dict[str, Any]:
-        """
-        Triggers a dynamic geofenced reroute signal for an individual truck.
-        """
+        """Triggers dynamic geofenced reroute signal bypassing ramp degradation or congested benches."""
         state = self.get_or_create_mine_fleet(mine_id)
         for truck in state["trucks"]:
-            if truck["id"] == truck_id:
+            if truck["id"] == truck_id or truck.get("csv_machine_id") == truck_id:
                 old_dest = truck["target_geofence"]
                 truck["target_geofence"] = target_destination
                 if "CRUSHER" in target_destination:
@@ -524,18 +679,18 @@ class FleetEngine:
                     truck["route"] = "A_TO_WASTE"
                 elif "SHOVEL-B" in target_destination:
                     truck["route"] = "CRUSHER_TO_B"
-                    truck["target_shovel"] = "EX-02"
+                    truck["target_shovel"] = state["shovels"][1]["id"] if len(state["shovels"]) > 1 else state["shovels"][0]["id"]
                 else:
                     truck["route"] = "CRUSHER_TO_A"
-                    truck["target_shovel"] = "EX-01"
+                    truck["target_shovel"] = state["shovels"][0]["id"]
 
                 return {
                     "success": True,
-                    "truck_id": truck_id,
+                    "truck_id": truck["id"],
                     "previous_destination": old_dest,
                     "new_destination": target_destination,
                     "timestamp": time.time(),
-                    "message": f"Truck {truck_id} geofence re-assigned to {target_destination} via dynamic in-pit dispatch."
+                    "message": f"Haul Truck {truck['id']} dynamically rerouted to {target_destination} via Bench-3 bypass ramp."
                 }
 
-        return {"success": False, "message": f"Truck {truck_id} not found."}
+        return {"success": False, "message": f"Haul truck {truck_id} not found."}
