@@ -138,7 +138,7 @@ export const MapComponent: React.FC<MapComponentProps> = ({
   const [hoveredZone, setHoveredZone] = useState<ReserveZone | null>(null);
 
   return (
-    <div className="relative w-full h-full bg-[#0c121e]">
+    <div className="relative w-full h-full bg-slate-100">
       <Map
         initialViewState={{
           longitude: MOIL_MAP_CENTER[1],
@@ -377,24 +377,24 @@ export const MapComponent: React.FC<MapComponentProps> = ({
 
       {/* Crosshair / Overlay UI */}
       <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
-        <div className="w-16 h-16 border-2 border-slate-800/30 rounded-full flex items-center justify-center">
+        <div className="w-16 h-16 border-2 border-slate-200/30 rounded-full flex items-center justify-center">
           <div className="w-1 h-1 bg-emerald-500/50 rounded-full shadow-[0_0_10px_rgba(16,185,129,0.8)]" />
         </div>
       </div>
 
       {/* Map Controls */}
       <div className="absolute top-4 right-4 flex flex-col gap-2">
-        <div className="bg-[#090d16]/90 backdrop-blur-md p-1.5 rounded-xl border border-slate-800/80 shadow-xl flex flex-col gap-1 pointer-events-auto">
-          <button onClick={() => setBasemap('light')} className={`p-2 rounded-lg transition-colors ${basemap === 'light' ? 'bg-indigo-500/20 text-indigo-400' : 'text-slate-400 hover:bg-slate-800/50 hover:text-slate-200'}`} title="Vector Light Map">
+        <div className="bg-slate-50/90 backdrop-blur-md p-1.5 rounded-xl border border-slate-200/80 shadow-xl flex flex-col gap-1 pointer-events-auto">
+          <button onClick={() => setBasemap('light')} className={`p-2 rounded-lg transition-colors ${basemap === 'light' ? 'bg-indigo-500/20 text-indigo-400' : 'text-slate-600 hover:bg-slate-200/50 hover:text-slate-800'}`} title="Vector Light Map">
             <Layers className="w-4 h-4" />
           </button>
-          <button onClick={() => setBasemap('satellite')} className={`p-2 rounded-lg transition-colors ${basemap === 'satellite' ? 'bg-emerald-500/20 text-emerald-400' : 'text-slate-400 hover:bg-slate-800/50 hover:text-slate-200'}`} title="Satellite / Earth Observation">
+          <button onClick={() => setBasemap('satellite')} className={`p-2 rounded-lg transition-colors ${basemap === 'satellite' ? 'bg-emerald-500/20 text-emerald-400' : 'text-slate-600 hover:bg-slate-200/50 hover:text-slate-800'}`} title="Satellite / Earth Observation">
             <Eye className="w-4 h-4" />
           </button>
         </div>
 
-        <div className="bg-[#090d16]/90 backdrop-blur-md p-1.5 rounded-xl border border-slate-800/80 shadow-xl flex flex-col gap-1 pointer-events-auto">
-          <button onClick={handleReset} className="p-2 text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 rounded-lg transition-colors" title="Recenter to Central India">
+        <div className="bg-slate-50/90 backdrop-blur-md p-1.5 rounded-xl border border-slate-200/80 shadow-xl flex flex-col gap-1 pointer-events-auto">
+          <button onClick={handleReset} className="p-2 text-slate-600 hover:text-slate-800 hover:bg-slate-200/50 rounded-lg transition-colors" title="Recenter to Central India">
             <Navigation className="w-4 h-4" />
           </button>
         </div>

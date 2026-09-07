@@ -74,7 +74,7 @@ export default function Home() {
   };
 
   return (
-    <div className="flex flex-col h-screen w-screen overflow-hidden bg-[#090d16] select-none">
+    <div className="flex flex-col h-screen w-screen overflow-hidden bg-slate-50 select-none">
       {/* 1. Top Navbar with Unified 4 Enterprise Pillars */}
       <Navbar
         activeView={activeView}
@@ -86,7 +86,7 @@ export default function Home() {
 
       {/* Floating System Notification Toast */}
       {notification && (
-        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-[1000] px-4 py-2.5 rounded-xl bg-slate-900/95 border border-emerald-500/40 text-xs text-white shadow-2xl backdrop-blur-md flex items-center gap-2.5 animate-in fade-in slide-in-from-top-4">
+        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-[1000] px-4 py-2.5 rounded-xl bg-slate-50/95 border border-emerald-500/40 text-xs text-slate-900 shadow-2xl backdrop-blur-md flex items-center gap-2.5 animate-in fade-in slide-in-from-top-4">
           <Sparkles className="w-4 h-4 text-emerald-400 shrink-0 animate-pulse" />
           <span className="font-medium">{notification}</span>
         </div>
@@ -96,15 +96,15 @@ export default function Home() {
       {activeView === 'exploration' ? (
         <div className="relative flex-1 flex h-screen overflow-hidden">
           {/* Center Main Leaflet GIS Map (Clean & Unobstructed) */}
-          <main className="relative flex-1 h-full bg-[#070b12] overflow-hidden">
+          <main className="relative flex-1 h-full bg-slate-100 overflow-hidden">
             {/* Floating Generate AI Heatmap Button */}
             <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-[500]">
               <button
                 onClick={handleGenerateAIHeatmap}
                 disabled={isGeneratingAI}
-                className={`flex items-center justify-center gap-2 px-6 py-3 rounded-full text-sm font-bold text-white shadow-2xl transition-all ${
+                className={`flex items-center justify-center gap-2 px-6 py-3 rounded-full text-sm font-bold text-slate-900 shadow-2xl transition-all ${
                   isGeneratingAI 
-                    ? 'bg-slate-700 cursor-not-allowed opacity-80' 
+                    ? 'bg-slate-300 cursor-not-allowed opacity-80' 
                     : layers.aiHeatmap 
                       ? 'bg-rose-600 hover:bg-rose-500 shadow-rose-900/50' 
                       : 'bg-emerald-600 hover:bg-emerald-500 shadow-emerald-900/50 hover:scale-105'
@@ -112,7 +112,7 @@ export default function Home() {
               >
                 {isGeneratingAI ? (
                   <>
-                    <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-slate-900" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                     </svg>
@@ -143,7 +143,7 @@ export default function Home() {
             {!isInspectorOpen && selectedZone && (
               <button
                 onClick={() => router.push(`/mine/${selectedZone.id}`)}
-                className="absolute top-4 right-4 z-[500] flex items-center gap-2 px-3 py-2 rounded-xl bg-slate-900/90 hover:bg-slate-800 text-emerald-400 border border-emerald-500/40 shadow-xl backdrop-blur-md text-xs font-semibold transition-all hover:scale-105"
+                className="absolute top-4 right-4 z-[500] flex items-center gap-2 px-3 py-2 rounded-xl bg-slate-50/90 hover:bg-slate-200 text-emerald-400 border border-emerald-500/40 shadow-xl backdrop-blur-md text-xs font-semibold transition-all hover:scale-105"
               >
                 <Sparkles className="w-4 h-4 text-emerald-400" />
                 <span>Inspect Zone: {selectedZone.name.split(' ')[0]}</span>

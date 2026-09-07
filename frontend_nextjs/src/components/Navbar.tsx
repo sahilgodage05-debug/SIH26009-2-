@@ -43,14 +43,14 @@ export const Navbar: React.FC<NavbarProps> = ({
   }, []);
 
   return (
-    <div className="absolute top-4 left-1/2 -translate-x-1/2 z-[1000] flex items-center bg-slate-900/90 p-1.5 rounded-2xl border border-slate-700/80 shadow-2xl backdrop-blur-xl">
+    <div className="absolute top-4 left-1/2 -translate-x-1/2 z-[1000] flex items-center bg-slate-50/90 p-1.5 rounded-2xl border border-slate-300/80 shadow-2xl backdrop-blur-xl">
 
         <button
           onClick={() => setActiveView('exploration')}
           className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200 ${
             activeView === 'exploration'
-              ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-md shadow-emerald-900/40 border border-emerald-400/30'
-              : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
+              ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-slate-900 shadow-md shadow-emerald-900/40 border border-emerald-400/30'
+              : 'text-slate-600 hover:text-slate-800 hover:bg-slate-200/60'
           }`}
         >
           <Satellite className="w-3.5 h-3.5" />

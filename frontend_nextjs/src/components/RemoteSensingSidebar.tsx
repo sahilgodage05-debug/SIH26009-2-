@@ -168,24 +168,24 @@ export const RemoteSensingSidebar: React.FC<RemoteSensingSidebarProps> = ({
   ];
 
   return (
-    <aside className="w-[340px] bg-[#0b101b]/98 border-r border-slate-800/90 flex flex-col h-full z-30 shrink-0 backdrop-blur-xl select-none">
+    <aside className="w-[340px] bg-slate-50/98 border-r border-slate-200/90 flex flex-col h-full z-30 shrink-0 backdrop-blur-xl select-none">
       {/* Sidebar Header & Enterprise Remote Sensing Branding */}
-      <div className="p-4 border-b border-slate-800/80 bg-slate-950/40">
+      <div className="p-4 border-b border-slate-200/80 bg-white/40">
         <div className="flex items-center justify-between mb-2">
           <span className="text-[10px] font-mono font-bold tracking-widest text-emerald-400 uppercase bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-500/30">
             GEOSPATIAL INTELLIGENCE
           </span>
-          <span className="text-[10px] font-mono text-slate-400 flex items-center gap-1">
+          <span className="text-[10px] font-mono text-slate-600 flex items-center gap-1">
             <Satellite className="w-3 h-3 text-cyan-400 animate-pulse" />
             ASTER / S-2
           </span>
         </div>
 
-        <h2 className="text-sm font-extrabold text-white tracking-tight uppercase">
+        <h2 className="text-sm font-extrabold text-slate-900 tracking-tight uppercase">
           Remote Sensing & Spectral
         </h2>
 
-        <p className="text-[11px] text-slate-400 mt-1.5 leading-relaxed">
+        <p className="text-[11px] text-slate-600 mt-1.5 leading-relaxed">
           Reflected optical & radar spectra across dozens of satellite bands reveal subsurface mineralization.
         </p>
 
@@ -196,29 +196,29 @@ export const RemoteSensingSidebar: React.FC<RemoteSensingSidebarProps> = ({
             disabled={isGeneratingAI}
             className={`w-full relative group overflow-hidden rounded-xl p-2.5 text-left transition-all duration-300 ${
               layers.aiHeatmap
-                ? 'bg-gradient-to-r from-red-600 via-orange-600 to-amber-600 text-white shadow-md shadow-orange-950/50 border border-amber-400/40'
-                : 'bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 text-white shadow-md shadow-emerald-950/40 hover:shadow-emerald-900/60 border border-emerald-400/30'
+                ? 'bg-gradient-to-r from-red-600 via-orange-600 to-amber-600 text-slate-900 shadow-md shadow-orange-950/50 border border-amber-400/40'
+                : 'bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 text-slate-900 shadow-md shadow-emerald-950/40 hover:shadow-emerald-900/60 border border-emerald-400/30'
             }`}
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <div className="p-1 rounded-md bg-black/20">
                   {isGeneratingAI ? (
-                    <Cpu className="w-3.5 h-3.5 animate-spin text-white" />
+                    <Cpu className="w-3.5 h-3.5 animate-spin text-slate-900" />
                   ) : (
-                    <Sparkles className="w-3.5 h-3.5 text-white animate-pulse" />
+                    <Sparkles className="w-3.5 h-3.5 text-slate-900 animate-pulse" />
                   )}
                 </div>
                 <div>
-                  <div className="text-[11px] font-bold uppercase tracking-wider text-white">
+                  <div className="text-[11px] font-bold uppercase tracking-wider text-slate-900">
                     {layers.aiHeatmap ? 'AI Heatmap Live (>75% Mn)' : 'Generate AI Heatmap'}
                   </div>
-                  <div className="text-[9px] text-white/80">
+                  <div className="text-[9px] text-slate-900/80">
                     {isGeneratingAI ? 'Processing Multi-Bands...' : 'Bayesian Deposit Probability'}
                   </div>
                 </div>
               </div>
-              <ChevronRight className={`w-3.5 h-3.5 text-white/70 transition-transform ${layers.aiHeatmap ? 'rotate-90' : ''}`} />
+              <ChevronRight className={`w-3.5 h-3.5 text-slate-900/70 transition-transform ${layers.aiHeatmap ? 'rotate-90' : ''}`} />
             </div>
           </button>
         </div>
@@ -227,10 +227,10 @@ export const RemoteSensingSidebar: React.FC<RemoteSensingSidebarProps> = ({
       {/* Accordion Menu List */}
       <div className="flex-1 overflow-y-auto p-3 space-y-2.5">
         {/* Accordion Item: Quick Satellite Layer Toggles */}
-        <div className="rounded-xl border border-slate-800 bg-slate-900/40 overflow-hidden transition-colors hover:border-slate-700">
+        <div className="rounded-xl border border-slate-200 bg-slate-50/40 overflow-hidden transition-colors hover:border-slate-300">
           <button
             onClick={() => toggleSection('layers_quick')}
-            className="w-full p-3 flex items-center justify-between text-left text-xs font-bold text-slate-200 hover:text-white transition-colors"
+            className="w-full p-3 flex items-center justify-between text-left text-xs font-bold text-slate-800 hover:text-slate-900 transition-colors"
           >
             <div className="flex items-center gap-2">
               <Layers className="w-4 h-4 text-emerald-400" />
@@ -239,12 +239,12 @@ export const RemoteSensingSidebar: React.FC<RemoteSensingSidebarProps> = ({
             {openSections.layers_quick ? (
               <ChevronDown className="w-4 h-4 text-emerald-400" />
             ) : (
-              <ChevronRight className="w-4 h-4 text-slate-400" />
+              <ChevronRight className="w-4 h-4 text-slate-600" />
             )}
           </button>
 
           {openSections.layers_quick && (
-            <div className="p-3 pt-0 border-t border-slate-800/60 space-y-2 text-xs">
+            <div className="p-3 pt-0 border-t border-slate-200/60 space-y-2 text-xs">
               {[
                 { key: 'ndvi' as keyof LayerState, label: 'NDVI Vegetation Stress', color: 'bg-emerald-500' },
                 { key: 'soilMoisture' as keyof LayerState, label: 'Soil Moisture (SMAP)', color: 'bg-cyan-500' },
@@ -255,10 +255,10 @@ export const RemoteSensingSidebar: React.FC<RemoteSensingSidebarProps> = ({
                 <div 
                   key={item.key}
                   onClick={() => toggleLayer(item.key)}
-                  className="flex items-center justify-between p-1.5 px-2 rounded-lg bg-slate-950/60 border border-slate-800/60 cursor-pointer hover:border-slate-700"
+                  className="flex items-center justify-between p-1.5 px-2 rounded-lg bg-white/60 border border-slate-200/60 cursor-pointer hover:border-slate-300"
                 >
-                  <span className="text-[11px] text-slate-300">{item.label}</span>
-                  <div className={`w-7 h-3.5 rounded-full p-0.5 transition-colors ${layers[item.key] ? item.color : 'bg-slate-800'}`}>
+                  <span className="text-[11px] text-slate-700">{item.label}</span>
+                  <div className={`w-7 h-3.5 rounded-full p-0.5 transition-colors ${layers[item.key] ? item.color : 'bg-slate-200'}`}>
                     <div className={`w-2.5 h-2.5 rounded-full bg-white transition-transform ${layers[item.key] ? 'translate-x-3.5' : 'translate-x-0'}`} />
                   </div>
                 </div>
@@ -268,10 +268,10 @@ export const RemoteSensingSidebar: React.FC<RemoteSensingSidebarProps> = ({
         </div>
 
         {/* Accordion Item: Metal-Stressed Vegetation (MSV) */}
-        <div className="rounded-xl border border-slate-800 bg-slate-900/40 overflow-hidden transition-colors hover:border-slate-700">
+        <div className="rounded-xl border border-slate-200 bg-slate-50/40 overflow-hidden transition-colors hover:border-slate-300">
           <button
             onClick={() => toggleSection('msv')}
-            className="w-full p-3 flex items-center justify-between text-left text-xs font-bold text-slate-200 hover:text-white transition-colors"
+            className="w-full p-3 flex items-center justify-between text-left text-xs font-bold text-slate-800 hover:text-slate-900 transition-colors"
           >
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 rounded-full bg-emerald-400" />
@@ -280,20 +280,20 @@ export const RemoteSensingSidebar: React.FC<RemoteSensingSidebarProps> = ({
             {openSections.msv ? (
               <ChevronDown className="w-4 h-4 text-emerald-400" />
             ) : (
-              <ChevronRight className="w-4 h-4 text-slate-400" />
+              <ChevronRight className="w-4 h-4 text-slate-600" />
             )}
           </button>
 
           {openSections.msv && (
-            <div className="p-3 pt-0 border-t border-slate-800/60 space-y-3 text-xs">
-              <p className="text-[10px] text-slate-400 leading-snug">
+            <div className="p-3 pt-0 border-t border-slate-200/60 space-y-3 text-xs">
+              <p className="text-[10px] text-slate-600 leading-snug">
                 Chlorosis and canopy phytotoxicity anomalies induced by heavy metal bio-accumulation over manganese lodes.
               </p>
 
               {/* Anomaly Score Slider with Color Gradient */}
-              <div className="p-2.5 rounded-xl bg-slate-950/60 border border-slate-800 space-y-1.5">
+              <div className="p-2.5 rounded-xl bg-white/60 border border-slate-200 space-y-1.5">
                 <div className="flex items-center justify-between text-xs">
-                  <span className="font-semibold text-slate-300 text-[11px]">Spatial Anomaly Score</span>
+                  <span className="font-semibold text-slate-700 text-[11px]">Spatial Anomaly Score</span>
                   <span className="font-mono text-[11px] font-bold text-orange-400 bg-orange-950/60 px-1.5 py-0.2 rounded border border-orange-500/30">
                     {msvAnomalyScore.toFixed(1)} σ
                   </span>
@@ -321,11 +321,11 @@ export const RemoteSensingSidebar: React.FC<RemoteSensingSidebarProps> = ({
 
               {/* Raster Mode Selector */}
               <div className="space-y-1">
-                <label className="text-[10px] font-medium text-slate-400">Sentinel-2 Algorithm</label>
+                <label className="text-[10px] font-medium text-slate-600">Sentinel-2 Algorithm</label>
                 <select
                   value={msvRasterMode}
                   onChange={(e) => setMsvRasterMode(e.target.value)}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1.5 text-[11px] text-slate-200 focus:outline-none focus:border-emerald-500"
+                  className="w-full bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 text-[11px] text-slate-800 focus:outline-none focus:border-emerald-500"
                 >
                   {rasterModes.map(mode => (
                     <option key={mode.id} value={mode.id}>{mode.name}</option>
@@ -334,9 +334,9 @@ export const RemoteSensingSidebar: React.FC<RemoteSensingSidebarProps> = ({
               </div>
 
               {/* Opacity Slider */}
-              <div className="p-2 rounded-lg bg-slate-950/50 border border-slate-800 space-y-1">
+              <div className="p-2 rounded-lg bg-white/50 border border-slate-200 space-y-1">
                 <div className="flex justify-between text-[11px]">
-                  <span className="text-slate-400">Layer Opacity</span>
+                  <span className="text-slate-600">Layer Opacity</span>
                   <span className="font-mono text-emerald-400">{Math.round(msvOpacity * 100)}%</span>
                 </div>
                 <input
@@ -346,13 +346,13 @@ export const RemoteSensingSidebar: React.FC<RemoteSensingSidebarProps> = ({
                   step="0.05"
                   value={msvOpacity}
                   onChange={(e) => setMsvOpacity(parseFloat(e.target.value))}
-                  className="w-full h-1 bg-slate-800 rounded-lg accent-emerald-400 cursor-pointer"
+                  className="w-full h-1 bg-slate-200 rounded-lg accent-emerald-400 cursor-pointer"
                 />
               </div>
 
               {/* Clip Out of Range Checkbox */}
-              <label className="flex items-center justify-between p-2 rounded-lg bg-slate-950/50 border border-slate-800 cursor-pointer">
-                <span className="text-[11px] text-slate-300">Clip Out-of-Range Background</span>
+              <label className="flex items-center justify-between p-2 rounded-lg bg-white/50 border border-slate-200 cursor-pointer">
+                <span className="text-[11px] text-slate-700">Clip Out-of-Range Background</span>
                 <input
                   type="checkbox"
                   checked={msvClipOutOfRange}
@@ -368,7 +368,7 @@ export const RemoteSensingSidebar: React.FC<RemoteSensingSidebarProps> = ({
         <div className="rounded-xl border border-emerald-500/40 bg-emerald-950/20 overflow-hidden transition-colors hover:border-emerald-500/60 shadow-lg shadow-emerald-950/30">
           <button
             onClick={() => toggleSection('sentinel_predictor')}
-            className="w-full p-3 flex items-center justify-between text-left text-xs font-bold text-emerald-200 hover:text-white transition-colors"
+            className="w-full p-3 flex items-center justify-between text-left text-xs font-bold text-emerald-200 hover:text-slate-900 transition-colors"
           >
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
@@ -377,44 +377,44 @@ export const RemoteSensingSidebar: React.FC<RemoteSensingSidebarProps> = ({
             {openSections.sentinel_predictor ? (
               <ChevronDown className="w-4 h-4 text-emerald-400" />
             ) : (
-              <ChevronRight className="w-4 h-4 text-slate-400" />
+              <ChevronRight className="w-4 h-4 text-slate-600" />
             )}
           </button>
 
           {openSections.sentinel_predictor && (
             <div className="p-3 pt-0 border-t border-emerald-800/40 space-y-3 text-xs">
-              <p className="text-[10px] text-slate-300 leading-snug">
+              <p className="text-[10px] text-slate-700 leading-snug">
                 Fuses Sentinel-2 (NDVI/SWIR), Sentinel-1 (SAR Backscatter & Soil Moisture), Sentinel-3 (LST Thermal Anomaly), and ERA5-Land Rainfall to predict Manganese Ore Grade (% Mn) and Tonnage.
               </p>
 
               {/* Live Predictions Display Card */}
-              <div className="p-3 rounded-xl bg-slate-950/80 border border-emerald-500/30 space-y-2">
+              <div className="p-3 rounded-xl bg-white/80 border border-emerald-500/30 space-y-2">
                 <div className="flex items-center justify-between">
-                  <span className="text-[11px] font-semibold text-slate-300">Predicted Mn Grade</span>
+                  <span className="text-[11px] font-semibold text-slate-700">Predicted Mn Grade</span>
                   <span className={`px-2 py-0.5 rounded text-[10px] font-bold border ${
                     sentinelPred.gradeCode === 'HIGH' 
                       ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/50' 
                       : sentinelPred.gradeCode === 'MEDIUM' 
                       ? 'bg-amber-500/20 text-amber-300 border-amber-500/50' 
-                      : 'bg-slate-800 text-slate-400 border-slate-700'
+                      : 'bg-slate-200 text-slate-600 border-slate-300'
                   }`}>
                     {sentinelPred.gradeCode} GRADE
                   </span>
                 </div>
                 <div className="flex items-baseline justify-between">
-                  <span className="text-2xl font-black text-emerald-400 font-mono">{sentinelPred.mnPercent}% <span className="text-xs font-normal text-slate-400">Mn</span></span>
-                  <span className="text-[10px] text-slate-400 font-mono">Density: {sentinelPred.bulkDensity} t/m³</span>
+                  <span className="text-2xl font-black text-emerald-400 font-mono">{sentinelPred.mnPercent}% <span className="text-xs font-normal text-slate-600">Mn</span></span>
+                  <span className="text-[10px] text-slate-600 font-mono">Density: {sentinelPred.bulkDensity} t/m³</span>
                 </div>
-                <p className="text-[10px] text-slate-400 border-t border-slate-800 pt-1.5">{sentinelPred.classification}</p>
+                <p className="text-[10px] text-slate-600 border-t border-slate-200 pt-1.5">{sentinelPred.classification}</p>
                 
                 {/* Ore Tonnage Estimate */}
-                <div className="grid grid-cols-2 gap-2 pt-1 border-t border-slate-800/80">
-                  <div className="bg-slate-900/80 p-2 rounded-lg border border-slate-800">
-                    <div className="text-[9px] text-slate-400">Est. Reserve Tonnage</div>
+                <div className="grid grid-cols-2 gap-2 pt-1 border-t border-slate-200/80">
+                  <div className="bg-slate-50/80 p-2 rounded-lg border border-slate-200">
+                    <div className="text-[9px] text-slate-600">Est. Reserve Tonnage</div>
                     <div className="text-xs font-bold font-mono text-cyan-300">{(sentinelPred.weightedTonnage / 1e6).toFixed(2)}M MT</div>
                   </div>
-                  <div className="bg-slate-900/80 p-2 rounded-lg border border-slate-800">
-                    <div className="text-[9px] text-slate-400">Recoverable Mn Metal</div>
+                  <div className="bg-slate-50/80 p-2 rounded-lg border border-slate-200">
+                    <div className="text-[9px] text-slate-600">Recoverable Mn Metal</div>
                     <div className="text-xs font-bold font-mono text-purple-300">{(sentinelPred.metalTonnage / 1e6).toFixed(2)}M MT</div>
                   </div>
                 </div>
@@ -424,79 +424,79 @@ export const RemoteSensingSidebar: React.FC<RemoteSensingSidebarProps> = ({
               <div className="space-y-2">
                 {/* Sentinel-2 NDVI */}
                 <div className="space-y-1">
-                  <div className="flex justify-between text-[10px] text-slate-300">
+                  <div className="flex justify-between text-[10px] text-slate-700">
                     <span>Sentinel-2 Plant NDVI (Veg Stress)</span>
                     <span className="font-mono text-emerald-400">{s2Ndvi.toFixed(2)}</span>
                   </div>
                   <input
                     type="range" min="0.05" max="0.75" step="0.01"
                     value={s2Ndvi} onChange={(e) => setS2Ndvi(parseFloat(e.target.value))}
-                    className="w-full h-1 bg-slate-800 rounded-lg accent-emerald-400 cursor-pointer"
+                    className="w-full h-1 bg-slate-200 rounded-lg accent-emerald-400 cursor-pointer"
                   />
                 </div>
 
                 {/* Sentinel-2 SWIR Pyrolusite Ratio */}
                 <div className="space-y-1">
-                  <div className="flex justify-between text-[10px] text-slate-300">
+                  <div className="flex justify-between text-[10px] text-slate-700">
                     <span>Sentinel-2 SWIR 2.2µm Ratio (Pyrolusite)</span>
                     <span className="font-mono text-emerald-400">{s2SwirRatio.toFixed(2)}</span>
                   </div>
                   <input
                     type="range" min="1.0" max="3.5" step="0.05"
                     value={s2SwirRatio} onChange={(e) => setS2SwirRatio(parseFloat(e.target.value))}
-                    className="w-full h-1 bg-slate-800 rounded-lg accent-emerald-400 cursor-pointer"
+                    className="w-full h-1 bg-slate-200 rounded-lg accent-emerald-400 cursor-pointer"
                   />
                 </div>
 
                 {/* Sentinel-1 SAR Backscatter */}
                 <div className="space-y-1">
-                  <div className="flex justify-between text-[10px] text-slate-300">
+                  <div className="flex justify-between text-[10px] text-slate-700">
                     <span>Sentinel-1 SAR VV Backscatter σ° (dB)</span>
                     <span className="font-mono text-cyan-400">{s1SarVv.toFixed(1)} dB</span>
                   </div>
                   <input
                     type="range" min="-25.0" max="-5.0" step="0.5"
                     value={s1SarVv} onChange={(e) => setS1SarVv(parseFloat(e.target.value))}
-                    className="w-full h-1 bg-slate-800 rounded-lg accent-cyan-400 cursor-pointer"
+                    className="w-full h-1 bg-slate-200 rounded-lg accent-cyan-400 cursor-pointer"
                   />
                 </div>
 
                 {/* Sentinel-1 Soil Moisture */}
                 <div className="space-y-1">
-                  <div className="flex justify-between text-[10px] text-slate-300">
+                  <div className="flex justify-between text-[10px] text-slate-700">
                     <span>Sentinel-1 Soil Moisture (SSM %)</span>
                     <span className="font-mono text-cyan-400">{s1SoilMoisture.toFixed(0)}%</span>
                   </div>
                   <input
                     type="range" min="10.0" max="80.0" step="1.0"
                     value={s1SoilMoisture} onChange={(e) => setS1SoilMoisture(parseFloat(e.target.value))}
-                    className="w-full h-1 bg-slate-800 rounded-lg accent-cyan-400 cursor-pointer"
+                    className="w-full h-1 bg-slate-200 rounded-lg accent-cyan-400 cursor-pointer"
                   />
                 </div>
 
                 {/* Sentinel-3 LST Anomaly */}
                 <div className="space-y-1">
-                  <div className="flex justify-between text-[10px] text-slate-300">
+                  <div className="flex justify-between text-[10px] text-slate-700">
                     <span>Sentinel-3 Surface Temp Anomaly (LST)</span>
                     <span className="font-mono text-amber-400">+{s3LstAnomaly.toFixed(1)}°C</span>
                   </div>
                   <input
                     type="range" min="0.0" max="5.0" step="0.1"
                     value={s3LstAnomaly} onChange={(e) => setS3LstAnomaly(parseFloat(e.target.value))}
-                    className="w-full h-1 bg-slate-800 rounded-lg accent-amber-400 cursor-pointer"
+                    className="w-full h-1 bg-slate-200 rounded-lg accent-amber-400 cursor-pointer"
                   />
                 </div>
 
                 {/* ERA5 Monsoonal Rain */}
                 <div className="space-y-1">
-                  <div className="flex justify-between text-[10px] text-slate-300">
+                  <div className="flex justify-between text-[10px] text-slate-700">
                     <span>ERA5 Monsoon Rain (Supergene Leaching)</span>
                     <span className="font-mono text-blue-400">{era5MonsoonRain.toFixed(0)} mm</span>
                   </div>
                   <input
                     type="range" min="500.0" max="2000.0" step="25.0"
                     value={era5MonsoonRain} onChange={(e) => setEra5MonsoonRain(parseFloat(e.target.value))}
-                    className="w-full h-1 bg-slate-800 rounded-lg accent-blue-400 cursor-pointer"
+                    className="w-full h-1 bg-slate-200 rounded-lg accent-blue-400 cursor-pointer"
                   />
                 </div>
               </div>
@@ -505,10 +505,10 @@ export const RemoteSensingSidebar: React.FC<RemoteSensingSidebarProps> = ({
         </div>
 
         {/* Accordion Item: Spectral Mineral Mapping (SAM and SFF) */}
-        <div className="rounded-xl border border-slate-800 bg-slate-900/40 overflow-hidden transition-colors hover:border-slate-700">
+        <div className="rounded-xl border border-slate-200 bg-slate-50/40 overflow-hidden transition-colors hover:border-slate-300">
           <button
             onClick={() => toggleSection('sam_sff')}
-            className="w-full p-3 flex items-center justify-between text-left text-xs font-bold text-slate-200 hover:text-white transition-colors"
+            className="w-full p-3 flex items-center justify-between text-left text-xs font-bold text-slate-800 hover:text-slate-900 transition-colors"
           >
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 rounded-full bg-orange-400" />
@@ -517,19 +517,19 @@ export const RemoteSensingSidebar: React.FC<RemoteSensingSidebarProps> = ({
             {openSections.sam_sff ? (
               <ChevronDown className="w-4 h-4 text-orange-400" />
             ) : (
-              <ChevronRight className="w-4 h-4 text-slate-400" />
+              <ChevronRight className="w-4 h-4 text-slate-600" />
             )}
           </button>
 
           {openSections.sam_sff && (
-            <div className="p-3 pt-0 border-t border-slate-800/60 space-y-2.5 text-xs">
-              <p className="text-[10px] text-slate-400 leading-snug">
+            <div className="p-3 pt-0 border-t border-slate-200/60 space-y-2.5 text-xs">
+              <p className="text-[10px] text-slate-600 leading-snug">
                 Spectral Angle Mapper calibrated against USGS laboratory reflectance spectra.
               </p>
 
               {/* Endmember Pills Grid */}
               <div className="space-y-1.5">
-                <div className="flex justify-between text-[10px] text-slate-400 font-medium">
+                <div className="flex justify-between text-[10px] text-slate-600 font-medium">
                   <span>Reference Endmembers</span>
                   <span className="text-orange-400 font-mono">
                     {minerals.filter(m => m.active).length}/{minerals.length} active
@@ -542,15 +542,15 @@ export const RemoteSensingSidebar: React.FC<RemoteSensingSidebarProps> = ({
                       onClick={() => toggleMineral(mineral.id)}
                       className={`p-1.5 rounded-lg border text-left transition-all flex flex-col justify-between ${
                         mineral.active
-                          ? 'bg-orange-950/40 border-orange-500/50 text-white'
-                          : 'bg-slate-950/60 border-slate-800 text-slate-400 hover:border-slate-700'
+                          ? 'bg-orange-950/40 border-orange-500/50 text-slate-900'
+                          : 'bg-white/60 border-slate-200 text-slate-600 hover:border-slate-300'
                       }`}
                     >
                       <div className="flex items-center justify-between">
                         <span className="font-bold text-[11px] truncate">{mineral.name}</span>
                         {mineral.active && <div className="w-1.5 h-1.5 rounded-full bg-orange-400 shrink-0" />}
                       </div>
-                      <div className="flex justify-between text-[9px] text-slate-400 font-mono mt-0.5">
+                      <div className="flex justify-between text-[9px] text-slate-600 font-mono mt-0.5">
                         <span>{mineral.band.split(' ')[0]}</span>
                         <span className="text-emerald-400">{mineral.confidence}%</span>
                       </div>
@@ -560,9 +560,9 @@ export const RemoteSensingSidebar: React.FC<RemoteSensingSidebarProps> = ({
               </div>
 
               {/* Spectral Angle Cutoff Slider */}
-              <div className="p-2 rounded-lg bg-slate-950/60 border border-slate-800 space-y-1">
+              <div className="p-2 rounded-lg bg-white/60 border border-slate-200 space-y-1">
                 <div className="flex justify-between text-[10px]">
-                  <span className="text-slate-400">Angle Cutoff Tolerance</span>
+                  <span className="text-slate-600">Angle Cutoff Tolerance</span>
                   <span className="font-mono text-orange-400">{spectralAngleTolerance.toFixed(2)} rad</span>
                 </div>
                 <input
@@ -572,14 +572,14 @@ export const RemoteSensingSidebar: React.FC<RemoteSensingSidebarProps> = ({
                   step="0.01"
                   value={spectralAngleTolerance}
                   onChange={(e) => setSpectralAngleTolerance(parseFloat(e.target.value))}
-                  className="w-full h-1 bg-slate-800 rounded-lg accent-orange-400 cursor-pointer"
+                  className="w-full h-1 bg-slate-200 rounded-lg accent-orange-400 cursor-pointer"
                 />
               </div>
 
               {/* Export GeoTIFF Button */}
               <button
                 onClick={() => handleDownloadGeoTIFF('Calcite_Pyrolusite')}
-                className="w-full flex items-center justify-center gap-1.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-[11px] font-medium transition-colors border border-slate-700/60"
+                className="w-full flex items-center justify-center gap-1.5 py-1.5 rounded-lg bg-slate-200 hover:bg-slate-300 text-slate-800 text-[11px] font-medium transition-colors border border-slate-300/60"
               >
                 <Download className="w-3.5 h-3.5 text-orange-400" />
                 <span>Export Active Minerals GeoTIFF</span>
@@ -595,10 +595,10 @@ export const RemoteSensingSidebar: React.FC<RemoteSensingSidebarProps> = ({
         </div>
 
         {/* Accordion Item: Geological Spectral Indices */}
-        <div className="rounded-xl border border-slate-800 bg-slate-900/40 overflow-hidden transition-colors hover:border-slate-700">
+        <div className="rounded-xl border border-slate-200 bg-slate-50/40 overflow-hidden transition-colors hover:border-slate-300">
           <button
             onClick={() => toggleSection('indices')}
-            className="w-full p-3 flex items-center justify-between text-left text-xs font-bold text-slate-200 hover:text-white transition-colors"
+            className="w-full p-3 flex items-center justify-between text-left text-xs font-bold text-slate-800 hover:text-slate-900 transition-colors"
           >
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 rounded-full bg-cyan-400" />
@@ -607,26 +607,26 @@ export const RemoteSensingSidebar: React.FC<RemoteSensingSidebarProps> = ({
             {openSections.indices ? (
               <ChevronDown className="w-4 h-4 text-cyan-400" />
             ) : (
-              <ChevronRight className="w-4 h-4 text-slate-400" />
+              <ChevronRight className="w-4 h-4 text-slate-600" />
             )}
           </button>
 
           {openSections.indices && (
-            <div className="p-3 pt-0 border-t border-slate-800/60 space-y-2 text-xs">
-              <p className="text-[10px] text-slate-400 leading-snug">
+            <div className="p-3 pt-0 border-t border-slate-200/60 space-y-2 text-xs">
+              <p className="text-[10px] text-slate-600 leading-snug">
                 Band ratio indexes for mineral alterations and iron/manganese oxide identification.
               </p>
 
               <div className="space-y-1.5">
-                <div className="flex items-center justify-between p-2 rounded-lg bg-slate-950/60 border border-slate-800 text-[11px]">
+                <div className="flex items-center justify-between p-2 rounded-lg bg-white/60 border border-slate-200 text-[11px]">
                   <span>Ferric Oxide (Fe³⁺) Ratio: B4/B2</span>
                   <span className="font-mono text-emerald-400 font-bold">1.84</span>
                 </div>
-                <div className="flex items-center justify-between p-2 rounded-lg bg-slate-950/60 border border-slate-800 text-[11px]">
+                <div className="flex items-center justify-between p-2 rounded-lg bg-white/60 border border-slate-200 text-[11px]">
                   <span>Ferrous Silicate Index: B12/B8</span>
                   <span className="font-mono text-cyan-400 font-bold">0.92</span>
                 </div>
-                <div className="flex items-center justify-between p-2 rounded-lg bg-slate-950/60 border border-slate-800 text-[11px]">
+                <div className="flex items-center justify-between p-2 rounded-lg bg-white/60 border border-slate-200 text-[11px]">
                   <span>Al-OH Hydroxyl Alteration: B7/B6</span>
                   <span className="font-mono text-amber-400 font-bold">2.14</span>
                 </div>
@@ -636,10 +636,10 @@ export const RemoteSensingSidebar: React.FC<RemoteSensingSidebarProps> = ({
         </div>
 
         {/* Accordion Item: Bare Earth Composite */}
-        <div className="rounded-xl border border-slate-800 bg-slate-900/40 overflow-hidden transition-colors hover:border-slate-700">
+        <div className="rounded-xl border border-slate-200 bg-slate-50/40 overflow-hidden transition-colors hover:border-slate-300">
           <button
             onClick={() => toggleSection('bare_earth')}
-            className="w-full p-3 flex items-center justify-between text-left text-xs font-bold text-slate-200 hover:text-white transition-colors"
+            className="w-full p-3 flex items-center justify-between text-left text-xs font-bold text-slate-800 hover:text-slate-900 transition-colors"
           >
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 rounded-full bg-amber-400" />
@@ -648,23 +648,23 @@ export const RemoteSensingSidebar: React.FC<RemoteSensingSidebarProps> = ({
             {openSections.bare_earth ? (
               <ChevronDown className="w-4 h-4 text-amber-400" />
             ) : (
-              <ChevronRight className="w-4 h-4 text-slate-400" />
+              <ChevronRight className="w-4 h-4 text-slate-600" />
             )}
           </button>
 
           {openSections.bare_earth && (
-            <div className="p-3 pt-0 border-t border-slate-800/60 space-y-2 text-xs">
-              <p className="text-[10px] text-slate-400 leading-snug">
+            <div className="p-3 pt-0 border-t border-slate-200/60 space-y-2 text-xs">
+              <p className="text-[10px] text-slate-600 leading-snug">
                 Synthetic time-series composite stripping green canopy to reveal pure bedrock spectral reflectance.
               </p>
-              <div className="p-2 rounded-lg bg-slate-950/60 border border-slate-800 text-[11px] space-y-1">
+              <div className="p-2 rounded-lg bg-white/60 border border-slate-200 text-[11px] space-y-1">
                 <div className="flex justify-between">
-                  <span className="text-slate-400">Vegetation Penetration:</span>
+                  <span className="text-slate-600">Vegetation Penetration:</span>
                   <span className="text-emerald-400 font-mono">92.4% Clear</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-slate-400">Seasonal Composite:</span>
-                  <span className="text-slate-300 font-mono">Dry Season Median</span>
+                  <span className="text-slate-600">Seasonal Composite:</span>
+                  <span className="text-slate-700 font-mono">Dry Season Median</span>
                 </div>
               </div>
             </div>
@@ -672,10 +672,10 @@ export const RemoteSensingSidebar: React.FC<RemoteSensingSidebarProps> = ({
         </div>
 
         {/* Accordion Item: Lineament and Structure Detection */}
-        <div className="rounded-xl border border-slate-800 bg-slate-900/40 overflow-hidden transition-colors hover:border-slate-700">
+        <div className="rounded-xl border border-slate-200 bg-slate-50/40 overflow-hidden transition-colors hover:border-slate-300">
           <button
             onClick={() => toggleSection('lineaments')}
-            className="w-full p-3 flex items-center justify-between text-left text-xs font-bold text-slate-200 hover:text-white transition-colors"
+            className="w-full p-3 flex items-center justify-between text-left text-xs font-bold text-slate-800 hover:text-slate-900 transition-colors"
           >
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 rounded-full bg-purple-400" />
@@ -684,23 +684,23 @@ export const RemoteSensingSidebar: React.FC<RemoteSensingSidebarProps> = ({
             {openSections.lineaments ? (
               <ChevronDown className="w-4 h-4 text-purple-400" />
             ) : (
-              <ChevronRight className="w-4 h-4 text-slate-400" />
+              <ChevronRight className="w-4 h-4 text-slate-600" />
             )}
           </button>
 
           {openSections.lineaments && (
-            <div className="p-3 pt-0 border-t border-slate-800/60 space-y-2 text-xs">
-              <p className="text-[10px] text-slate-400 leading-snug">
+            <div className="p-3 pt-0 border-t border-slate-200/60 space-y-2 text-xs">
+              <p className="text-[10px] text-slate-600 leading-snug">
                 Automated Hough transform & directional Sobel filtering tracing fold hinges and fault zones.
               </p>
-              <div className="p-2 rounded-lg bg-slate-950/60 border border-slate-800 space-y-1 text-[11px]">
+              <div className="p-2 rounded-lg bg-white/60 border border-slate-200 space-y-1 text-[11px]">
                 <div className="flex justify-between">
-                  <span className="text-slate-400">Dominant Strike:</span>
+                  <span className="text-slate-600">Dominant Strike:</span>
                   <span className="font-mono text-purple-400 font-bold">N68°E (Sausar Belt)</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-slate-400">Fault Correlation:</span>
-                  <span className="font-mono text-white">94.8%</span>
+                  <span className="text-slate-600">Fault Correlation:</span>
+                  <span className="font-mono text-slate-900">94.8%</span>
                 </div>
               </div>
             </div>
@@ -709,7 +709,7 @@ export const RemoteSensingSidebar: React.FC<RemoteSensingSidebarProps> = ({
       </div>
 
       {/* Footer Info */}
-      <div className="p-3 border-t border-slate-800/80 bg-slate-950/60 text-[11px] text-slate-400 flex items-center justify-between">
+      <div className="p-3 border-t border-slate-200/80 bg-white/60 text-[11px] text-slate-600 flex items-center justify-between">
         <span className="font-mono text-[10px]">MOIL EO Intelligence</span>
         <span className="text-emerald-400 font-mono text-[10px]">24 Bands Active</span>
       </div>

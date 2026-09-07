@@ -149,20 +149,20 @@ export const ConfidenceInspector: React.FC<ConfidenceInspectorProps> = ({
   };
 
   return (
-    <aside className={fullScreen ? "w-full h-full bg-[#0c121e]/98 flex flex-col" : "fixed top-16 right-0 bottom-0 w-[440px] max-w-[95vw] bg-[#0c121e]/98 border-l border-slate-800/90 shadow-2xl shadow-black/80 z-[2000] flex flex-col backdrop-blur-xl animate-in slide-in-from-right duration-300"}>
+    <aside className={fullScreen ? "w-full h-full bg-slate-100/98 flex flex-col" : "fixed top-16 right-0 bottom-0 w-[440px] max-w-[95vw] bg-slate-100/98 border-l border-slate-200/90 shadow-2xl shadow-black/80 z-[2000] flex flex-col backdrop-blur-xl animate-in slide-in-from-right duration-300"}>
       {/* Streamlined Header with Mine Details & Close Button */}
-      <div className="p-4 border-b border-slate-800/90 bg-slate-900/80 backdrop-blur-md">
+      <div className="p-4 border-b border-slate-200/90 bg-slate-50/80 backdrop-blur-md">
         <div className="flex items-start justify-between gap-3">
           <div className="flex-1">
             <div className="flex items-center gap-2">
-              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">
+              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-200 text-slate-700 border border-slate-300">
                 {zone.leaseArea}
               </span>
               <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-emerald-950/60 text-emerald-300 border border-emerald-500/30">
                 {zone.status}
               </span>
             </div>
-            <h3 className="text-base font-bold text-white mt-1.5 leading-snug">
+            <h3 className="text-base font-bold text-slate-900 mt-1.5 leading-snug">
               {zone.name}
             </h3>
           </div>
@@ -170,7 +170,7 @@ export const ConfidenceInspector: React.FC<ConfidenceInspectorProps> = ({
           {!fullScreen && (
             <button
               onClick={onClose}
-              className="p-1.5 rounded-lg bg-slate-800/80 hover:bg-slate-700 text-slate-400 hover:text-white transition-colors shrink-0"
+              className="p-1.5 rounded-lg bg-slate-200/80 hover:bg-slate-300 text-slate-600 hover:text-slate-900 transition-colors shrink-0"
               title="Close Inspector"
             >
               <X className="w-4 h-4" />
@@ -179,16 +179,16 @@ export const ConfidenceInspector: React.FC<ConfidenceInspectorProps> = ({
         </div>
 
         {/* Exact Location Card */}
-        <div className="mt-3 p-2.5 rounded-lg bg-slate-950/80 border border-slate-800 text-xs font-mono space-y-1">
+        <div className="mt-3 p-2.5 rounded-lg bg-white/80 border border-slate-200 text-xs font-mono space-y-1">
           <div className="flex items-center gap-1.5 text-emerald-400 font-bold">
             <MapPin className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
             <span>{zone.exactLocation?.dms || `${zone.coordinates[0].toFixed(4)}° N, ${zone.coordinates[1].toFixed(4)}° E`}</span>
           </div>
-          <div className="text-slate-300 text-[11px] flex items-center justify-between">
+          <div className="text-slate-700 text-[11px] flex items-center justify-between">
             <span>{zone.exactLocation?.tehsilVillage || zone.leaseArea}, <strong className="text-amber-300">{zone.exactLocation?.districtState}</strong></span>
-            <span className="text-slate-400">{zone.exactLocation?.elevationMeters || 320}m AMSL</span>
+            <span className="text-slate-600">{zone.exactLocation?.elevationMeters || 320}m AMSL</span>
           </div>
-          <div className="text-[10px] text-slate-500 flex justify-between pt-0.5 border-t border-slate-800/80">
+          <div className="text-[10px] text-slate-500 flex justify-between pt-0.5 border-t border-slate-200/80">
             <span>WGS84 GPS: [{zone.coordinates[0].toFixed(4)}, {zone.coordinates[1].toFixed(4)}]</span>
             <span>PIN: {zone.exactLocation?.pincode || '481102'}</span>
           </div>
@@ -199,16 +199,16 @@ export const ConfidenceInspector: React.FC<ConfidenceInspectorProps> = ({
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
 
         {/* Highlight Score Card (MOIL AI Probabilistic Approach) */}
-        <div className="p-4 rounded-xl bg-gradient-to-b from-slate-900/90 to-slate-950/90 border border-slate-800/90 shadow-inner relative overflow-hidden">
+        <div className="p-4 rounded-xl bg-gradient-to-b from-slate-900/90 to-slate-950/90 border border-slate-200/90 shadow-inner relative overflow-hidden">
           {/* Subtle background glow */}
           <div className="absolute -top-10 -right-10 w-32 h-32 bg-emerald-500/10 rounded-full blur-2xl pointer-events-none" />
 
           <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-semibold text-slate-300 flex items-center gap-1.5">
+            <span className="text-xs font-semibold text-slate-700 flex items-center gap-1.5">
               <Activity className="w-3.5 h-3.5 text-emerald-400" />
               Manganese Probability Score
             </span>
-            <span className="text-[10px] font-mono text-slate-400">
+            <span className="text-[10px] font-mono text-slate-600">
               CI: {zone.confidenceInterval}
             </span>
           </div>
@@ -217,13 +217,13 @@ export const ConfidenceInspector: React.FC<ConfidenceInspectorProps> = ({
             <span className={`text-4xl font-extrabold tracking-tight bg-gradient-to-r ${getScoreColor(zone.manganeseProbability)} bg-clip-text text-transparent`}>
               {zone.manganeseProbability}%
             </span>
-            <span className="text-xs text-slate-400 font-medium">
+            <span className="text-xs text-slate-600 font-medium">
               High Deposit Potential
             </span>
           </div>
 
           {/* Animated Progress Bar */}
-          <div className="w-full bg-slate-800/80 h-3 rounded-full overflow-hidden p-0.5 border border-slate-700/50 mt-2">
+          <div className="w-full bg-slate-200/80 h-3 rounded-full overflow-hidden p-0.5 border border-slate-300/50 mt-2">
             <div 
               className={`h-full rounded-full bg-gradient-to-r ${getScoreColor(zone.manganeseProbability)} transition-all duration-1000 shadow-sm`}
               style={{ width: `${zone.manganeseProbability}%` }}
@@ -235,7 +235,7 @@ export const ConfidenceInspector: React.FC<ConfidenceInspectorProps> = ({
             <span className="font-semibold text-emerald-400 block mb-0.5 text-[11px] uppercase tracking-wider">
               Primary Indicator:
             </span>
-            <p className="text-slate-200 text-xs leading-snug">
+            <p className="text-slate-800 text-xs leading-snug">
               {zone.primaryIndicator}
             </p>
           </div>
@@ -243,9 +243,9 @@ export const ConfidenceInspector: React.FC<ConfidenceInspectorProps> = ({
 
         {/* 3 Metric Value Badges */}
         <div className="grid grid-cols-2 gap-2.5 text-xs">
-          <div className="p-3 rounded-xl bg-slate-900/60 border border-slate-800">
-            <span className="text-[11px] text-slate-400 block mb-1">Estimated Reserve Volume</span>
-            <span className="text-sm font-bold text-white font-mono block">
+          <div className="p-3 rounded-xl bg-slate-50/60 border border-slate-200">
+            <span className="text-[11px] text-slate-600 block mb-1">Estimated Reserve Volume</span>
+            <span className="text-sm font-bold text-slate-900 font-mono block">
               {zone.estimatedReserveVolume}
             </span>
             <span className="text-[10px] text-emerald-400 font-medium mt-0.5 block">
@@ -253,25 +253,25 @@ export const ConfidenceInspector: React.FC<ConfidenceInspectorProps> = ({
             </span>
           </div>
 
-          <div className="p-3 rounded-xl bg-slate-900/60 border border-slate-800">
-            <span className="text-[11px] text-slate-400 block mb-1">Estimated Valuation</span>
+          <div className="p-3 rounded-xl bg-slate-50/60 border border-slate-200">
+            <span className="text-[11px] text-slate-600 block mb-1">Estimated Valuation</span>
             <span className="text-sm font-bold text-emerald-400 font-mono block">
               {zone.estimatedValueINR}
             </span>
-            <span className="text-[10px] text-slate-400 font-medium mt-0.5 block">
+            <span className="text-[10px] text-slate-600 font-medium mt-0.5 block">
               Strip Ratio: {zone.overburdenRatio}
             </span>
           </div>
         </div>
 
         {/* Multi-Tab Navigation */}
-        <div className="flex border-b border-slate-800 text-xs">
+        <div className="flex border-b border-slate-200 text-xs">
           <button
             onClick={() => setActiveTab('geology')}
             className={`pb-2 px-3 font-semibold transition-colors border-b-2 ${
               activeTab === 'geology'
                 ? 'border-emerald-500 text-emerald-400'
-                : 'border-transparent text-slate-400 hover:text-slate-200'
+                : 'border-transparent text-slate-600 hover:text-slate-800'
             }`}
           >
             Geological Indicators
@@ -281,7 +281,7 @@ export const ConfidenceInspector: React.FC<ConfidenceInspectorProps> = ({
             className={`pb-2 px-3 font-semibold transition-colors border-b-2 ${
               activeTab === 'stratigraphy'
                 ? 'border-emerald-500 text-emerald-400'
-                : 'border-transparent text-slate-400 hover:text-slate-200'
+                : 'border-transparent text-slate-600 hover:text-slate-800'
             }`}
           >
             Drill Core Depth Log
@@ -291,7 +291,7 @@ export const ConfidenceInspector: React.FC<ConfidenceInspectorProps> = ({
             className={`pb-2 px-3 font-semibold transition-colors border-b-2 ${
               activeTab === 'satellite'
                 ? 'border-emerald-500 text-emerald-400'
-                : 'border-transparent text-slate-400 hover:text-slate-200'
+                : 'border-transparent text-slate-600 hover:text-slate-800'
             }`}
           >
             Earth Observation
@@ -304,7 +304,7 @@ export const ConfidenceInspector: React.FC<ConfidenceInspectorProps> = ({
             className={`pb-2 px-3 font-semibold transition-colors border-b-2 flex items-center gap-1.5 ${
               activeTab === 'kriging'
                 ? 'border-emerald-500 text-emerald-400'
-                : 'border-transparent text-slate-400 hover:text-slate-200'
+                : 'border-transparent text-slate-600 hover:text-slate-800'
             }`}
           >
             <span>Kriging Reserve Model</span>
@@ -318,36 +318,36 @@ export const ConfidenceInspector: React.FC<ConfidenceInspectorProps> = ({
         {/* Tab 1: Geological Indicators */}
         {activeTab === 'geology' && (
           <div className="space-y-2.5">
-            <div className="p-2.5 rounded-lg bg-slate-900/50 border border-slate-800 text-xs">
+            <div className="p-2.5 rounded-lg bg-slate-50/50 border border-slate-200 text-xs">
               <div className="flex items-center justify-between mb-1">
-                <span className="font-semibold text-slate-300">Subsurface Density (Bouguer)</span>
+                <span className="font-semibold text-slate-700">Subsurface Density (Bouguer)</span>
                 <span className="font-mono text-emerald-400 font-bold">{zone.indicators.densityAnomaly.value}</span>
               </div>
-              <p className="text-[11px] text-slate-400 leading-snug">{zone.indicators.densityAnomaly.desc}</p>
+              <p className="text-[11px] text-slate-600 leading-snug">{zone.indicators.densityAnomaly.desc}</p>
             </div>
 
-            <div className="p-2.5 rounded-lg bg-slate-900/50 border border-slate-800 text-xs">
+            <div className="p-2.5 rounded-lg bg-slate-50/50 border border-slate-200 text-xs">
               <div className="flex items-center justify-between mb-1">
-                <span className="font-semibold text-slate-300">Vegetation Stress Anomaly (NDVI)</span>
+                <span className="font-semibold text-slate-700">Vegetation Stress Anomaly (NDVI)</span>
                 <span className="font-mono text-emerald-400 font-bold">{zone.indicators.vegetationStress.value}</span>
               </div>
-              <p className="text-[11px] text-slate-400 leading-snug">{zone.indicators.vegetationStress.desc}</p>
+              <p className="text-[11px] text-slate-600 leading-snug">{zone.indicators.vegetationStress.desc}</p>
             </div>
 
-            <div className="p-2.5 rounded-lg bg-slate-900/50 border border-slate-800 text-xs">
+            <div className="p-2.5 rounded-lg bg-slate-50/50 border border-slate-200 text-xs">
               <div className="flex items-center justify-between mb-1">
-                <span className="font-semibold text-slate-300">Thermal Inertia (LST)</span>
+                <span className="font-semibold text-slate-700">Thermal Inertia (LST)</span>
                 <span className="font-mono text-teal-400 font-bold">{zone.indicators.thermalInertia.value}</span>
               </div>
-              <p className="text-[11px] text-slate-400 leading-snug">{zone.indicators.thermalInertia.desc}</p>
+              <p className="text-[11px] text-slate-600 leading-snug">{zone.indicators.thermalInertia.desc}</p>
             </div>
 
-            <div className="p-2.5 rounded-lg bg-slate-900/50 border border-slate-800 text-xs">
+            <div className="p-2.5 rounded-lg bg-slate-50/50 border border-slate-200 text-xs">
               <div className="flex items-center justify-between mb-1">
-                <span className="font-semibold text-slate-300">Structural Trap & Kinematics</span>
+                <span className="font-semibold text-slate-700">Structural Trap & Kinematics</span>
                 <span className="font-mono text-amber-400 font-bold">{zone.indicators.structuralTrap.value}</span>
               </div>
-              <p className="text-[11px] text-slate-400 leading-snug">{zone.indicators.structuralTrap.desc}</p>
+              <p className="text-[11px] text-slate-600 leading-snug">{zone.indicators.structuralTrap.desc}</p>
             </div>
           </div>
         )}
@@ -355,7 +355,7 @@ export const ConfidenceInspector: React.FC<ConfidenceInspectorProps> = ({
         {/* Tab 2: Stratigraphy Core Depth Log */}
         {activeTab === 'stratigraphy' && (
           <div className="space-y-2">
-            <div className="flex items-center justify-between text-[11px] text-slate-400 px-1">
+            <div className="flex items-center justify-between text-[11px] text-slate-600 px-1">
               <span>Depth & Lithology</span>
               <span>Mn Assay Grade</span>
             </div>
@@ -363,19 +363,19 @@ export const ConfidenceInspector: React.FC<ConfidenceInspectorProps> = ({
               {zone.stratigraphy.map((layer, idx) => (
                 <div 
                   key={idx}
-                  className="p-2 rounded-lg border border-slate-800 flex items-center justify-between text-xs"
+                  className="p-2 rounded-lg border border-slate-200 flex items-center justify-between text-xs"
                   style={{ backgroundColor: `${layer.color}15`, borderLeftWidth: 4, borderLeftColor: layer.color }}
                 >
                   <div>
-                    <span className="font-mono text-[10px] text-slate-400 block">{layer.depth}</span>
-                    <span className="font-semibold text-slate-200">{layer.layerName}</span>
-                    <span className="text-[10px] text-slate-400 block">{layer.rockType}</span>
+                    <span className="font-mono text-[10px] text-slate-600 block">{layer.depth}</span>
+                    <span className="font-semibold text-slate-800">{layer.layerName}</span>
+                    <span className="text-[10px] text-slate-600 block">{layer.rockType}</span>
                   </div>
                   <div className="text-right">
-                    <span className={`font-mono font-bold text-sm ${layer.mnGrade > 30 ? 'text-emerald-400' : 'text-slate-300'}`}>
+                    <span className={`font-mono font-bold text-sm ${layer.mnGrade > 30 ? 'text-emerald-400' : 'text-slate-700'}`}>
                       {layer.mnGrade}%
                     </span>
-                    <span className="text-[9px] text-slate-400 block">Mn Grade</span>
+                    <span className="text-[9px] text-slate-600 block">Mn Grade</span>
                   </div>
                 </div>
               ))}
@@ -386,22 +386,22 @@ export const ConfidenceInspector: React.FC<ConfidenceInspectorProps> = ({
         {/* Tab 3: Satellite Telemetry */}
         {activeTab === 'satellite' && (
           <div className="space-y-2.5 text-xs">
-            <div className="p-3 rounded-lg bg-slate-900/60 border border-slate-800 space-y-2">
+            <div className="p-3 rounded-lg bg-slate-50/60 border border-slate-200 space-y-2">
               <div className="flex justify-between">
-                <span className="text-slate-400">Latest Satellite Pass:</span>
-                <span className="font-mono text-slate-200">{zone.satelliteTelemetry.sentinelPassDate}</span>
+                <span className="text-slate-600">Latest Satellite Pass:</span>
+                <span className="font-mono text-slate-800">{zone.satelliteTelemetry.sentinelPassDate}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-400">Sentinel-1 InSAR Coherence:</span>
+                <span className="text-slate-600">Sentinel-1 InSAR Coherence:</span>
                 <span className="font-mono text-emerald-400">{zone.satelliteTelemetry.sarCoherence}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-400">Canopy Chlorosis Score:</span>
+                <span className="text-slate-600">Canopy Chlorosis Score:</span>
                 <span className="font-mono text-teal-400">{zone.satelliteTelemetry.ndviAnomalyScore}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-400">Surface Temp (LST):</span>
-                <span className="font-mono text-slate-200">{zone.satelliteTelemetry.surfaceTempKelvin} K</span>
+                <span className="text-slate-600">Surface Temp (LST):</span>
+                <span className="font-mono text-slate-800">{zone.satelliteTelemetry.surfaceTempKelvin} K</span>
               </div>
             </div>
           </div>
@@ -413,7 +413,7 @@ export const ConfidenceInspector: React.FC<ConfidenceInspectorProps> = ({
             <div className="p-4 rounded-xl bg-gradient-to-br from-purple-950/40 via-slate-900 to-indigo-950/30 border border-purple-500/40 space-y-3">
               <div className="flex items-center justify-between">
                 <div>
-                  <span className="font-bold text-white text-xs block">
+                  <span className="font-bold text-slate-900 text-xs block">
                     UNFC Reserve Classification
                   </span>
                   <span className="text-[10px] text-purple-300 font-mono">
@@ -425,17 +425,17 @@ export const ConfidenceInspector: React.FC<ConfidenceInspectorProps> = ({
                 </span>
               </div>
 
-              <div className="p-2.5 rounded-lg bg-slate-950/60 border border-slate-800/80 space-y-1">
+              <div className="p-2.5 rounded-lg bg-white/60 border border-slate-200/80 space-y-1">
                 <div className="flex justify-between text-[11px]">
-                  <span className="text-slate-400">Ore Horizon Depth:</span>
-                  <span className="font-mono text-slate-200">65m - 280m Subsurface</span>
+                  <span className="text-slate-600">Ore Horizon Depth:</span>
+                  <span className="font-mono text-slate-800">65m - 280m Subsurface</span>
                 </div>
                 <div className="flex justify-between text-[11px]">
-                  <span className="text-slate-400">Dominant Mineral:</span>
-                  <span className="font-mono text-slate-200">{zone.primaryIndicator.split(' ')[0]}</span>
+                  <span className="text-slate-600">Dominant Mineral:</span>
+                  <span className="font-mono text-slate-800">{zone.primaryIndicator.split(' ')[0]}</span>
                 </div>
                 <div className="flex justify-between text-[11px]">
-                  <span className="text-slate-400">Reserve Category:</span>
+                  <span className="text-slate-600">Reserve Category:</span>
                   <span className="font-mono text-emerald-400">Proved Mineral Reserve (UNFC-111)</span>
                 </div>
               </div>
@@ -449,60 +449,60 @@ export const ConfidenceInspector: React.FC<ConfidenceInspectorProps> = ({
 
             {/* Results Display */}
             {krigingResult && (
-              <div className="p-3.5 rounded-xl bg-slate-900/90 border border-emerald-500/30 space-y-3">
-                <div className="flex justify-between items-center pb-2 border-b border-slate-800">
-                  <span className="font-bold text-white text-xs">Mathematical Reserve Output</span>
-                  <span className="font-mono text-[10px] text-slate-400">
+              <div className="p-3.5 rounded-xl bg-slate-50/90 border border-emerald-500/30 space-y-3">
+                <div className="flex justify-between items-center pb-2 border-b border-slate-200">
+                  <span className="font-bold text-slate-900 text-xs">Mathematical Reserve Output</span>
+                  <span className="font-mono text-[10px] text-slate-600">
                     Latency: {krigingResult.computation_time_seconds}s
                   </span>
                 </div>
 
                 <div className="grid grid-cols-2 gap-2">
-                  <div className="p-2 rounded-lg bg-slate-950/80 border border-slate-800">
-                    <span className="text-[10px] text-slate-400 block">Total Extractable Ore</span>
+                  <div className="p-2 rounded-lg bg-white/80 border border-slate-200">
+                    <span className="text-[10px] text-slate-600 block">Total Extractable Ore</span>
                     <span className="font-mono text-base font-bold text-emerald-400 block">
                       {krigingResult.total_tonnage_mt} MT
                     </span>
-                    <span className="text-[9px] text-slate-400 font-mono">
+                    <span className="text-[9px] text-slate-600 font-mono">
                       ({krigingResult.total_tonnage.toLocaleString()} t)
                     </span>
                   </div>
 
-                  <div className="p-2 rounded-lg bg-slate-950/80 border border-slate-800">
-                    <span className="text-[10px] text-slate-400 block">Average Ore Grade</span>
-                    <span className="font-mono text-base font-bold text-white block">
+                  <div className="p-2 rounded-lg bg-white/80 border border-slate-200">
+                    <span className="text-[10px] text-slate-600 block">Average Ore Grade</span>
+                    <span className="font-mono text-base font-bold text-slate-900 block">
                       {krigingResult.average_grade}% Mn
                     </span>
                     <span className="text-[9px] text-emerald-400">Above {cutoffGrade}% cutoff</span>
                   </div>
 
-                  <div className="p-2 rounded-lg bg-slate-950/80 border border-slate-800">
-                    <span className="text-[10px] text-slate-400 block">Waste Tonnage</span>
-                    <span className="font-mono text-xs font-bold text-slate-300 block">
+                  <div className="p-2 rounded-lg bg-white/80 border border-slate-200">
+                    <span className="text-[10px] text-slate-600 block">Waste Tonnage</span>
+                    <span className="font-mono text-xs font-bold text-slate-700 block">
                       {krigingResult.waste_tonnage_mt} MT
                     </span>
-                    <span className="text-[9px] text-slate-400">Below cutoff grade</span>
+                    <span className="text-[9px] text-slate-600">Below cutoff grade</span>
                   </div>
 
-                  <div className="p-2 rounded-lg bg-slate-950/80 border border-slate-800">
-                    <span className="text-[10px] text-slate-400 block">Stripping Ratio (W:O)</span>
+                  <div className="p-2 rounded-lg bg-white/80 border border-slate-200">
+                    <span className="text-[10px] text-slate-600 block">Stripping Ratio (W:O)</span>
                     <span className="font-mono text-xs font-bold text-amber-400 block">
                       {krigingResult.stripping_ratio} : 1
                     </span>
-                    <span className="text-[9px] text-slate-400">Overburden factor</span>
+                    <span className="text-[9px] text-slate-600">Overburden factor</span>
                   </div>
                 </div>
 
                 {/* Grade-Tonnage Sensitivity Table */}
                 {krigingResult.grade_tonnage_curve && (
-                  <div className="pt-2 border-t border-slate-800">
-                    <span className="text-[10px] font-semibold text-slate-400 block mb-1.5">
+                  <div className="pt-2 border-t border-slate-200">
+                    <span className="text-[10px] font-semibold text-slate-600 block mb-1.5">
                       Cut-off Grade Sensitivity Curve
                     </span>
                     <div className="overflow-x-auto">
                       <table className="w-full text-left text-[10px] font-mono">
                         <thead>
-                          <tr className="border-b border-slate-800 text-slate-400">
+                          <tr className="border-b border-slate-200 text-slate-600">
                             <th className="pb-1">Cut-Off</th>
                             <th className="pb-1">Ore (MT)</th>
                             <th className="pb-1 text-right">Avg Grade</th>
@@ -512,7 +512,7 @@ export const ConfidenceInspector: React.FC<ConfidenceInspectorProps> = ({
                           {krigingResult.grade_tonnage_curve.map((row, idx) => (
                             <tr
                               key={idx}
-                              className={row.cut_off_grade === cutoffGrade ? 'bg-emerald-950/40 text-emerald-300 font-bold' : 'text-slate-300'}
+                              className={row.cut_off_grade === cutoffGrade ? 'bg-emerald-950/40 text-emerald-300 font-bold' : 'text-slate-700'}
                             >
                               <td className="py-1">{row.cut_off_grade}%</td>
                               <td className="py-1">{row.tonnage_mt} MT</td>
@@ -531,12 +531,12 @@ export const ConfidenceInspector: React.FC<ConfidenceInspectorProps> = ({
 
 
         {/* AI Prescriptive Recommendation */}
-        <div className="p-3 rounded-xl bg-slate-900/70 border border-slate-800 text-xs">
+        <div className="p-3 rounded-xl bg-slate-50/70 border border-slate-200 text-xs">
           <div className="flex items-center gap-1.5 font-semibold text-amber-400 mb-1">
             <Sparkles className="w-3.5 h-3.5" />
             <span>AI Geologist Directive</span>
           </div>
-          <p className="text-slate-300 text-[11px] leading-relaxed">
+          <p className="text-slate-700 text-[11px] leading-relaxed">
             {zone.aiRecommendation}
           </p>
         </div>
@@ -550,11 +550,11 @@ export const ConfidenceInspector: React.FC<ConfidenceInspectorProps> = ({
       </div>
 
       {/* Footer Actions */}
-      <div className="p-4 border-t border-slate-800 bg-slate-950/80 flex gap-2">
+      <div className="p-4 border-t border-slate-200 bg-white/80 flex gap-2">
         <button
           onClick={handleExportDossier}
           disabled={isExporting}
-          className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-semibold text-xs transition-all shadow-md shadow-emerald-950/50 disabled:opacity-50"
+          className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-slate-900 font-semibold text-xs transition-all shadow-md shadow-emerald-950/50 disabled:opacity-50"
         >
           {isExporting ? (
             <>

@@ -19,13 +19,13 @@ const DynamicLeafletMap = dynamic(
   {
     ssr: false,
     loading: () => (
-      <div className="w-full h-full flex flex-col items-center justify-center bg-[#090d16] text-slate-400 gap-3">
+      <div className="w-full h-full flex flex-col items-center justify-center bg-slate-50 text-slate-600 gap-3">
         <div className="relative">
           <Loader2 className="w-8 h-8 animate-spin text-emerald-400" />
           <div className="absolute inset-0 blur-lg bg-emerald-500/20" />
         </div>
         <div className="text-center font-mono">
-          <p className="text-xs text-slate-300 font-semibold">Initializing MOIL Geospatial GIS...</p>
+          <p className="text-xs text-slate-700 font-semibold">Initializing MOIL Geospatial GIS...</p>
           <p className="text-[10px] text-slate-500">Loading Sentinel-2 & Cartosat-3 Vector Layers</p>
         </div>
       </div>
@@ -42,13 +42,13 @@ export const MapWrapper: React.FC<MapWrapperProps> = (props) => {
 
   if (!mounted) {
     return (
-      <div className="w-full h-full flex flex-col items-center justify-center bg-[#090d16] text-slate-400 gap-3">
+      <div className="w-full h-full flex flex-col items-center justify-center bg-slate-50 text-slate-600 gap-3">
         <div className="relative">
           <Loader2 className="w-8 h-8 animate-spin text-emerald-400" />
           <div className="absolute inset-0 blur-lg bg-emerald-500/20" />
         </div>
         <div className="text-center font-mono">
-          <p className="text-xs text-slate-300 font-semibold">Initializing MOIL Geospatial GIS...</p>
+          <p className="text-xs text-slate-700 font-semibold">Initializing MOIL Geospatial GIS...</p>
           <p className="text-[10px] text-slate-500">Loading Sentinel-2 & Cartosat-3 Vector Layers</p>
         </div>
       </div>

@@ -305,7 +305,7 @@ function BenchAndBlastGrid3D({
               <Html position={[0, benchHeight + 1.3, 0]} center distanceFactor={24}>
                 <div className={`px-2 py-1 rounded-lg text-[9px] font-mono font-bold whitespace-nowrap shadow-xl border transition-all ${
                   isDetonating 
-                    ? 'bg-red-500 text-white border-red-400 animate-ping' 
+                    ? 'bg-red-500 text-slate-900 border-red-400 animate-ping' 
                     : isHovered
                       ? 'bg-purple-950 text-purple-300 border-purple-400 scale-125 z-50 shadow-purple-900/50'
                       : zone === 'HIGH_GRADE_ORE'
@@ -476,9 +476,9 @@ export function BlastingPitStudio3D({ mineId, zone }: { mineId?: string; zone?: 
   const hoveredGPS = hoveredData ? convertHoleToGPS(hoveredData.x, hoveredData.y, baseLat, baseLng) : null;
 
   return (
-    <div className="w-full bg-[#0c121e]/95 border border-slate-800 rounded-2xl p-6 shadow-2xl space-y-6 text-slate-100 backdrop-blur-md">
+    <div className="w-full bg-slate-100/95 border border-slate-200 rounded-2xl p-6 shadow-2xl space-y-6 text-slate-100 backdrop-blur-md">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200 pb-4">
         <div>
           <div className="flex items-center gap-2 text-xs font-semibold text-amber-400 uppercase tracking-widest mb-1">
             <Flame className="w-4 h-4" />
@@ -497,7 +497,7 @@ export function BlastingPitStudio3D({ mineId, zone }: { mineId?: string; zone?: 
           {isSimulating ? (
             <button
               onClick={handleStopSimulation}
-              className="px-4 py-2 rounded-xl font-bold text-xs bg-rose-600 hover:bg-rose-500 text-white flex items-center gap-2 shadow-lg transition-all"
+              className="px-4 py-2 rounded-xl font-bold text-xs bg-rose-600 hover:bg-rose-500 text-slate-900 flex items-center gap-2 shadow-lg transition-all"
             >
               <Pause className="w-4 h-4 fill-current" />
               <span>Pause Blast</span>
@@ -506,7 +506,7 @@ export function BlastingPitStudio3D({ mineId, zone }: { mineId?: string; zone?: 
             <button
               onClick={handleStartSimulation}
               disabled={loading || holes.length === 0}
-              className="px-5 py-2.5 rounded-xl font-bold text-xs bg-emerald-600 hover:bg-emerald-500 text-white flex items-center gap-2 shadow-lg shadow-emerald-600/20 transition-all hover:scale-105"
+              className="px-5 py-2.5 rounded-xl font-bold text-xs bg-emerald-600 hover:bg-emerald-500 text-slate-900 flex items-center gap-2 shadow-lg shadow-emerald-600/20 transition-all hover:scale-105"
             >
               <Play className="w-4 h-4 fill-current" />
               <span>Simulate Detonation Sequence</span>
@@ -515,7 +515,7 @@ export function BlastingPitStudio3D({ mineId, zone }: { mineId?: string; zone?: 
 
           <button
             onClick={() => fetchBlastingOptimization()}
-            className="p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition-colors"
+            className="p-2.5 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-700 border border-slate-300 transition-colors"
             title="Reset Optimization Params"
           >
             <RotateCcw className="w-4 h-4" />
@@ -527,8 +527,8 @@ export function BlastingPitStudio3D({ mineId, zone }: { mineId?: string; zone?: 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         
         {/* Left Column: Interactive Parameters (4 cols) */}
-        <div className="lg:col-span-4 bg-slate-900/80 border border-slate-800 rounded-xl p-5 space-y-5">
-          <div className="flex items-center justify-between border-b border-slate-800 pb-2">
+        <div className="lg:col-span-4 bg-slate-50/80 border border-slate-200 rounded-xl p-5 space-y-5">
+          <div className="flex items-center justify-between border-b border-slate-200 pb-2">
             <div className="flex items-center gap-2 text-xs font-bold text-emerald-400">
               <Sliders className="w-4 h-4" />
               <span>Blast Design Parameters</span>
@@ -539,90 +539,90 @@ export function BlastingPitStudio3D({ mineId, zone }: { mineId?: string; zone?: 
           {/* Slider 1: Hole Diameter */}
           <div className="space-y-1.5">
             <div className="flex justify-between text-xs font-semibold">
-              <span className="text-slate-300">Drillhole Diameter (D):</span>
+              <span className="text-slate-700">Drillhole Diameter (D):</span>
               <span className="text-emerald-400 font-mono">{holeDiameter} mm</span>
             </div>
             <input 
               type="range" min="85" max="250" step="5"
               value={holeDiameter}
               onChange={(e) => setHoleDiameter(parseFloat(e.target.value))}
-              className="w-full accent-emerald-500 bg-slate-800 h-1.5 rounded-lg cursor-pointer"
+              className="w-full accent-emerald-500 bg-slate-200 h-1.5 rounded-lg cursor-pointer"
             />
           </div>
 
           {/* Slider 2: Burden */}
           <div className="space-y-1.5">
             <div className="flex justify-between text-xs font-semibold">
-              <span className="text-slate-300">Burden Distance (B):</span>
+              <span className="text-slate-700">Burden Distance (B):</span>
               <span className="text-amber-400 font-mono">{burden} m</span>
             </div>
             <input 
               type="range" min="2.0" max="8.0" step="0.1"
               value={burden}
               onChange={(e) => setBurden(parseFloat(e.target.value))}
-              className="w-full accent-amber-500 bg-slate-800 h-1.5 rounded-lg cursor-pointer"
+              className="w-full accent-amber-500 bg-slate-200 h-1.5 rounded-lg cursor-pointer"
             />
           </div>
 
           {/* Slider 3: Spacing */}
           <div className="space-y-1.5">
             <div className="flex justify-between text-xs font-semibold">
-              <span className="text-slate-300">Hole Spacing (S):</span>
+              <span className="text-slate-700">Hole Spacing (S):</span>
               <span className="text-cyan-400 font-mono">{spacing} m</span>
             </div>
             <input 
               type="range" min="2.5" max="10.0" step="0.1"
               value={spacing}
               onChange={(e) => setSpacing(parseFloat(e.target.value))}
-              className="w-full accent-cyan-500 bg-slate-800 h-1.5 rounded-lg cursor-pointer"
+              className="w-full accent-cyan-500 bg-slate-200 h-1.5 rounded-lg cursor-pointer"
             />
           </div>
 
           {/* Slider 4: Bench Height */}
           <div className="space-y-1.5">
             <div className="flex justify-between text-xs font-semibold">
-              <span className="text-slate-300">Bench Height (H):</span>
+              <span className="text-slate-700">Bench Height (H):</span>
               <span className="text-purple-400 font-mono">{benchHeight} m</span>
             </div>
             <input 
               type="range" min="5.0" max="20.0" step="0.5"
               value={benchHeight}
               onChange={(e) => setBenchHeight(parseFloat(e.target.value))}
-              className="w-full accent-purple-500 bg-slate-800 h-1.5 rounded-lg cursor-pointer"
+              className="w-full accent-purple-500 bg-slate-200 h-1.5 rounded-lg cursor-pointer"
             />
           </div>
 
           {/* Slider 5: Powder Factor */}
           <div className="space-y-1.5">
             <div className="flex justify-between text-xs font-semibold">
-              <span className="text-slate-300">Powder Factor (q):</span>
+              <span className="text-slate-700">Powder Factor (q):</span>
               <span className="text-red-400 font-mono">{powderFactor} kg/m³</span>
             </div>
             <input 
               type="range" min="0.25" max="1.2" step="0.02"
               value={powderFactor}
               onChange={(e) => setPowderFactor(parseFloat(e.target.value))}
-              className="w-full accent-red-500 bg-slate-800 h-1.5 rounded-lg cursor-pointer"
+              className="w-full accent-red-500 bg-slate-200 h-1.5 rounded-lg cursor-pointer"
             />
           </div>
 
           {/* Slider 6: Rock Mass Rating */}
           <div className="space-y-1.5">
             <div className="flex justify-between text-xs font-semibold">
-              <span className="text-slate-300">Rock Mass Rating (RMR):</span>
+              <span className="text-slate-700">Rock Mass Rating (RMR):</span>
               <span className="text-emerald-400 font-mono">{rmrRating} (Medium-Hard)</span>
             </div>
             <input 
               type="range" min="30" max="95" step="1"
               value={rmrRating}
               onChange={(e) => setRmrRating(parseInt(e.target.value))}
-              className="w-full accent-emerald-500 bg-slate-800 h-1.5 rounded-lg cursor-pointer"
+              className="w-full accent-emerald-500 bg-slate-200 h-1.5 rounded-lg cursor-pointer"
             />
           </div>
         </div>
 
         {/* Center Column: 3D WebGL Canvas + View Controls Overlay (8 cols) */}
-        <div className={`lg:col-span-8 bg-slate-950 border border-slate-800 rounded-xl relative overflow-hidden transition-all duration-300 ${
+        <div className={`lg:col-span-8 bg-white border border-slate-200 rounded-xl relative overflow-hidden transition-all duration-300 ${
           isExpandedHeight ? 'h-[650px]' : 'h-[480px]'
         }`}>
           
@@ -632,6 +632,10 @@ export function BlastingPitStudio3D({ mineId, zone }: { mineId?: string; zone?: 
             <div className="pointer-events-auto bg-slate-900/95 backdrop-blur border border-slate-800 rounded-xl p-2.5 text-[11px] space-y-1.5 shadow-xl">
               <div className="text-[10px] font-bold text-amber-400 uppercase tracking-wider border-b border-slate-800 pb-1">
                 Mn Ore Mineral Density Legend
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="w-2.5 h-2.5 rounded-full bg-emerald-400" />
+                <span>Drillhole Collar</span>
               </div>
               <div className="flex items-center gap-2">
                 <span className="w-2.5 h-2.5 rounded-full bg-magenta-400 bg-fuchsia-500 ring-2 ring-fuchsia-400/50" />
@@ -665,11 +669,10 @@ export function BlastingPitStudio3D({ mineId, zone }: { mineId?: string; zone?: 
               </button>
 
               <div className="w-px h-4 bg-slate-800 mx-1" />
-
               <button
                 onClick={() => setCameraPreset('3d')}
                 className={`px-2.5 py-1 rounded-lg flex items-center gap-1.5 transition-all ${
-                  cameraPreset === '3d' ? 'bg-emerald-600 text-white font-bold' : 'text-slate-400 hover:text-white'
+                  cameraPreset === '3d' ? 'bg-emerald-600 text-slate-900 font-bold' : 'text-slate-600 hover:text-slate-900'
                 }`}
                 title="3D Isometric View"
               >
@@ -679,7 +682,7 @@ export function BlastingPitStudio3D({ mineId, zone }: { mineId?: string; zone?: 
               <button
                 onClick={() => setCameraPreset('top')}
                 className={`px-2.5 py-1 rounded-lg flex items-center gap-1.5 transition-all ${
-                  cameraPreset === 'top' ? 'bg-cyan-600 text-white font-bold' : 'text-slate-400 hover:text-white'
+                  cameraPreset === 'top' ? 'bg-cyan-600 text-slate-900 font-bold' : 'text-slate-600 hover:text-slate-900'
                 }`}
                 title="Top Overhead Plan View"
               >
@@ -689,7 +692,7 @@ export function BlastingPitStudio3D({ mineId, zone }: { mineId?: string; zone?: 
               <button
                 onClick={() => setCameraPreset('front')}
                 className={`px-2.5 py-1 rounded-lg flex items-center gap-1.5 transition-all ${
-                  cameraPreset === 'front' ? 'bg-purple-600 text-white font-bold' : 'text-slate-400 hover:text-white'
+                  cameraPreset === 'front' ? 'bg-purple-600 text-slate-900 font-bold' : 'text-slate-600 hover:text-slate-900'
                 }`}
                 title="Bench Face Front View"
               >
@@ -697,12 +700,12 @@ export function BlastingPitStudio3D({ mineId, zone }: { mineId?: string; zone?: 
                 <span>Face</span>
               </button>
 
-              <div className="w-px h-4 bg-slate-800 mx-1" />
+              <div className="w-px h-4 bg-slate-200 mx-1" />
 
               {/* Viewport Resize Toggle */}
               <button
                 onClick={() => setIsExpandedHeight(!isExpandedHeight)}
-                className="p-1.5 rounded-lg text-slate-300 hover:bg-slate-800 transition-colors"
+                className="p-1.5 rounded-lg text-slate-700 hover:bg-slate-200 transition-colors"
                 title={isExpandedHeight ? 'Minimize Canvas' : 'Expand Viewport'}
               >
                 {isExpandedHeight ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
@@ -742,7 +745,7 @@ export function BlastingPitStudio3D({ mineId, zone }: { mineId?: string; zone?: 
             </div>
 
             {/* Display Mode Toggles */}
-            <div className="pointer-events-auto flex items-center gap-1.5 bg-slate-900/90 backdrop-blur p-1 rounded-xl border border-slate-800 shadow-xl text-xs">
+            <div className="pointer-events-auto flex items-center gap-1.5 bg-slate-50/90 backdrop-blur p-1 rounded-xl border border-slate-200 shadow-xl text-xs">
               
               {/* Toggle Mn Ore Heatmap */}
               <button
@@ -760,7 +763,7 @@ export function BlastingPitStudio3D({ mineId, zone }: { mineId?: string; zone?: 
               <button
                 onClick={() => setViewMode(v => v === 'solid' ? 'transparent_rock' : v === 'transparent_rock' ? 'explosive_only' : 'solid')}
                 className={`px-2.5 py-1 rounded-lg flex items-center gap-1 font-mono transition-all ${
-                  viewMode !== 'solid' ? 'bg-amber-600/30 text-amber-300 border border-amber-500/40' : 'text-slate-400 hover:text-white'
+                  viewMode !== 'solid' ? 'bg-amber-600/30 text-amber-300 border border-amber-500/40' : 'text-slate-600 hover:text-slate-900'
                 }`}
                 title="Toggle Rock Opacity (See Underground Charge)"
               >
@@ -769,14 +772,14 @@ export function BlastingPitStudio3D({ mineId, zone }: { mineId?: string; zone?: 
               </button>
 
               {/* Speed Multiplier */}
-              <div className="flex items-center gap-1 bg-slate-950 px-2 py-0.5 rounded-lg border border-slate-800 text-[10px] font-mono">
-                <FastForward className="w-3 h-3 text-slate-400" />
+              <div className="flex items-center gap-1 bg-white px-2 py-0.5 rounded-lg border border-slate-200 text-[10px] font-mono">
+                <FastForward className="w-3 h-3 text-slate-600" />
                 {[0.5, 1.0, 2.0].map((spd) => (
                   <button
                     key={spd}
                     onClick={() => setSimSpeed(spd)}
                     className={`px-1.5 py-0.5 rounded transition-all ${
-                      simSpeed === spd ? 'bg-emerald-500 text-slate-950 font-bold' : 'text-slate-400 hover:text-white'
+                      simSpeed === spd ? 'bg-emerald-500 text-slate-950 font-bold' : 'text-slate-600 hover:text-slate-900'
                     }`}
                   >
                     {spd}x
@@ -787,7 +790,7 @@ export function BlastingPitStudio3D({ mineId, zone }: { mineId?: string; zone?: 
               {/* Show Wireframe */}
               <button
                 onClick={() => setShowWireframe(!showWireframe)}
-                className={`p-1.5 rounded-lg transition-colors ${showWireframe ? 'text-emerald-400 bg-slate-800' : 'text-slate-500'}`}
+                className={`p-1.5 rounded-lg transition-colors ${showWireframe ? 'text-emerald-400 bg-slate-200' : 'text-slate-500'}`}
                 title="Toggle Grid Wireframe"
               >
                 <Layers className="w-4 h-4" />
@@ -796,7 +799,7 @@ export function BlastingPitStudio3D({ mineId, zone }: { mineId?: string; zone?: 
               {/* Show Badges */}
               <button
                 onClick={() => setShowDelayBadges(!showDelayBadges)}
-                className={`p-1.5 rounded-lg transition-colors ${showDelayBadges ? 'text-cyan-400 bg-slate-800' : 'text-slate-500'}`}
+                className={`p-1.5 rounded-lg transition-colors ${showDelayBadges ? 'text-cyan-400 bg-slate-200' : 'text-slate-500'}`}
                 title="Toggle Delay MS Badges"
               >
                 <Sparkles className="w-4 h-4" />
@@ -842,7 +845,7 @@ export function BlastingPitStudio3D({ mineId, zone }: { mineId?: string; zone?: 
             <span>Kuz-Ram P80 Size</span>
             <Activity className="w-4 h-4 text-emerald-400" />
           </div>
-          <div className="text-2xl font-bold font-mono text-white">
+          <div className="text-2xl font-bold font-mono text-slate-900">
             {kuzRam ? `${kuzRam.p80_passing_size_mm} mm` : '---'}
           </div>
           <p className="text-[10px] text-emerald-400">
@@ -851,12 +854,12 @@ export function BlastingPitStudio3D({ mineId, zone }: { mineId?: string; zone?: 
         </div>
 
         {/* Card 2: Effective Powder Factor */}
-        <div className="bg-slate-900/80 border border-slate-800 rounded-xl p-4 space-y-1">
-          <div className="flex items-center justify-between text-xs text-slate-400">
+        <div className="bg-slate-50/80 border border-slate-200 rounded-xl p-4 space-y-1">
+          <div className="flex items-center justify-between text-xs text-slate-600">
             <span>Powder Factor &amp; Charge</span>
             <Flame className="w-4 h-4 text-amber-400" />
           </div>
-          <div className="text-2xl font-bold font-mono text-white">
+          <div className="text-2xl font-bold font-mono text-slate-900">
             {kuzRam ? `${kuzRam.powder_factor_kg_m3} kg/m³` : '---'}
           </div>
           <p className="text-[10px] text-amber-400">
@@ -870,7 +873,7 @@ export function BlastingPitStudio3D({ mineId, zone }: { mineId?: string; zone?: 
             <span>PPV Ground Vibration</span>
             <ShieldCheck className="w-4 h-4 text-purple-400" />
           </div>
-          <div className="text-2xl font-bold font-mono text-white">
+          <div className="text-2xl font-bold font-mono text-slate-900">
             {vibration ? `${vibration.peak_particle_velocity_ppv_mm_s} mm/s` : '---'}
           </div>
           <p className="text-[10px] text-purple-400 truncate">
