@@ -1,5 +1,4 @@
 @import "tailwindcss";
-@import "leaflet/dist/leaflet.css";
 
 :root {
   --background: #090d16;
@@ -29,37 +28,7 @@ body {
   background: #10b981;
 }
 
-/* Leaflet Container Fixes */
-.leaflet-container {
-  width: 100%;
-  height: 100%;
-  background-color: #0b1120 !important;
-  font-family: inherit !important;
-}
 
-/* Dark Theme Filter for OpenStreetMap Tiles (100% Free & No API Key / Watermark) */
-.dark-tiles .leaflet-tile {
-  filter: brightness(0.6) invert(1) contrast(3) hue-rotate(200deg) saturate(0.3) brightness(0.7) !important;
-}
-
-/* Leaflet Dark Popup Customization */
-.leaflet-popup-content-wrapper {
-  background: #0f172a !important;
-  color: #f8fafc !important;
-  border: 1px solid #1e293b !important;
-  border-radius: 8px !important;
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.7), 0 8px 10px -6px rgba(0, 0, 0, 0.7) !important;
-}
-
-.leaflet-popup-tip {
-  background: #0f172a !important;
-  border: 1px solid #1e293b !important;
-}
-
-.leaflet-popup-content {
-  margin: 12px !important;
-  line-height: 1.4 !important;
-}
 
 /* Custom Marker Animations */
 @keyframes pulse-ring {
