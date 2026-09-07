@@ -51,6 +51,24 @@ function MapViewController({ targetCoordinates }: { targetCoordinates: [number, 
   return null;
 }
 
+const SATELLITE_STYLE = {
+  version: 8,
+  sources: {
+    'satellite': {
+      type: 'raster',
+      tiles: ['https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'],
+      tileSize: 256
+    }
+  },
+  layers: [{
+    id: 'satellite-layer',
+    type: 'raster',
+    source: 'satellite',
+    minzoom: 0,
+    maxzoom: 22
+  }]
+};
+
 export const MapComponent: React.FC<MapComponentProps> = ({
   layers,
   selectedZone,
@@ -100,23 +118,7 @@ export const MapComponent: React.FC<MapComponentProps> = ({
   const getMapStyle = () => {
     switch (basemap) {
       case 'satellite':
-        return {
-          version: 8,
-          sources: {
-            'satellite': {
-              type: 'raster',
-              tiles: ['https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'],
-              tileSize: 256
-            }
-          },
-          layers: [{
-            id: 'satellite-layer',
-            type: 'raster',
-            source: 'satellite',
-            minzoom: 0,
-            maxzoom: 22
-          }]
-        };
+        return SATELLITE_STYLE;
       case 'light':
         return 'https://basemaps.cartocdn.com/gl/positron-gl-style/style.json';
       case 'dark':
@@ -163,7 +165,7 @@ export const MapComponent: React.FC<MapComponentProps> = ({
             }]
           };
           return (
-            <Source key={corridor.id} type="geojson" data={geojson as any}>
+            <Source id={`fault-src-${corridor.id}`} key={corridor.id} type="geojson" data={geojson as any}>
               <Layer
                 id={`fault-line-${corridor.id}`}
                 type="line"
@@ -185,12 +187,13 @@ export const MapComponent: React.FC<MapComponentProps> = ({
               type: 'Feature',
               geometry: {
                 type: 'Polygon',
-                coordinates: [pit.coordinates]
-              }
+                coordinates: [[...pit.coordinates, pit.coordinates[0]]]
+              },
+              properties: {}
             }]
           };
           return (
-            <Source key={pit.id} type="geojson" data={geojson as any}>
+            <Source id={`pit-src-${pit.id}`} key={pit.id} type="geojson" data={geojson as any}>
               <Layer
                 id={`pit-fill-${pit.id}`}
                 type="fill"
@@ -211,11 +214,7 @@ export const MapComponent: React.FC<MapComponentProps> = ({
           );
         })}
 
-        {/* --- Layers: AI Heatmap --- */}
         {layers.aiHeatmap && AI_HEATMAP_CLUSTERS.map(cluster => {
-          const conf = liveScores[cluster.id] || cluster.probability || 80;
-          if (conf < confidenceThreshold) return null;
-
           const geojson = {
             type: 'FeatureCollection',
             features: [
@@ -223,20 +222,30 @@ export const MapComponent: React.FC<MapComponentProps> = ({
                 type: 'Feature',
                 geometry: {
                   type: 'Polygon',
-                  coordinates: [cluster.coordinates.map(c => [c[1], c[0]])]
-                }
+                  coordinates: [[...cluster.coordinates.map(c => [c[1], c[0]]), [cluster.coordinates[0][1], cluster.coordinates[0][0]]]]
+                },
+                properties: {}
               }
             ]
           };
 
           return (
-            <Source key={`ai-${cluster.id}`} type="geojson" data={geojson as any}>
+            <Source id={`ai-src-${cluster.id}`} key={`ai-${cluster.id}`} type="geojson" data={geojson as any}>
               <Layer
                 id={`ai-layer-${cluster.id}`}
                 type="fill"
                 paint={{
-                  'fill-color': '#ef4444',
-                  'fill-opacity': (msvOpacity || 100) / 100 * 0.4
+                  'fill-color': '#eab308',
+                  'fill-opacity': 0.5
+                }}
+              />
+              <Layer
+                id={`ai-outline-${cluster.id}`}
+                type="line"
+                paint={{
+                  'line-color': '#fde047',
+                  'line-width': 2,
+                  'line-dasharray': [2, 2]
                 }}
               />
             </Source>
@@ -262,7 +271,7 @@ export const MapComponent: React.FC<MapComponentProps> = ({
             ]
           };
           return (
-            <Source key={`ndvi-${idx}`} type="geojson" data={geojson as any}>
+            <Source id={`ndvi-src-${idx}`} key={`ndvi-${idx}`} type="geojson" data={geojson as any}>
               <Layer
                 id={`ndvi-layer-${idx}`}
                 type="circle"

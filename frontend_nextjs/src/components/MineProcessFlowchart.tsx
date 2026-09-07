@@ -40,20 +40,10 @@ export const MINE_PROCESS_STEPS: ProcessStep[] = [
     color: 'emerald',
     badge: 'Completed'
   },
-  {
-    id: 'estimation',
-    stepNumber: '02',
-    title: 'Resource & 3D Kriging',
-    category: 'Geostatistics',
-    status: 'completed',
-    description: '3D Ordinary Kriging, variogram modeling & bulk density grade estimations.',
-    icon: Layers,
-    color: 'cyan',
-    badge: 'Completed'
-  },
+
   {
     id: 'planning',
-    stepNumber: '03',
+    stepNumber: '02',
     title: 'Mine Planning & Pit Design',
     category: 'Optimization',
     status: 'active',
@@ -64,7 +54,7 @@ export const MINE_PROCESS_STEPS: ProcessStep[] = [
   },
   {
     id: 'operations',
-    stepNumber: '04',
+    stepNumber: '03',
     title: 'Drilling, Blasting & Heavy Fleet',
     category: 'Extraction Ops',
     status: 'active',
