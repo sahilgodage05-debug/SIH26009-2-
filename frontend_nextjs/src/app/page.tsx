@@ -5,7 +5,6 @@ import { Navbar } from '@/components/Navbar';
 import { RemoteSensingSidebar } from '@/components/RemoteSensingSidebar';
 import { MapWrapper } from '@/components/MapWrapper';
 import { ConfidenceInspector } from '@/components/ConfidenceInspector';
-import { OperationsControlRoom } from '@/components/OperationsControlRoom';
 import { MLTrainingStudio } from '@/components/MLTrainingStudio';
 import { RESERVE_ZONES } from '@/data/moilData';
 import { LayerState, ReserveZone } from '@/types/moil';
@@ -14,7 +13,7 @@ import { useRouter } from 'next/navigation';
 
 export default function Home() {
   const router = useRouter();
-  const [activeView, setActiveView] = useState<'exploration' | 'operations' | 'training'>('exploration');
+  const [activeView, setActiveView] = useState<'exploration' | 'training'>('exploration');
   const [layers, setLayers] = useState<LayerState>({
     ndvi: true,
     soilMoisture: true,
@@ -153,11 +152,6 @@ export default function Home() {
           </main>
 
             {/* Draggable Inspector Widget for Deep Analysis removed as it is now on a separate page */}</div>
-      ) : activeView === 'operations' ? (
-        /* Operations Room & Problem Statement 26009 Command Dashboard */
-        <OperationsControlRoom 
-          onOpen2DMap={() => setActiveView('exploration')}
-        />
       ) : (
         /* Synthetic Ground Truth & GEE AI Studio */
         <MLTrainingStudio />

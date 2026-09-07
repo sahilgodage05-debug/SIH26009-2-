@@ -58,7 +58,7 @@ export const MapComponent: React.FC<MapComponentProps> = ({
   confidenceThreshold,
   msvOpacity
 }) => {
-  const [basemap, setBasemap] = useState<'osm' | 'dark' | 'satellite'>('dark');
+  const [basemap, setBasemap] = useState<'light' | 'dark' | 'satellite'>('satellite');
   const [flyTarget, setFlyTarget] = useState<[number, number] | null>(null);
   const [liveScores, setLiveScores] = useState<Record<string, number>>({});
   const mapRef = useRef(null);
@@ -117,6 +117,8 @@ export const MapComponent: React.FC<MapComponentProps> = ({
             maxzoom: 22
           }]
         };
+      case 'light':
+        return 'https://basemaps.cartocdn.com/gl/positron-gl-style/style.json';
       case 'dark':
       default:
         return 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json';
@@ -383,7 +385,7 @@ export const MapComponent: React.FC<MapComponentProps> = ({
       {/* Map Controls */}
       <div className="absolute top-4 right-4 flex flex-col gap-2">
         <div className="bg-[#090d16]/90 backdrop-blur-md p-1.5 rounded-xl border border-slate-800/80 shadow-xl flex flex-col gap-1 pointer-events-auto">
-          <button onClick={() => setBasemap('dark')} className={`p-2 rounded-lg transition-colors ${basemap === 'dark' ? 'bg-indigo-500/20 text-indigo-400' : 'text-slate-400 hover:bg-slate-800/50 hover:text-slate-200'}`} title="Vector Dark Map">
+          <button onClick={() => setBasemap('light')} className={`p-2 rounded-lg transition-colors ${basemap === 'light' ? 'bg-indigo-500/20 text-indigo-400' : 'text-slate-400 hover:bg-slate-800/50 hover:text-slate-200'}`} title="Vector Light Map">
             <Layers className="w-4 h-4" />
           </button>
           <button onClick={() => setBasemap('satellite')} className={`p-2 rounded-lg transition-colors ${basemap === 'satellite' ? 'bg-emerald-500/20 text-emerald-400' : 'text-slate-400 hover:bg-slate-800/50 hover:text-slate-200'}`} title="Satellite / Earth Observation">
