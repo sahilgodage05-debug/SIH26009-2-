@@ -23,6 +23,8 @@ from services.parameter_engine import ParameterEngine
 from services.prospector_engine import ProspectorEngine, SentinelManganeseEstimator
 from services.block_model import BlockModelEngine
 from services.blasting_engine import BlastingEngine
+from services.fleet_engine import FleetEngine
+from services.production_engine import ProductionEngine
 
 app = FastAPI(
     title="MOIL AI: Exploration & Reserve Estimation Platform",
@@ -45,6 +47,8 @@ prospector_engine = ProspectorEngine(risk_aversion_lambda=0.25)
 sentinel_estimator = SentinelManganeseEstimator(base_country_rock_grade=8.5)
 block_model_engine = BlockModelEngine(block_size_x=12.0, block_size_y=12.0, block_size_z=6.0)
 blasting_engine = BlastingEngine(default_rock_density=3.65)
+fleet_engine = FleetEngine()
+production_engine = ProductionEngine()
 drillholes_cache = generate_dongri_drillholes()
 
 # Mount User and Shivam Backends
@@ -163,6 +167,36 @@ async def optimize_blasting_design(payload: BlastingDesignRequest):
         holes_per_row = mine_satellite_profile.get("holes_per_row", 9)
         bench_height = payload.bench_height_m if payload.bench_height_m != 10.0 else mine_satellite_profile.get("bench_height_m", 10.0)
 
+        # Extract mine-specific geological parameters from satellite profile
+        ore_center_offset = mine_satellite_profile.get("ore_center_offset", {"x": 14.0, "y": 12.0})
+        pit_length_m = mine_satellite_profile.get("pit_length_m", 45.0)
+        pit_width_m = mine_satellite_profile.get("pit_width_m", 28.0)
+        elevation_m = mine_satellite_profile.get("elevation_m", 310.0)
+        
+        # Parse strike angle from profile string (e.g., "N65°E" -> 65.0)
+        strike_str = mine_satellite_profile.get("strike", "N65°E")
+        try:
+            strike_deg = float(''.join(c for c in strike_str if c.isdigit() or c == '.'))
+        except (ValueError, TypeError):
+            strike_deg = 65.0
+        
+        # Parse dip angle from profile string (e.g., "55° NW" -> 55.0)
+        dip_str = mine_satellite_profile.get("dip", "55° NW")
+        try:
+            dip_deg = float(''.join(c for c in dip_str.split('°')[0] if c.isdigit() or c == '.'))
+        except (ValueError, TypeError):
+            dip_deg = 55.0
+        
+        # Derive mine-specific Mn grade range from profile
+        mn_grade_max = mine_satellite_profile.get("mn_grade_pct", 44.0)
+        # Lower bound derived from overburden ratio (higher ratio = more waste = lower min grade)
+        overburden_str = mine_satellite_profile.get("overburden_ratio", "1 : 2.8")
+        try:
+            ob_ratio = float(overburden_str.split(':')[-1].strip())
+        except (ValueError, IndexError):
+            ob_ratio = 2.8
+        mn_grade_min = max(12.0, 22.0 - ob_ratio * 2.5)
+
         pattern_3d = blasting_engine.generate_blast_pattern_3d(
             num_rows=num_rows,
             holes_per_row=holes_per_row,
@@ -172,7 +206,15 @@ async def optimize_blasting_design(payload: BlastingDesignRequest):
             sub_drilling_m=payload.sub_drilling_m,
             stemming_m=payload.stemming_m,
             pattern_type="staggered",
-            use_adaptive_density=payload.use_adaptive_density
+            use_adaptive_density=payload.use_adaptive_density,
+            ore_center_offset=ore_center_offset,
+            mn_grade_min=mn_grade_min,
+            mn_grade_max=mn_grade_max,
+            strike_deg=strike_deg,
+            dip_deg=dip_deg,
+            elevation_m=elevation_m,
+            pit_length_m=pit_length_m,
+            pit_width_m=pit_width_m
         )
 
         # 4. USBM Ground Vibration PPV
@@ -181,10 +223,27 @@ async def optimize_blasting_design(payload: BlastingDesignRequest):
             distance_to_structure_m=payload.distance_to_structure_m
         )
 
+        # 5. Mine geological context for frontend dynamic labels
+        mine_geological_context = {
+            "base_lat": mine_satellite_profile.get("base_lat", payload.lat or 21.5420),
+            "base_lng": mine_satellite_profile.get("base_lng", payload.lng or 79.6780),
+            "strike": mine_satellite_profile.get("strike", "N65°E"),
+            "dip": mine_satellite_profile.get("dip", "55° NW"),
+            "overburden_ratio": mine_satellite_profile.get("overburden_ratio", "1 : 2.8"),
+            "elevation_m": elevation_m,
+            "mn_grade_pct": mn_grade_max,
+            "mn_grade_range": [round(mn_grade_min, 1), round(mn_grade_max, 1)],
+            "pit_length_m": pit_length_m,
+            "pit_width_m": pit_width_m,
+            "strike_deg": strike_deg,
+            "dip_deg": dip_deg
+        }
+
         return {
             "status": "success",
             "mine_type": "MOIL Open-Pit Manganese Operation",
             "mine_satellite_profile": mine_satellite_profile,
+            "mine_geological_context": mine_geological_context,
             "blastability": lilly,
             "fragmentation_kuz_ram": kuz_ram,
             "blast_pattern_3d": pattern_3d,
@@ -463,6 +522,85 @@ async def get_drillholes(limit: int = Query(default=100, ge=1, le=1000)):
         "returned_composites": len(df),
         "data": df.to_dict(orient="records")
     }
+
+
+# -------------------------------------------------------------
+# DYNAMIC FLEET MANAGEMENT & PRODUCTION COMMAND CENTER APIS
+# -------------------------------------------------------------
+
+class TruckRerouteRequest(BaseModel):
+    truck_id: str = Field(description="ID of the haul truck to reroute (e.g. HT-104)")
+    target_destination: str = Field(description="Target geofence destination (e.g. GF-CRUSHER-1, GF-SHOVEL-A)")
+
+
+@app.get("/api/v1/fleet/status/{mine_id}", tags=["Dynamic Fleet Management"])
+async def get_fleet_status(mine_id: str):
+    """
+    Returns live GPS locations, telemetry, haul road topology, geofences,
+    and shovels for the specified MOIL mine pit network.
+    """
+    try:
+        return fleet_engine.get_or_create_mine_fleet(mine_id)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error fetching fleet status: {str(e)}")
+
+
+@app.get("/api/v1/fleet/match-factor/{mine_id}", tags=["Dynamic Fleet Management"])
+async def get_fleet_match_factor(mine_id: str):
+    """
+    Returns the Phelps-Morgan Shovel-Truck Match Factor, queue states,
+    and shovel/truck utilization metrics for real-time dispatch balancing.
+    """
+    try:
+        return fleet_engine.calculate_match_factor(mine_id)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error calculating match factor: {str(e)}")
+
+
+@app.post("/api/v1/fleet/reroute/{mine_id}", tags=["Dynamic Fleet Management"])
+async def reroute_haul_truck(mine_id: str, payload: TruckRerouteRequest):
+    """
+    Triggers dynamic geofenced rerouting of a haul truck to bypass congestion or starving shovels.
+    """
+    try:
+        return fleet_engine.reroute_truck(mine_id, payload.truck_id, payload.target_destination)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error rerouting truck: {str(e)}")
+
+
+@app.get("/api/v1/production/shortfall/{mine_id}", tags=["Production Engineering & Shortfall"])
+async def get_production_shortfall(mine_id: str):
+    """
+    Calculates hourly actual vs target manganese yield, cumulative gap,
+    and projected end-of-shift deficit with root-cause bottleneck attribution.
+    """
+    try:
+        return production_engine.calculate_production_shortfall(mine_id)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error calculating shortfall: {str(e)}")
+
+
+@app.get("/api/v1/production/corrective-actions/{mine_id}", tags=["Production Engineering & Shortfall"])
+async def get_corrective_actions(mine_id: str):
+    """
+    Returns prioritized engineering corrective actions (dispatch redeployment,
+    grade blending, hot-seat scheduling, blast clearance) to eliminate ore deficit.
+    """
+    try:
+        return production_engine.get_corrective_actions(mine_id)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error fetching corrective actions: {str(e)}")
+
+
+@app.get("/api/v1/production/hemm-reliability/{mine_id}", tags=["Production Engineering & Shortfall"])
+async def get_hemm_reliability(mine_id: str):
+    """
+    Returns MTBF, MTTR, availability, and failure probability for all active HEMM excavators/drills.
+    """
+    try:
+        return production_engine.get_hemm_reliability(mine_id)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error calculating HEMM reliability: {str(e)}")
 
 
 if __name__ == "__main__":
