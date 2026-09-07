@@ -6,7 +6,8 @@ import { RESERVE_ZONES } from '@/data/moilData';
 import { 
   ArrowLeft, Activity, MapPin, Layers, Pickaxe, 
   CloudRain, Thermometer, Droplets, Leaf, 
-  HardHat, Truck, AlertTriangle, CheckCircle2, TrendingUp
+  HardHat, Truck, AlertTriangle, CheckCircle2, TrendingUp,
+  Compass, Mountain, Radio, Zap, Settings, Clock
 } from 'lucide-react';
 
 export default function MinePage() {
@@ -70,8 +71,8 @@ export default function MinePage() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-[#090d16] text-slate-300 overflow-y-auto">
-      {/* Header */}
+    <div className="flex flex-col min-h-screen bg-[#090d16] text-slate-300 overflow-y-auto custom-scrollbar">
+      {/* Header with full metadata */}
       <div className="sticky top-0 z-50 flex items-center justify-between p-4 px-8 border-b border-slate-800/80 bg-[#0c121e]/90 backdrop-blur-md">
         <div className="flex items-center gap-6">
           <button 
@@ -87,10 +88,12 @@ export default function MinePage() {
                 {zone.status}
               </span>
             </div>
-            <div className="flex items-center gap-4 text-xs font-mono text-slate-400">
-              <span className="flex items-center gap-1"><MapPin className="w-3.5 h-3.5" /> {zone.exactLocation.districtState}</span>
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs font-mono text-slate-400">
+              <span className="flex items-center gap-1"><MapPin className="w-3.5 h-3.5" /> {zone.exactLocation.tehsilVillage}, {zone.exactLocation.districtState} - {zone.exactLocation.pincode}</span>
               <span className="text-slate-600">|</span>
-              <span>{zone.exactLocation.dms}</span>
+              <span className="flex items-center gap-1"><Compass className="w-3.5 h-3.5" /> {zone.exactLocation.dms}</span>
+              <span className="text-slate-600">|</span>
+              <span className="flex items-center gap-1"><Mountain className="w-3.5 h-3.5" /> Elev: {zone.exactLocation.elevationMeters}m</span>
               <span className="text-slate-600">|</span>
               <span>Lease: {zone.leaseArea}</span>
             </div>
@@ -99,186 +102,242 @@ export default function MinePage() {
       </div>
       
       {/* Dashboard Grid */}
-      <div className="max-w-7xl mx-auto w-full p-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="max-w-[1400px] mx-auto w-full p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
         
-        {/* COL 1: Core AI & Geological Info */}
-        <div className="col-span-1 md:col-span-2 space-y-6">
-          
-          {/* AI Probability & Reserve Specs */}
-          <div className="grid grid-cols-2 gap-4">
-            <div className="p-5 rounded-2xl bg-gradient-to-br from-slate-900 to-slate-800/50 border border-slate-800 shadow-lg">
-              <div className="flex items-center gap-2 mb-2">
-                <Activity className="w-4 h-4 text-emerald-400" />
-                <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider">AI Manganese Probability</h3>
-              </div>
-              <div className="flex items-baseline gap-3">
-                <span className={`text-5xl font-extrabold ${getScoreColor(zone.manganeseProbability)}`}>
-                  {zone.manganeseProbability}%
-                </span>
-                <span className="text-xs font-mono text-slate-500">CI: {zone.confidenceInterval}</span>
-              </div>
-              <p className="mt-3 text-xs text-slate-300 leading-relaxed bg-slate-950/50 p-2.5 rounded-lg border border-slate-800/50">
-                <strong className="text-emerald-400 block mb-1">Primary Indicator:</strong>
-                {zone.primaryIndicator}
-              </p>
+        {/* ROW 1 */}
+        {/* Core AI & Reserve Specs */}
+        <div className="col-span-1 md:col-span-2 grid grid-cols-2 gap-4">
+          <div className="p-5 rounded-2xl bg-gradient-to-br from-slate-900 to-slate-800/50 border border-slate-800 shadow-lg">
+            <div className="flex items-center gap-2 mb-2">
+              <Activity className="w-4 h-4 text-emerald-400" />
+              <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider">AI Manganese Probability</h3>
             </div>
-
-            <div className="grid grid-rows-2 gap-4">
-              <div className="p-4 rounded-2xl bg-slate-900/60 border border-slate-800 shadow-lg flex flex-col justify-center">
-                <span className="text-xs font-bold text-slate-400 uppercase mb-1">Estimated Reserve Volume</span>
-                <span className="text-2xl font-mono text-white">{zone.estimatedReserveVolume}</span>
-                <span className="text-xs text-emerald-400 mt-1 font-medium flex items-center gap-1">
-                  <Pickaxe className="w-3.5 h-3.5" /> Grade: {zone.averageGrade.split(' ')[0]}
-                </span>
-              </div>
-              <div className="p-4 rounded-2xl bg-slate-900/60 border border-slate-800 shadow-lg flex flex-col justify-center">
-                <span className="text-xs font-bold text-slate-400 uppercase mb-1">Estimated Valuation</span>
-                <span className="text-2xl font-mono text-emerald-400">{zone.estimatedValueINR}</span>
-                <span className="text-xs text-slate-400 mt-1 font-medium flex items-center gap-1">
-                  <TrendingUp className="w-3.5 h-3.5" /> Strip Ratio: {zone.overburdenRatio}
-                </span>
-              </div>
+            <div className="flex items-baseline gap-3">
+              <span className={`text-5xl font-extrabold ${getScoreColor(zone.manganeseProbability)}`}>
+                {zone.manganeseProbability}%
+              </span>
+              <span className="text-xs font-mono text-slate-500">CI: {zone.confidenceInterval}</span>
             </div>
+            <p className="mt-3 text-xs text-slate-300 leading-relaxed bg-slate-950/50 p-2.5 rounded-lg border border-slate-800/50">
+              <strong className="text-emerald-400 block mb-1">Primary Indicator:</strong>
+              {zone.primaryIndicator}
+            </p>
           </div>
 
-          {/* Stratigraphy / Geological Profile */}
-          <div className="p-6 rounded-2xl bg-slate-900/60 border border-slate-800 shadow-lg">
-            <div className="flex items-center gap-2 mb-4">
-              <Layers className="w-5 h-5 text-indigo-400" />
-              <h3 className="text-sm font-bold text-white uppercase tracking-wider">Geological Stratigraphy Log</h3>
+          <div className="grid grid-rows-2 gap-4">
+            <div className="p-4 rounded-2xl bg-slate-900/60 border border-slate-800 shadow-lg flex flex-col justify-center">
+              <span className="text-xs font-bold text-slate-400 uppercase mb-1">Estimated Reserve Volume</span>
+              <span className="text-2xl font-mono text-white">{zone.estimatedReserveVolume}</span>
+              <span className="text-xs text-emerald-400 mt-1 font-medium flex items-center gap-1">
+                <Pickaxe className="w-3.5 h-3.5" /> Grade: {zone.averageGrade}
+              </span>
             </div>
-            <div className="space-y-2">
-              {zone.stratigraphy.map((layer, idx) => (
-                <div key={idx} className="flex items-center bg-slate-950/50 rounded-lg p-2.5 border border-slate-800/50 hover:bg-slate-800 transition-colors">
-                  <div 
-                    className="w-1.5 h-8 rounded-full mr-3 shrink-0" 
-                    style={{ backgroundColor: layer.color }}
-                  />
-                  <div className="w-24 shrink-0 text-xs font-mono text-slate-400">{layer.depth}</div>
-                  <div className="flex-1 text-sm font-semibold text-slate-200">{layer.rockType}</div>
-                  <div className="w-32 shrink-0 text-xs text-slate-400 hidden sm:block">{layer.layerName}</div>
-                  <div className="w-20 shrink-0 text-right font-mono text-emerald-400 text-sm">{layer.mnGrade.toFixed(1)}% Mn</div>
-                </div>
-              ))}
+            <div className="p-4 rounded-2xl bg-slate-900/60 border border-slate-800 shadow-lg flex flex-col justify-center">
+              <span className="text-xs font-bold text-slate-400 uppercase mb-1">Estimated Valuation</span>
+              <span className="text-2xl font-mono text-emerald-400">{zone.estimatedValueINR}</span>
+              <span className="text-xs text-slate-400 mt-1 font-medium flex items-center gap-1">
+                <TrendingUp className="w-3.5 h-3.5" /> Strip Ratio: {zone.overburdenRatio}
+              </span>
             </div>
           </div>
-
-          {/* AI Recommendation */}
-          <div className="p-4 rounded-xl bg-indigo-950/20 border border-indigo-500/30 text-indigo-200 text-sm">
-            <strong className="text-indigo-400 block mb-1 text-xs uppercase tracking-wider">KoBold AI Recommendation</strong>
-            {zone.aiRecommendation}
-          </div>
-
         </div>
-        
-        {/* COL 2: Telemetry, Weather & Operations */}
-        <div className="col-span-1 space-y-6">
-          
-          {/* Weather & Space Telemetry */}
-          <div className="p-5 rounded-2xl bg-slate-900/60 border border-slate-800 shadow-lg">
-            <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4">Live Earth Observation (GEE)</h3>
-            <div className="grid grid-cols-2 gap-3">
-              <div className="bg-slate-950/50 p-3 rounded-xl border border-slate-800/50 text-center">
-                <CloudRain className="w-5 h-5 text-blue-400 mx-auto mb-2" />
-                <div className="text-lg font-mono text-white">{zone.spaceTelemetry.rainfall_mm_hr}</div>
-                <div className="text-[10px] text-slate-400 uppercase mt-1">Rainfall (mm/hr)</div>
-              </div>
-              <div className="bg-slate-950/50 p-3 rounded-xl border border-slate-800/50 text-center">
-                <Droplets className="w-5 h-5 text-cyan-400 mx-auto mb-2" />
-                <div className="text-lg font-mono text-white">{zone.spaceTelemetry.soilMoisturePercent}%</div>
-                <div className="text-[10px] text-slate-400 uppercase mt-1">Soil Moisture</div>
-              </div>
-              <div className="bg-slate-950/50 p-3 rounded-xl border border-slate-800/50 text-center">
-                <Thermometer className="w-5 h-5 text-orange-400 mx-auto mb-2" />
-                <div className="text-lg font-mono text-white">{zone.spaceTelemetry.surfaceTempKelvin}</div>
-                <div className="text-[10px] text-slate-400 uppercase mt-1">Surface Temp (K)</div>
-              </div>
-              <div className="bg-slate-950/50 p-3 rounded-xl border border-slate-800/50 text-center">
-                <Leaf className="w-5 h-5 text-emerald-400 mx-auto mb-2" />
-                <div className="text-lg font-mono text-white">{zone.spaceTelemetry.ndviVegetationIndex}</div>
-                <div className="text-[10px] text-slate-400 uppercase mt-1">NDVI Anomaly</div>
-              </div>
+
+        {/* Weather & Space Telemetry */}
+        <div className="col-span-1 p-5 rounded-2xl bg-slate-900/60 border border-slate-800 shadow-lg">
+          <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4">Live Earth Observation (GEE)</h3>
+          <div className="grid grid-cols-2 gap-3">
+            <div className="bg-slate-950/50 p-3 rounded-xl border border-slate-800/50 text-center">
+              <CloudRain className="w-5 h-5 text-blue-400 mx-auto mb-2" />
+              <div className="text-lg font-mono text-white">{zone.spaceTelemetry.rainfall_mm_hr}</div>
+              <div className="text-[10px] text-slate-400 uppercase mt-1">Rainfall (mm/hr)</div>
+            </div>
+            <div className="bg-slate-950/50 p-3 rounded-xl border border-slate-800/50 text-center">
+              <Droplets className="w-5 h-5 text-cyan-400 mx-auto mb-2" />
+              <div className="text-lg font-mono text-white">{zone.spaceTelemetry.soilMoisturePercent}%</div>
+              <div className="text-[10px] text-slate-400 uppercase mt-1">Soil Moisture</div>
+            </div>
+            <div className="bg-slate-950/50 p-3 rounded-xl border border-slate-800/50 text-center">
+              <Thermometer className="w-5 h-5 text-orange-400 mx-auto mb-2" />
+              <div className="text-lg font-mono text-white">{zone.spaceTelemetry.surfaceTempKelvin}</div>
+              <div className="text-[10px] text-slate-400 uppercase mt-1">Surface Temp (K)</div>
+            </div>
+            <div className="bg-slate-950/50 p-3 rounded-xl border border-slate-800/50 text-center">
+              <Leaf className="w-5 h-5 text-emerald-400 mx-auto mb-2" />
+              <div className="text-lg font-mono text-white">{zone.spaceTelemetry.ndviVegetationIndex}</div>
+              <div className="text-[10px] text-slate-400 uppercase mt-1">NDVI Anomaly</div>
             </div>
           </div>
+        </div>
 
-          {/* Workforce Capacity */}
+        {/* ROW 2 */}
+        {/* Geophysical Indicators */}
+        <div className="col-span-1 md:col-span-2 p-6 rounded-2xl bg-slate-900/60 border border-slate-800 shadow-lg">
+          <div className="flex items-center gap-2 mb-4">
+            <Radio className="w-5 h-5 text-indigo-400" />
+            <h3 className="text-sm font-bold text-white uppercase tracking-wider">Geophysical & Structural Indicators</h3>
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            {Object.entries(zone.indicators || {}).map(([key, ind]: [string, any]) => (
+              <div key={key} className="bg-slate-950/50 p-4 rounded-xl border border-slate-800/50">
+                <div className="flex justify-between items-start mb-2">
+                  <span className="text-xs font-bold text-slate-400 uppercase">{key.replace(/([A-Z])/g, ' $1').trim()}</span>
+                  <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                    {ind.status}
+                  </span>
+                </div>
+                <div className="text-lg font-mono text-white mb-1">{ind.value}</div>
+                <p className="text-[11px] text-slate-500 leading-relaxed">{ind.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Workforce Capacity & Satellite Details */}
+        <div className="col-span-1 flex flex-col gap-6">
           <div className="p-5 rounded-2xl bg-slate-900/60 border border-slate-800 shadow-lg flex items-center gap-4">
-            <div className="p-3 bg-indigo-500/10 rounded-full border border-indigo-500/20 text-indigo-400">
-              <HardHat className="w-6 h-6" />
+            <div className="p-4 bg-indigo-500/10 rounded-full border border-indigo-500/20 text-indigo-400">
+              <HardHat className="w-8 h-8" />
             </div>
             <div>
               <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Workforce Capacity</h3>
-              <div className="text-2xl font-mono text-white">{workerCount}</div>
-              <div className="text-[10px] text-slate-500 mt-1">Active Miners & Staff</div>
+              <div className="text-3xl font-mono text-white">{workerCount}</div>
+              <div className="text-[11px] text-slate-500 mt-1">Active Miners & Staff</div>
             </div>
           </div>
 
-          {/* Equipment & Condition */}
-          <div className="p-5 rounded-2xl bg-slate-900/60 border border-slate-800 shadow-lg">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2">
-                <Truck className="w-4 h-4 text-emerald-400" />
-                Fleet Condition
-              </h3>
-              {loadingFleet ? (
-                <span className="text-[10px] text-slate-500 animate-pulse">Syncing...</span>
-              ) : (
-                <span className="text-[10px] bg-slate-800 px-2 py-0.5 rounded text-slate-300 border border-slate-700">Live</span>
-              )}
+          <div className="flex-1 p-5 rounded-2xl bg-slate-900/60 border border-slate-800 shadow-lg">
+            <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Satellite Telemetry</h3>
+            <div className="space-y-3 text-sm">
+              <div className="flex justify-between border-b border-slate-800 pb-2">
+                <span className="text-slate-500">Pass Date</span>
+                <span className="text-slate-300 font-mono">{zone.satelliteTelemetry?.sentinelPassDate}</span>
+              </div>
+              <div className="flex justify-between border-b border-slate-800 pb-2">
+                <span className="text-slate-500">SAR Coherence</span>
+                <span className="text-emerald-400 font-mono font-bold">{zone.satelliteTelemetry?.sarCoherence}</span>
+              </div>
+              <div className="flex justify-between border-b border-slate-800 pb-2">
+                <span className="text-slate-500">NDVI Score</span>
+                <span className="text-slate-300 font-mono">{zone.satelliteTelemetry?.ndviAnomalyScore}</span>
+              </div>
             </div>
+          </div>
+        </div>
 
-            <div className="mb-4">
-              <div className="text-[10px] text-slate-400 uppercase mb-1">Avg Fleet Health</div>
-              <div className="flex items-center gap-3">
-                <div className="flex-1 bg-slate-800 h-2.5 rounded-full overflow-hidden">
-                  <div 
-                    className="h-full bg-gradient-to-r from-emerald-600 to-emerald-400"
-                    style={{ width: `${avgHealth}%` }}
-                  />
+        {/* ROW 3 */}
+        {/* Stratigraphy / Geological Profile */}
+        <div className="col-span-1 md:col-span-3 p-6 rounded-2xl bg-slate-900/60 border border-slate-800 shadow-lg">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2">
+              <Layers className="w-5 h-5 text-indigo-400" />
+              <h3 className="text-sm font-bold text-white uppercase tracking-wider">Geological Stratigraphy Log</h3>
+            </div>
+            {/* AI Recommendation Badge */}
+            <div className="max-w-xl p-2.5 rounded-lg bg-indigo-950/20 border border-indigo-500/30 text-indigo-200 text-xs flex gap-2 items-start">
+              <Zap className="w-4 h-4 text-indigo-400 shrink-0 mt-0.5" />
+              <p>{zone.aiRecommendation}</p>
+            </div>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {zone.stratigraphy.map((layer, idx) => (
+              <div key={idx} className="flex items-center bg-slate-950/50 rounded-xl p-3 border border-slate-800/50 hover:bg-slate-800 transition-colors">
+                <div 
+                  className="w-2 h-10 rounded-full mr-4 shrink-0" 
+                  style={{ backgroundColor: layer.color }}
+                />
+                <div className="w-24 shrink-0 text-sm font-mono text-slate-400">{layer.depth}</div>
+                <div className="flex-1">
+                  <div className="text-sm font-bold text-slate-200">{layer.rockType}</div>
+                  <div className="text-xs text-slate-500">{layer.layerName}</div>
                 </div>
+                <div className="w-24 shrink-0 text-right font-mono text-emerald-400 text-base font-bold">{layer.mnGrade.toFixed(1)}% Mn</div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* ROW 4 */}
+        {/* Full Equipment Telemetry Grid */}
+        <div className="col-span-1 md:col-span-3 p-6 rounded-2xl bg-slate-900/60 border border-slate-800 shadow-lg">
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-2">
+              <Truck className="w-5 h-5 text-emerald-400" />
+              <h3 className="text-sm font-bold text-white uppercase tracking-wider">Live Fleet Telemetry & Diagnostics</h3>
+            </div>
+            <div className="flex gap-6">
+              <div className="flex flex-col items-end">
+                <span className="text-[10px] text-slate-500 uppercase">Avg Fleet Health</span>
                 <span className="text-lg font-mono font-bold text-emerald-400">{avgHealth.toFixed(1)}%</span>
               </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-3 mb-4">
-              <div className="bg-emerald-950/30 p-2.5 rounded-lg border border-emerald-900/50 flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-500" />
-                <div>
-                  <div className="text-lg font-mono text-white leading-none">{activeFleet}</div>
-                  <div className="text-[10px] text-slate-400 mt-0.5">Active</div>
+              <div className="flex gap-2">
+                <div className="bg-emerald-950/30 px-3 py-1.5 rounded-lg border border-emerald-900/50 flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+                  <span className="text-sm font-mono text-white">{activeFleet} Active</span>
                 </div>
-              </div>
-              <div className="bg-rose-950/30 p-2.5 rounded-lg border border-rose-900/50 flex items-center gap-2">
-                <AlertTriangle className="w-4 h-4 text-rose-500" />
-                <div>
-                  <div className="text-lg font-mono text-white leading-none">{maintenanceFleet}</div>
-                  <div className="text-[10px] text-slate-400 mt-0.5">In Maintenance</div>
+                <div className="bg-rose-950/30 px-3 py-1.5 rounded-lg border border-rose-900/50 flex items-center gap-2">
+                  <AlertTriangle className="w-4 h-4 text-rose-500" />
+                  <span className="text-sm font-mono text-white">{maintenanceFleet} Maint</span>
                 </div>
               </div>
             </div>
-
-            {/* All Equipments List (Scrollable) */}
-            <div className="space-y-2 mt-4">
-              <div className="text-[10px] text-slate-500 uppercase flex justify-between items-center">
-                <span>All Fleet Assets</span>
-                <span>{fleet.length} Total</span>
-              </div>
-              <div className="max-h-[200px] overflow-y-auto pr-1 space-y-2 custom-scrollbar">
-                {fleet.map((f: any, idx) => (
-                  <div key={idx} className="flex justify-between items-center text-xs bg-slate-950/50 p-2 rounded border border-slate-800/50">
-                    <span className="font-mono text-slate-300">{f.machine_id}</span>
-                    <div className="flex flex-col items-end">
-                      <span className={f.status === 'Active' ? 'text-emerald-400 font-bold' : 'text-rose-400 font-bold'}>{f.health_score}%</span>
-                      <span className="text-[9px] text-slate-500">{f.equipment_type}</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
           </div>
 
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {fleet.map((f: any, idx) => (
+              <div key={idx} className="bg-slate-950/50 p-4 rounded-xl border border-slate-800/70 hover:border-slate-600 transition-colors">
+                <div className="flex justify-between items-start mb-3 border-b border-slate-800/80 pb-3">
+                  <div>
+                    <h4 className="font-mono text-emerald-400 font-bold">{f.machine_id}</h4>
+                    <span className="text-[10px] text-slate-500 uppercase">{f.equipment_type}</span>
+                  </div>
+                  <div className="text-right">
+                    <span className={`text-lg font-bold font-mono ${f.status === 'Active' ? 'text-emerald-400' : 'text-rose-400'}`}>
+                      {f.health_score}%
+                    </span>
+                    <span className="block text-[10px] uppercase text-slate-500">{f.status}</span>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-y-3 gap-x-2 text-xs">
+                  <div>
+                    <span className="block text-[10px] text-slate-500 uppercase mb-0.5">Engine Temp</span>
+                    <span className="font-mono text-slate-300">{f.engine_temp_c}°C</span>
+                  </div>
+                  <div>
+                    <span className="block text-[10px] text-slate-500 uppercase mb-0.5">Oil Pressure</span>
+                    <span className="font-mono text-slate-300">{f.oil_pressure_psi} PSI</span>
+                  </div>
+                  <div>
+                    <span className="block text-[10px] text-slate-500 uppercase mb-0.5">Vibration</span>
+                    <span className="font-mono text-slate-300">{f.vibration_hz} Hz</span>
+                  </div>
+                  <div>
+                    <span className="block text-[10px] text-slate-500 uppercase mb-0.5">Fuel / Battery</span>
+                    <span className="font-mono text-slate-300">
+                      {f.equipment_type === 'Electric LHD' ? `${f.battery_voltage_v}V` : `${f.fuel_consumption_lph} L/h`}
+                    </span>
+                  </div>
+                  <div className="col-span-2 flex items-center gap-2 mt-1">
+                    <Clock className="w-3.5 h-3.5 text-slate-500" />
+                    <span className="text-slate-400">Total Ops: {f.operating_hours} hrs</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+            
+            {fleet.length === 0 && !loadingFleet && (
+              <div className="col-span-3 text-center p-8 text-slate-500">
+                No equipment data found for this mine.
+              </div>
+            )}
+            {loadingFleet && (
+              <div className="col-span-3 text-center p-8 text-slate-500 animate-pulse">
+                Fetching secure telemetry...
+              </div>
+            )}
+          </div>
         </div>
+
       </div>
     </div>
   );
