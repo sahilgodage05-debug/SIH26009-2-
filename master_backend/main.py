@@ -23,6 +23,8 @@ from services.parameter_engine import ParameterEngine
 from services.prospector_engine import ProspectorEngine, SentinelManganeseEstimator
 from services.block_model import BlockModelEngine
 from services.blasting_engine import BlastingEngine
+from services.fleet_engine import FleetEngine
+from services.production_engine import ProductionEngine
 
 app = FastAPI(
     title="MOIL AI: Exploration & Reserve Estimation Platform",
@@ -45,6 +47,8 @@ prospector_engine = ProspectorEngine(risk_aversion_lambda=0.25)
 sentinel_estimator = SentinelManganeseEstimator(base_country_rock_grade=8.5)
 block_model_engine = BlockModelEngine(block_size_x=12.0, block_size_y=12.0, block_size_z=6.0)
 blasting_engine = BlastingEngine(default_rock_density=3.65)
+fleet_engine = FleetEngine()
+production_engine = ProductionEngine()
 drillholes_cache = generate_dongri_drillholes()
 
 # Mount User and Shivam Backends
@@ -518,6 +522,85 @@ async def get_drillholes(limit: int = Query(default=100, ge=1, le=1000)):
         "returned_composites": len(df),
         "data": df.to_dict(orient="records")
     }
+
+
+# -------------------------------------------------------------
+# DYNAMIC FLEET MANAGEMENT & PRODUCTION COMMAND CENTER APIS
+# -------------------------------------------------------------
+
+class TruckRerouteRequest(BaseModel):
+    truck_id: str = Field(description="ID of the haul truck to reroute (e.g. HT-104)")
+    target_destination: str = Field(description="Target geofence destination (e.g. GF-CRUSHER-1, GF-SHOVEL-A)")
+
+
+@app.get("/api/v1/fleet/status/{mine_id}", tags=["Dynamic Fleet Management"])
+async def get_fleet_status(mine_id: str):
+    """
+    Returns live GPS locations, telemetry, haul road topology, geofences,
+    and shovels for the specified MOIL mine pit network.
+    """
+    try:
+        return fleet_engine.get_or_create_mine_fleet(mine_id)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error fetching fleet status: {str(e)}")
+
+
+@app.get("/api/v1/fleet/match-factor/{mine_id}", tags=["Dynamic Fleet Management"])
+async def get_fleet_match_factor(mine_id: str):
+    """
+    Returns the Phelps-Morgan Shovel-Truck Match Factor, queue states,
+    and shovel/truck utilization metrics for real-time dispatch balancing.
+    """
+    try:
+        return fleet_engine.calculate_match_factor(mine_id)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error calculating match factor: {str(e)}")
+
+
+@app.post("/api/v1/fleet/reroute/{mine_id}", tags=["Dynamic Fleet Management"])
+async def reroute_haul_truck(mine_id: str, payload: TruckRerouteRequest):
+    """
+    Triggers dynamic geofenced rerouting of a haul truck to bypass congestion or starving shovels.
+    """
+    try:
+        return fleet_engine.reroute_truck(mine_id, payload.truck_id, payload.target_destination)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error rerouting truck: {str(e)}")
+
+
+@app.get("/api/v1/production/shortfall/{mine_id}", tags=["Production Engineering & Shortfall"])
+async def get_production_shortfall(mine_id: str):
+    """
+    Calculates hourly actual vs target manganese yield, cumulative gap,
+    and projected end-of-shift deficit with root-cause bottleneck attribution.
+    """
+    try:
+        return production_engine.calculate_production_shortfall(mine_id)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error calculating shortfall: {str(e)}")
+
+
+@app.get("/api/v1/production/corrective-actions/{mine_id}", tags=["Production Engineering & Shortfall"])
+async def get_corrective_actions(mine_id: str):
+    """
+    Returns prioritized engineering corrective actions (dispatch redeployment,
+    grade blending, hot-seat scheduling, blast clearance) to eliminate ore deficit.
+    """
+    try:
+        return production_engine.get_corrective_actions(mine_id)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error fetching corrective actions: {str(e)}")
+
+
+@app.get("/api/v1/production/hemm-reliability/{mine_id}", tags=["Production Engineering & Shortfall"])
+async def get_hemm_reliability(mine_id: str):
+    """
+    Returns MTBF, MTTR, availability, and failure probability for all active HEMM excavators/drills.
+    """
+    try:
+        return production_engine.get_hemm_reliability(mine_id)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error calculating HEMM reliability: {str(e)}")
 
 
 if __name__ == "__main__":

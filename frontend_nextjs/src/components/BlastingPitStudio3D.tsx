@@ -174,7 +174,7 @@ function BenchAndBlastGrid3D({
             />
           </mesh>
 
-          {/* Mine Operating Bench Surface Plate */}
+          {/* Mine Operating Bench Surface Plate (Fully transparent to holes) */}
           <mesh position={[widthX / 2, benchHeight, depthY / 2]} rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
             <planeGeometry args={[widthX * 3, depthY * 3]} />
             <meshStandardMaterial 
@@ -187,9 +187,36 @@ function BenchAndBlastGrid3D({
             />
           </mesh>
 
+          {/* 3D Physical Elevation & Depth Scale Ruler along Pit Bench Wall */}
+          <group position={[-widthX * 0.15, 0, depthY + 3.2]}>
+            {/* Vertical Scale Pole */}
+            <mesh position={[0, benchHeight / 2, 0]}>
+              <cylinderGeometry args={[0.08, 0.08, benchHeight, 16]} />
+              <meshStandardMaterial color="#f59e0b" emissive="#d97706" emissiveIntensity={0.6} />
+            </mesh>
+            {/* Crest Marker */}
+            <Html position={[0.8, benchHeight, 0]} center distanceFactor={22}>
+              <div className="bg-amber-950/90 text-amber-300 border border-amber-500/80 px-2 py-0.5 rounded text-[8px] font-mono font-bold whitespace-nowrap shadow-xl">
+                ▲ Crest Elevation: +{benchHeight.toFixed(1)}m
+              </div>
+            </Html>
+            {/* Mid-Bench Marker */}
+            <Html position={[0.8, benchHeight / 2, 0]} center distanceFactor={22}>
+              <div className="bg-slate-900/90 text-slate-300 border border-slate-700 px-1.5 py-0.5 rounded text-[7px] font-mono whitespace-nowrap shadow-lg">
+                Mid-Face ({(benchHeight / 2).toFixed(1)}m)
+              </div>
+            </Html>
+            {/* Pit Toe Floor Marker */}
+            <Html position={[0.8, 0, 0]} center distanceFactor={22}>
+              <div className="bg-cyan-950/90 text-cyan-300 border border-cyan-500/80 px-2 py-0.5 rounded text-[8px] font-mono font-bold whitespace-nowrap shadow-xl">
+                ▼ Pit Toe Floor: 0.0m Subgrade
+              </div>
+            </Html>
+          </group>
+
           {/* 3D High-Density Manganese Mineral Ore Vein Deposit Contour (Heatmap) */}
           {showOreHeatmap && (
-            <group position={[widthX * 0.45, benchHeight + 0.02, depthY * 0.5]}>
+            <group position={[widthX * 0.45, benchHeight + 0.04, depthY * 0.5]}>
               {/* High Grade Core Zone (Dense Mn Ore 42-48% Mn) */}
               <mesh rotation={[-Math.PI / 2, 0, 0]}>
                 <ringGeometry args={[0, Math.max(widthX, depthY) * 0.28, 64]} />
@@ -201,21 +228,20 @@ function BenchAndBlastGrid3D({
                 <meshBasicMaterial color="#06b6d4" transparent opacity={0.20} side={THREE.DoubleSide} />
               </mesh>
 
-              {/* Economic Break-Even Stripping Ratio Cutoff Boundary Line (SR = 4.8) */}
-              {/* Overburden becomes uneconomic beyond this line (Pit Terminates) */}
+              {/* Economic Break-Even Stripping Ratio Cutoff Boundary Line */}
               <mesh rotation={[-Math.PI / 2, 0, Math.PI / 6]}>
                 <ringGeometry args={[Math.max(widthX, depthY) * 0.52, Math.max(widthX, depthY) * 0.55, 64]} />
                 <meshBasicMaterial color="#ef4444" transparent opacity={0.85} side={THREE.DoubleSide} />
               </mesh>
 
-              {/* 3D Label Badge for Break-Even Stripping Limit (Mine-Specific) */}
+              {/* 3D Label Badge for Break-Even Stripping Limit */}
               <Html position={[Math.max(widthX, depthY) * 0.54, 0.4, 0]} center distanceFactor={28}>
                 <div className="bg-red-950/90 text-red-300 border border-red-500/80 px-2 py-1 rounded text-[9px] font-mono font-bold whitespace-nowrap shadow-xl">
                   Break-Even Cutoff Limit (SR = {srLabel}) • Pit Limit
                 </div>
               </Html>
 
-              {/* Geological Strike Lineament Vector (Mine-Specific from Satellite Analysis) */}
+              {/* Geological Strike Lineament Vector */}
               <Html position={[-Math.max(widthX, depthY) * 0.4, 0.3, -Math.max(widthX, depthY) * 0.2]} center distanceFactor={28}>
                 <div className="bg-emerald-950/90 text-emerald-300 border border-emerald-500/80 px-2 py-0.5 rounded text-[8px] font-mono font-bold whitespace-nowrap shadow-xl flex items-center gap-1">
                   <span>Geological Strike: {strikeLabel} (Dip {dipLabel})</span>

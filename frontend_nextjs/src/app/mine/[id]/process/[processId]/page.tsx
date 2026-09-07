@@ -1,11 +1,12 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { RESERVE_ZONES } from '@/data/moilData';
 import { MINE_PROCESS_STEPS, MineProcessFlowchart } from '@/components/MineProcessFlowchart';
 import { BlastingPitStudio3D } from '@/components/BlastingPitStudio3D';
-import { ArrowLeft, Sparkles, Sliders, Database, AlertCircle, FileSpreadsheet, Activity } from 'lucide-react';
+import { FleetCommandCenter } from '@/components/FleetCommandCenter';
+import { ArrowLeft, Sparkles, Sliders, Database, AlertCircle, FileSpreadsheet, Activity, Truck, Flame } from 'lucide-react';
 
 export default function ProcessDetailPage() {
   const params = useParams();
@@ -35,7 +36,7 @@ export default function ProcessDetailPage() {
   }
 
   const Icon: any = currentProcess.icon;
-  const isBlastingProcess = processId === 'operations' || processId === 'planning';
+  const isOperationsOrPlanning = processId === 'operations' || processId === 'planning' || processId === 'exploration';
 
   return (
     <div className="flex flex-col min-h-screen bg-[#090d16] text-slate-100 overflow-y-auto custom-scrollbar">
@@ -93,9 +94,13 @@ export default function ProcessDetailPage() {
           activeProcessId={processId} 
         />
 
-        {/* Render 3D Drilling & Blasting Engineering Studio if in Operations or Planning Step */}
-        {isBlastingProcess ? (
+        {/* Step-specific Engineering Modules */}
+        {processId === 'planning' ? (
+          /* Step 3: Mine Planning & 3D Pit Hole / Blast Hole Design */
           <BlastingPitStudio3D mineId={mineId} zone={zone} />
+        ) : processId === 'operations' ? (
+          /* Step 4: Drilling, Blasting & Heavy Fleet / Operations Command Center */
+          <FleetCommandCenter mineId={mineId} zone={zone} />
         ) : (
           /* Blank / Reserved Template State for Other Processes */
           <div className="bg-[#0c121e]/90 border border-slate-800 rounded-2xl p-8 shadow-2xl relative overflow-hidden backdrop-blur-md">
