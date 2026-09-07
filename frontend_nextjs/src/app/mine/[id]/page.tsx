@@ -89,11 +89,11 @@ export default function MinePage() {
               </span>
             </div>
             <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs font-mono text-slate-400">
-              <span className="flex items-center gap-1"><MapPin className="w-3.5 h-3.5" /> {zone.exactLocation.tehsilVillage}, {zone.exactLocation.districtState} - {zone.exactLocation.pincode}</span>
+              <span className="flex items-center gap-1"><MapPin className="w-3.5 h-3.5" /> {zone.exactLocation?.tehsilVillage}, {zone.exactLocation?.districtState} - {zone.exactLocation?.pincode}</span>
               <span className="text-slate-600">|</span>
-              <span className="flex items-center gap-1"><Compass className="w-3.5 h-3.5" /> {zone.exactLocation.dms}</span>
+              <span className="flex items-center gap-1"><Compass className="w-3.5 h-3.5" /> {zone.exactLocation?.dms}</span>
               <span className="text-slate-600">|</span>
-              <span className="flex items-center gap-1"><Mountain className="w-3.5 h-3.5" /> Elev: {zone.exactLocation.elevationMeters}m</span>
+              <span className="flex items-center gap-1"><Mountain className="w-3.5 h-3.5" /> Elev: {zone.exactLocation?.elevationMeters}m</span>
               <span className="text-slate-600">|</span>
               <span>Lease: {zone.leaseArea}</span>
             </div>
@@ -148,22 +148,22 @@ export default function MinePage() {
           <div className="grid grid-cols-2 gap-3">
             <div className="bg-slate-950/50 p-3 rounded-xl border border-slate-800/50 text-center">
               <CloudRain className="w-5 h-5 text-blue-400 mx-auto mb-2" />
-              <div className="text-lg font-mono text-white">{zone.spaceTelemetry.rainfall_mm_hr}</div>
+              <div className="text-lg font-mono text-white">{zone.spaceTelemetry?.rainfall_mm_hr || 'N/A'}</div>
               <div className="text-[10px] text-slate-400 uppercase mt-1">Rainfall (mm/hr)</div>
             </div>
             <div className="bg-slate-950/50 p-3 rounded-xl border border-slate-800/50 text-center">
               <Droplets className="w-5 h-5 text-cyan-400 mx-auto mb-2" />
-              <div className="text-lg font-mono text-white">{zone.spaceTelemetry.soilMoisturePercent}%</div>
+              <div className="text-lg font-mono text-white">{zone.spaceTelemetry?.soilMoisturePercent || 'N/A'}%</div>
               <div className="text-[10px] text-slate-400 uppercase mt-1">Soil Moisture</div>
             </div>
             <div className="bg-slate-950/50 p-3 rounded-xl border border-slate-800/50 text-center">
               <Thermometer className="w-5 h-5 text-orange-400 mx-auto mb-2" />
-              <div className="text-lg font-mono text-white">{zone.spaceTelemetry.surfaceTempKelvin}</div>
+              <div className="text-lg font-mono text-white">{zone.spaceTelemetry?.surfaceTempKelvin || 'N/A'}</div>
               <div className="text-[10px] text-slate-400 uppercase mt-1">Surface Temp (K)</div>
             </div>
             <div className="bg-slate-950/50 p-3 rounded-xl border border-slate-800/50 text-center">
               <Leaf className="w-5 h-5 text-emerald-400 mx-auto mb-2" />
-              <div className="text-lg font-mono text-white">{zone.spaceTelemetry.ndviVegetationIndex}</div>
+              <div className="text-lg font-mono text-white">{zone.spaceTelemetry?.ndviVegetationIndex || 'N/A'}</div>
               <div className="text-[10px] text-slate-400 uppercase mt-1">NDVI Anomaly</div>
             </div>
           </div>

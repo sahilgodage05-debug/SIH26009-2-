@@ -146,7 +146,7 @@ export const MapComponent: React.FC<MapComponentProps> = ({
 
         {/* --- Layers: AI Heatmap --- */}
         {layers.aiHeatmap && AI_HEATMAP_CLUSTERS.map(cluster => {
-          const conf = liveScores[cluster.id] || cluster.confidenceScore;
+          const conf = liveScores[cluster.id] || cluster.probability || 80;
           if (conf < confidenceThreshold) return null;
           
           const geojson = {
@@ -177,15 +177,21 @@ export const MapComponent: React.FC<MapComponentProps> = ({
         })}
 
         {/* --- Layers: NDVI --- */}
-        {layers.ndvi && NDVI_ANOMALY_ZONES.map((zone, idx) => {
+        {layers.ndvi && NDVI_ANOMALY_ZONES.map((zone: any, idx) => {
+          // If zone is a circle with center and radius, we can draw a circle layer, 
+          // or just a point layer styled as a circle. MapLibre supports circle layers natively.
           const geojson = {
             type: 'FeatureCollection',
             features: [
               {
                 type: 'Feature',
                 geometry: {
-                  type: 'Polygon',
-                  coordinates: [zone.bounds.map(c => [c[1], c[0]])]
+                  type: 'Point',
+                  coordinates: [zone.center[1], zone.center[0]]
+                },
+                properties: {
+                  radius: zone.radius || 10,
+                  type: zone.type
                 }
               }
             ]
@@ -194,10 +200,11 @@ export const MapComponent: React.FC<MapComponentProps> = ({
             <Source key={`ndvi-${idx}`} type="geojson" data={geojson as any}>
               <Layer
                 id={`ndvi-layer-${idx}`}
-                type="fill"
+                type="circle"
                 paint={{
-                  'fill-color': zone.type === 'High Stress' ? '#ef4444' : '#10b981',
-                  'fill-opacity': 0.3
+                  'circle-color': zone.type === 'High Stress' ? '#ef4444' : '#10b981',
+                  'circle-opacity': 0.3,
+                  'circle-radius': 50 // simplistic radius representation
                 }}
               />
             </Source>
@@ -205,7 +212,7 @@ export const MapComponent: React.FC<MapComponentProps> = ({
         })}
 
         {/* --- Layers: Reserve Zones Markers --- */}
-        {layers.moils && RESERVE_ZONES.map(zone => {
+        {RESERVE_ZONES.map(zone => {
           const isSelected = selectedZone?.id === zone.id;
           const prob = zone.manganeseProbability;
           const color = prob >= 88 ? '#ef4444' : prob >= 80 ? '#f97316' : '#eab308';
@@ -245,7 +252,7 @@ export const MapComponent: React.FC<MapComponentProps> = ({
         })}
 
         {/* --- Layers: Drilling Sites --- */}
-        {layers.drilling && DRILLING_SITES.map(site => (
+        {layers.historicalDrilling && DRILLING_SITES.map(site => (
           <Marker 
             key={site.id} 
             longitude={site.coordinates[1]} 
