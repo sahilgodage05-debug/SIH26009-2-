@@ -20,6 +20,40 @@ export default function MinePage() {
 
   const [fleet, setFleet] = useState<any[]>([]);
   const [loadingFleet, setLoadingFleet] = useState(true);
+  const [actions, setActions] = useState<any[]>([]);
+  const [notification, setNotification] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Fetch AI scheduling actions
+    const fetchActions = async () => {
+      try {
+        const url = `http://${window.location.hostname}:8000/user/api/equipment_schedule`;
+        const response = await fetch(url);
+        if (response.ok) {
+          const data = await response.json();
+          setActions(data.actions || []);
+        }
+      } catch (err) {
+        console.error("Failed to fetch scheduling actions:", err);
+      }
+    };
+    fetchActions();
+  }, []);
+
+  const handleToggleAction = (actionId: string) => {
+    setActions(prev => prev.map(act => {
+      if (act.id === actionId) {
+        const nextStatus = act.status === 'recommended' ? 'executed' : 'recommended';
+        const msg = nextStatus === 'executed'
+          ? `Executed corrective action: "${act.title}". Recovered +${act.recoverableTonnageMT.toLocaleString()} MT ore availability!`
+          : `Reverted action: "${act.title}".`;
+        setNotification(msg);
+        setTimeout(() => setNotification(null), 4500);
+        return { ...act, status: nextStatus };
+      }
+      return act;
+    }));
+  };
 
   useEffect(() => {
     if (!zone) return;
@@ -102,6 +136,14 @@ export default function MinePage() {
         </div>
       </div>
       
+      {/* Floating System Notification Toast */}
+      {notification && (
+        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-[1000] px-4 py-2.5 rounded-xl bg-slate-900/95 border border-emerald-500/40 text-xs text-white shadow-2xl backdrop-blur-md flex items-center gap-2.5 animate-in fade-in slide-in-from-top-4">
+          <Zap className="w-4 h-4 text-emerald-400 shrink-0 animate-pulse" />
+          <span className="font-medium">{notification}</span>
+        </div>
+      )}
+
       {/* Main Container */}
       <div className="max-w-[1400px] mx-auto w-full p-6 space-y-6">
         
@@ -264,6 +306,66 @@ export default function MinePage() {
                 </div>
               ))}
             </div>
+          </div>
+
+          {/* AI Recommended Actions (Shivam Schedule) */}
+          <div className="col-span-1 md:col-span-3 mb-2 space-y-3">
+            {actions.map((act) => (
+              <div 
+                key={act.id} 
+                className={`relative overflow-hidden p-4 rounded-xl border ${
+                  act.status === 'executed' 
+                    ? 'bg-emerald-950/20 border-emerald-900/50' 
+                    : 'bg-indigo-950/20 border-indigo-500/30'
+                } transition-all duration-300`}
+              >
+                <div className="flex gap-4 items-start relative z-10">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-1">
+                      <Zap className={`w-4 h-4 ${act.status === 'executed' ? 'text-emerald-500' : 'text-amber-400'}`} />
+                      <h4 className="text-sm font-bold text-white">{act.title}</h4>
+                      {act.status === 'executed' && (
+                        <span className="ml-2 px-2 py-0.5 rounded text-[10px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 uppercase font-bold tracking-wider">
+                          Executed
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-xs text-slate-400 leading-relaxed mb-2 max-w-3xl">
+                      {act.description}
+                    </p>
+                    <div className="flex flex-wrap gap-x-6 gap-y-2 mt-3 text-[11px]">
+                      <div className="flex items-center gap-1.5">
+                        <AlertTriangle className="w-3.5 h-3.5 text-rose-400" />
+                        <span className="text-slate-300"><span className="text-slate-500">Constraint:</span> {act.constraintAddressed}</span>
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <Clock className="w-3.5 h-3.5 text-blue-400" />
+                        <span className="text-slate-300"><span className="text-slate-500">Timeline:</span> {act.timeToImplement}</span>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="flex flex-col items-end gap-3 shrink-0">
+                    <button
+                      onClick={() => handleToggleAction(act.id)}
+                      className={`px-4 py-2 rounded-lg text-xs font-bold transition-colors ${
+                        act.status === 'executed'
+                          ? 'bg-slate-800 text-slate-400 hover:bg-slate-700'
+                          : 'bg-emerald-600 text-white hover:bg-emerald-500 shadow-lg shadow-emerald-900/20'
+                      }`}
+                    >
+                      {act.status === 'executed' ? 'Revert Action' : 'Execute Recommendation'}
+                    </button>
+                    {act.status === 'executed' && (
+                      <div className="text-right">
+                        <span className="block text-[10px] text-slate-500 uppercase">Impact</span>
+                        <span className="text-sm font-mono font-bold text-emerald-400">+{act.recoverableTonnageMT.toLocaleString()} MT</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
 
           {/* ROW 4 */}

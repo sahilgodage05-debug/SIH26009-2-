@@ -16,8 +16,8 @@ import {
 } from 'lucide-react';
 
 interface NavbarProps {
-  activeView: 'exploration' | 'operations' | 'training';
-  setActiveView: (view: 'exploration' | 'operations' | 'training') => void;
+  activeView: 'exploration' | 'training';
+  setActiveView: (view: 'exploration' | 'training') => void;
   activeLayersCount: number;
   aiHeatmapActive: boolean;
   onResetMap?: () => void;
@@ -63,20 +63,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         </button>
 
 
-        <button
-          onClick={() => setActiveView('operations')}
-          className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200 ${
-            activeView === 'operations'
-              ? 'bg-gradient-to-r from-amber-600 to-orange-600 text-white shadow-md shadow-amber-900/40 border border-amber-400/30'
-              : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
-          }`}
-        >
-          <Truck className="w-3.5 h-3.5" />
-          <span>Equipment & AI Scheduling</span>
-          <span className="text-[9px] font-mono px-1 py-0.2 rounded bg-amber-950 text-amber-300 border border-amber-500/30">
-            PS 26009
-          </span>
-        </button>
+
 
 
     </div>
