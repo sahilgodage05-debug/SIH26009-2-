@@ -72,28 +72,6 @@ export const MINE_PROCESS_STEPS: ProcessStep[] = [
     icon: Factory,
     color: 'blue',
     badge: 'Telemetry Active'
-  },
-  {
-    id: 'production-risk',
-    stepNumber: '05',
-    title: 'Production Forecast & Risk',
-    category: 'AI Predictive Engine',
-    status: 'active',
-    description: 'XGBoost regressor yield forecasts, SHAP explainability & risk scans.',
-    icon: TrendingUp,
-    color: 'purple',
-    badge: 'OR-Tools Ready'
-  },
-  {
-    id: 'beneficiation',
-    stepNumber: '06',
-    title: 'Beneficiation & Quality Control',
-    category: 'Processing & Shipping',
-    status: 'scheduled',
-    description: 'Pyrolusite vs Braunite ore grade sorting, moisture & dispatching.',
-    icon: ShieldAlert,
-    color: 'slate',
-    badge: 'Scheduled'
   }
 ];
 

@@ -31,6 +31,7 @@ import {
   Check,
   ChevronRight
 } from 'lucide-react';
+import { LegacyFleetTelemetry } from '@/components/LegacyFleetTelemetry';
 
 interface TruckData {
   id: string;
@@ -216,22 +217,22 @@ export function FleetCommandCenter({ mineId, zone }: { mineId?: string; zone?: a
       case 'QUEUED_SHOVEL':
         return <span className="bg-rose-500/20 text-rose-400 border border-rose-500/40 px-2 py-0.5 rounded text-[10px] font-bold">Queued at Shovel</span>;
       default:
-        return <span className="bg-slate-700 text-slate-300 px-2 py-0.5 rounded text-[10px] font-bold">{status}</span>;
+        return <span className="bg-slate-200 text-slate-600 px-2 py-0.5 rounded text-[10px] font-bold">{status}</span>;
     }
   };
 
   return (
-    <div className="w-full bg-[#080d1a] border border-slate-800/90 rounded-2xl p-6 shadow-2xl space-y-6 text-slate-100 backdrop-blur-xl">
+    <div className="w-full bg-white border border-slate-200/90 rounded-2xl p-6 shadow-2xl space-y-6 text-slate-800 backdrop-blur-xl">
       {/* Header Banner */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-slate-800 pb-5">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-slate-200 pb-5">
         <div>
           <div className="flex items-center gap-2 text-xs font-bold text-cyan-400 uppercase tracking-widest mb-1.5">
             <Radio className="w-4 h-4 animate-pulse text-cyan-400" />
             <span>Real-Time GPS Fleet Management &amp; Production Shortfall Command Center</span>
           </div>
           <div className="flex flex-wrap items-center gap-3">
-            <h1 className="text-2xl font-black text-white tracking-tight">{mineName} Operations</h1>
-            <span className="bg-slate-800/90 text-slate-300 border border-slate-700 px-2.5 py-0.5 rounded-full text-xs font-mono font-bold flex items-center gap-1.5">
+            <h1 className="text-2xl font-black text-slate-900 tracking-tight">{mineName} Operations</h1>
+            <span className="bg-slate-100/90 text-slate-600 border border-slate-300 px-2.5 py-0.5 rounded-full text-xs font-mono font-bold flex items-center gap-1.5">
               <Compass className="w-3.5 h-3.5 text-cyan-400" />
               {fleetState ? `${fleetState.base_lat.toFixed(4)}°N, ${fleetState.base_lng.toFixed(4)}°E` : '21.5420°N, 79.6780°E'}
             </span>
@@ -265,9 +266,9 @@ export function FleetCommandCenter({ mineId, zone }: { mineId?: string; zone?: a
 
           <button
             onClick={() => fetchAllData()}
-            className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-semibold flex items-center gap-1.5 border border-slate-700 transition-all"
+            className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl text-xs font-semibold flex items-center gap-1.5 border border-slate-300 transition-all"
           >
-            <RefreshCw className="w-3.5 h-3.5 text-slate-400" />
+            <RefreshCw className="w-3.5 h-3.5 text-slate-500" />
             <span>Sync</span>
           </button>
         </div>
@@ -276,14 +277,14 @@ export function FleetCommandCenter({ mineId, zone }: { mineId?: string; zone?: a
       {/* Top 4 Real-Time Operational KPI Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Card 1: Shift Production vs Shortfall */}
-        <div className="bg-slate-900/80 border border-slate-800 rounded-xl p-4 flex flex-col justify-between shadow-lg relative overflow-hidden">
+        <div className="bg-white/80 border border-slate-200 rounded-xl p-4 flex flex-col justify-between shadow-lg relative overflow-hidden">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-400">Shift Target vs Yield</span>
+            <span className="text-xs font-semibold text-slate-500">Shift Target vs Yield</span>
             <Scale className="w-4 h-4 text-amber-400" />
           </div>
           <div className="mt-2 flex items-baseline gap-2">
-            <span className="text-2xl font-black text-white">{shortfall?.current_actual_tons || 1040}</span>
-            <span className="text-xs text-slate-400 font-mono">/ {shortfall?.target_shift_tons || 2400} Tons</span>
+            <span className="text-2xl font-black text-slate-900">{shortfall?.current_actual_tons || 1040}</span>
+            <span className="text-xs text-slate-500 font-mono">/ {shortfall?.target_shift_tons || 2400} Tons</span>
           </div>
           <div className="mt-3 flex items-center justify-between text-xs">
             <span className="text-rose-400 font-bold flex items-center gap-1">
@@ -294,7 +295,7 @@ export function FleetCommandCenter({ mineId, zone }: { mineId?: string; zone?: a
               <span className="text-emerald-400 font-bold">+{recoveredTonnage} T Recovered</span>
             )}
           </div>
-          <div className="w-full bg-slate-800 h-1.5 rounded-full mt-2 overflow-hidden">
+          <div className="w-full bg-slate-100 h-1.5 rounded-full mt-2 overflow-hidden">
             <div 
               className="bg-gradient-to-r from-amber-500 to-emerald-500 h-full rounded-full transition-all duration-500"
               style={{ width: `${Math.min(100, (((shortfall?.current_actual_tons || 1040) + recoveredTonnage) / (shortfall?.target_shift_tons || 2400)) * 100)}%` }}
@@ -303,9 +304,9 @@ export function FleetCommandCenter({ mineId, zone }: { mineId?: string; zone?: a
         </div>
 
         {/* Card 2: Shovel-Truck Match Factor */}
-        <div className="bg-slate-900/80 border border-slate-800 rounded-xl p-4 flex flex-col justify-between shadow-lg">
+        <div className="bg-white/80 border border-slate-200 rounded-xl p-4 flex flex-col justify-between shadow-lg">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-400">Phelps-Morgan Match Factor</span>
+            <span className="text-xs font-semibold text-slate-500">Phelps-Morgan Match Factor</span>
             <Gauge className="w-4 h-4 text-cyan-400" />
           </div>
           <div className="mt-2 flex items-baseline gap-2">
@@ -318,11 +319,11 @@ export function FleetCommandCenter({ mineId, zone }: { mineId?: string; zone?: a
             }`}>
               {matchFactor?.match_factor || 0.648}
             </span>
-            <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-slate-800 text-slate-300">
+            <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-slate-100 text-slate-600">
               {matchFactor?.status || 'UNDER_TRUCKED'}
             </span>
           </div>
-          <p className="mt-2 text-[11px] text-slate-400 line-clamp-1">
+          <p className="mt-2 text-[11px] text-slate-500 line-clamp-1">
             {matchFactor?.recommendation || 'Shovels starving: Deploy 2 auxiliary haulers.'}
           </p>
           <div className="mt-1 flex items-center justify-between text-[10px] text-slate-500 font-mono">
@@ -332,21 +333,21 @@ export function FleetCommandCenter({ mineId, zone }: { mineId?: string; zone?: a
         </div>
 
         {/* Card 3: Active Fleet & TKPH Telemetry */}
-        <div className="bg-slate-900/80 border border-slate-800 rounded-xl p-4 flex flex-col justify-between shadow-lg">
+        <div className="bg-white/80 border border-slate-200 rounded-xl p-4 flex flex-col justify-between shadow-lg">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-400">Active Fleet &amp; TKPH Heat</span>
+            <span className="text-xs font-semibold text-slate-500">Active Fleet &amp; TKPH Heat</span>
             <Truck className="w-4 h-4 text-emerald-400" />
           </div>
           <div className="mt-2 flex items-baseline gap-2">
-            <span className="text-2xl font-black text-white">{trucks.length}</span>
-            <span className="text-xs text-slate-400">Haul Trucks (100% In Service)</span>
+            <span className="text-2xl font-black text-slate-900">{trucks.length}</span>
+            <span className="text-xs text-slate-500">Haul Trucks (100% In Service)</span>
           </div>
           <div className="mt-2 flex items-center justify-between text-xs">
-            <span className="text-slate-400">Avg Fleet TKPH:</span>
+            <span className="text-slate-500">Avg Fleet TKPH:</span>
             <span className="font-mono font-bold text-emerald-400">135.4 / 420 Max</span>
           </div>
-          <div className="mt-1 flex items-center justify-between text-[11px] text-slate-400">
-            <span className="flex items-center gap-1 text-slate-400">
+          <div className="mt-1 flex items-center justify-between text-[11px] text-slate-500">
+            <span className="flex items-center gap-1 text-slate-500">
               <Fuel className="w-3.5 h-3.5 text-amber-400" />
               Avg Burn: 52.4 L/h
             </span>
@@ -355,18 +356,18 @@ export function FleetCommandCenter({ mineId, zone }: { mineId?: string; zone?: a
         </div>
 
         {/* Card 4: HEMM Overall Availability */}
-        <div className="bg-slate-900/80 border border-slate-800 rounded-xl p-4 flex flex-col justify-between shadow-lg">
+        <div className="bg-white/80 border border-slate-200 rounded-xl p-4 flex flex-col justify-between shadow-lg">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-400">HEMM Availability &amp; MTBF</span>
+            <span className="text-xs font-semibold text-slate-500">HEMM Availability &amp; MTBF</span>
             <Wrench className="w-4 h-4 text-purple-400" />
           </div>
           <div className="mt-2 flex items-baseline gap-2">
             <span className="text-2xl font-black text-purple-400">{hemmData?.overall_fleet_availability_pct || 92.1}%</span>
-            <span className="text-xs text-slate-400">Equipment Uptime</span>
+            <span className="text-xs text-slate-500">Equipment Uptime</span>
           </div>
           <div className="mt-2 flex items-center justify-between text-xs">
-            <span className="text-slate-400">Mean Time To Repair:</span>
-            <span className="font-mono font-bold text-slate-300">3.8 Hours</span>
+            <span className="text-slate-500">Mean Time To Repair:</span>
+            <span className="font-mono font-bold text-slate-600">3.8 Hours</span>
           </div>
           <div className="mt-1 text-[11px] text-emerald-400 flex items-center gap-1">
             <Check className="w-3.5 h-3.5" />
@@ -376,13 +377,13 @@ export function FleetCommandCenter({ mineId, zone }: { mineId?: string; zone?: a
       </div>
 
       {/* Main Command Tabs */}
-      <div className="flex items-center gap-2 border-b border-slate-800 pb-2">
+      <div className="flex items-center gap-2 border-b border-slate-200 pb-2">
         <button
           onClick={() => setActiveTab('map')}
           className={`px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition-all ${
             activeTab === 'map'
-              ? 'bg-cyan-600 text-white shadow-lg shadow-cyan-900/40'
-              : 'bg-slate-900 text-slate-400 hover:text-slate-200 hover:bg-slate-800'
+              ? 'bg-cyan-600 text-slate-900 shadow-lg shadow-cyan-900/40'
+              : 'bg-white text-slate-500 hover:text-slate-700 hover:bg-slate-100'
           }`}
         >
           <Navigation className="w-4 h-4" />
@@ -393,8 +394,8 @@ export function FleetCommandCenter({ mineId, zone }: { mineId?: string; zone?: a
           onClick={() => setActiveTab('shortfall')}
           className={`px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition-all ${
             activeTab === 'shortfall'
-              ? 'bg-amber-600 text-white shadow-lg shadow-amber-900/40'
-              : 'bg-slate-900 text-slate-400 hover:text-slate-200 hover:bg-slate-800'
+              ? 'bg-amber-600 text-slate-900 shadow-lg shadow-amber-900/40'
+              : 'bg-white text-slate-500 hover:text-slate-700 hover:bg-slate-100'
           }`}
         >
           <TrendingDown className="w-4 h-4" />
@@ -405,8 +406,8 @@ export function FleetCommandCenter({ mineId, zone }: { mineId?: string; zone?: a
           onClick={() => setActiveTab('telemetry')}
           className={`px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition-all ${
             activeTab === 'telemetry'
-              ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-900/40'
-              : 'bg-slate-900 text-slate-400 hover:text-slate-200 hover:bg-slate-800'
+              ? 'bg-emerald-600 text-slate-900 shadow-lg shadow-emerald-900/40'
+              : 'bg-white text-slate-500 hover:text-slate-700 hover:bg-slate-100'
           }`}
         >
           <Activity className="w-4 h-4" />
@@ -417,8 +418,8 @@ export function FleetCommandCenter({ mineId, zone }: { mineId?: string; zone?: a
           onClick={() => setActiveTab('reliability')}
           className={`px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition-all ${
             activeTab === 'reliability'
-              ? 'bg-purple-600 text-white shadow-lg shadow-purple-900/40'
-              : 'bg-slate-900 text-slate-400 hover:text-slate-200 hover:bg-slate-800'
+              ? 'bg-purple-600 text-slate-900 shadow-lg shadow-purple-900/40'
+              : 'bg-white text-slate-500 hover:text-slate-700 hover:bg-slate-100'
           }`}
         >
           <Wrench className="w-4 h-4" />
@@ -465,27 +466,27 @@ export function FleetCommandCenter({ mineId, zone }: { mineId?: string; zone?: a
         return (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Left 2 Cols: Interactive Vector Haul Road Map */}
-            <div className="lg:col-span-2 bg-[#060a14] border border-slate-800 rounded-2xl p-4 flex flex-col relative overflow-hidden min-h-[520px]">
+            <div className="lg:col-span-2 bg-slate-50 border border-slate-200 rounded-2xl p-4 flex flex-col relative overflow-hidden min-h-[520px]">
               {/* Map Controls Header */}
-              <div className="flex flex-wrap items-center justify-between border-b border-slate-800/80 pb-3 mb-3 gap-2">
+              <div className="flex flex-wrap items-center justify-between border-b border-slate-200/80 pb-3 mb-3 gap-2">
                 <div className="flex items-center gap-2">
                   <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-ping" />
-                  <span className="text-xs font-bold text-white uppercase tracking-wider">
+                  <span className="text-xs font-bold text-slate-900 uppercase tracking-wider">
                     {fleetState?.mine_name || mineName} • {fleetState?.pit_type || 'Opencast Pit'}
                   </span>
                 </div>
-                <div className="flex items-center gap-2 text-[10px] font-mono text-slate-400">
-                  <span className="bg-slate-900 border border-slate-800 px-2 py-0.5 rounded text-cyan-300">
+                <div className="flex items-center gap-2 text-[10px] font-mono text-slate-500">
+                  <span className="bg-white border border-slate-200 px-2 py-0.5 rounded text-cyan-300">
                     Strike: {fleetState?.strike || 'N65°E'} (Dip {fleetState?.dip || '55°'})
                   </span>
-                  <span className="bg-slate-900 border border-slate-800 px-2 py-0.5 rounded text-amber-300">
+                  <span className="bg-white border border-slate-200 px-2 py-0.5 rounded text-amber-300">
                     Pit Depth: {fleetState?.pit_depth_m || 85}m
                   </span>
                 </div>
               </div>
 
               {/* Simulated 2D Vector Canvas of Mine Haul Roads & Real Trucks */}
-              <div className="flex-1 w-full relative bg-gradient-to-b from-[#070d1e] via-[#040814] to-[#02040a] rounded-xl border border-slate-800/80 p-4 flex items-center justify-center min-h-[420px] overflow-hidden">
+              <div className="flex-1 w-full relative bg-gradient-to-b from-[#070d1e] via-slate-50 to-white rounded-xl border border-slate-200/80 p-4 flex items-center justify-center min-h-[420px] overflow-hidden">
                 
                 {/* SVG Pit Polygon & Haul Road Vectors */}
                 <svg className="absolute inset-0 w-full h-full pointer-events-none">
@@ -551,14 +552,14 @@ export function FleetCommandCenter({ mineId, zone }: { mineId?: string; zone?: a
 
                 {/* Waypoint 1: Shovel Pocket Alpha (Mine-Specific Bench) */}
                 <div 
-                  className="absolute transform -translate-x-1/2 -translate-y-1/2 bg-slate-900/95 border border-purple-500/70 rounded-xl p-2 shadow-xl flex flex-col items-start gap-0.5 z-10 hover:scale-105 transition-transform"
+                  className="absolute transform -translate-x-1/2 -translate-y-1/2 bg-white/95 border border-purple-500/70 rounded-xl p-2 shadow-xl flex flex-col items-start gap-0.5 z-10 hover:scale-105 transition-transform"
                   style={{ left: `${posA.x}%`, top: `${posA.y}%` }}
                 >
                   <div className="flex items-center gap-1.5">
                     <div className="w-2 h-2 rounded-full bg-purple-400" />
                     <span className="text-[9px] font-bold text-purple-300">{shovels[0]?.id || 'EX-01'}</span>
                   </div>
-                  <span className="text-[8px] text-slate-300 line-clamp-1">{shovels[0]?.location_name || 'High Grade Face'}</span>
+                  <span className="text-[8px] text-slate-600 line-clamp-1">{shovels[0]?.location_name || 'High Grade Face'}</span>
                   <span className="text-[7.5px] bg-purple-950 text-purple-300 px-1 py-0.2 rounded font-mono font-bold">
                     Queue: {shovels[0]?.queue_count || 1} Trucks
                   </span>
@@ -566,14 +567,14 @@ export function FleetCommandCenter({ mineId, zone }: { mineId?: string; zone?: a
 
                 {/* Waypoint 2: Shovel Pocket Bravo (Mine-Specific Bench) */}
                 <div 
-                  className="absolute transform -translate-x-1/2 -translate-y-1/2 bg-slate-900/95 border border-cyan-500/70 rounded-xl p-2 shadow-xl flex flex-col items-start gap-0.5 z-10 hover:scale-105 transition-transform"
+                  className="absolute transform -translate-x-1/2 -translate-y-1/2 bg-white/95 border border-cyan-500/70 rounded-xl p-2 shadow-xl flex flex-col items-start gap-0.5 z-10 hover:scale-105 transition-transform"
                   style={{ left: `${posB.x}%`, top: `${posB.y}%` }}
                 >
                   <div className="flex items-center gap-1.5">
                     <div className="w-2 h-2 rounded-full bg-cyan-400" />
                     <span className="text-[9px] font-bold text-cyan-300">{shovels[1]?.id || 'EX-02'}</span>
                   </div>
-                  <span className="text-[8px] text-slate-300 line-clamp-1">{shovels[1]?.location_name || 'Medium Grade Face'}</span>
+                  <span className="text-[8px] text-slate-600 line-clamp-1">{shovels[1]?.location_name || 'Medium Grade Face'}</span>
                   <span className="text-[7.5px] bg-cyan-950 text-cyan-300 px-1 py-0.2 rounded font-mono font-bold">
                     Queue: {shovels[1]?.queue_count || 0} Trucks
                   </span>
@@ -581,7 +582,7 @@ export function FleetCommandCenter({ mineId, zone }: { mineId?: string; zone?: a
 
                 {/* Waypoint 3: Primary Gyratory Crusher Plant */}
                 <div 
-                  className="absolute transform -translate-x-1/2 -translate-y-1/2 bg-slate-900/95 border border-emerald-500/70 rounded-xl p-2 shadow-xl flex flex-col items-start gap-0.5 z-10 hover:scale-105 transition-transform"
+                  className="absolute transform -translate-x-1/2 -translate-y-1/2 bg-white/95 border border-emerald-500/70 rounded-xl p-2 shadow-xl flex flex-col items-start gap-0.5 z-10 hover:scale-105 transition-transform"
                   style={{ left: `${posCrusher.x}%`, top: `${posCrusher.y}%` }}
                 >
                   <div className="flex items-center gap-1.5">
@@ -595,14 +596,14 @@ export function FleetCommandCenter({ mineId, zone }: { mineId?: string; zone?: a
 
                 {/* Waypoint 4: Overburden Waste Dump Yard */}
                 <div 
-                  className="absolute transform -translate-x-1/2 -translate-y-1/2 bg-slate-900/95 border border-slate-600 rounded-xl p-2 shadow-xl flex flex-col items-start gap-0.5 z-10 hover:scale-105 transition-transform"
+                  className="absolute transform -translate-x-1/2 -translate-y-1/2 bg-white/95 border border-slate-300 rounded-xl p-2 shadow-xl flex flex-col items-start gap-0.5 z-10 hover:scale-105 transition-transform"
                   style={{ left: `${posDump.x}%`, top: `${posDump.y}%` }}
                 >
                   <div className="flex items-center gap-1.5">
                     <div className="w-2 h-2 rounded-full bg-slate-400" />
-                    <span className="text-[9px] font-bold text-slate-300">Waste Overburden Dump</span>
+                    <span className="text-[9px] font-bold text-slate-600">Waste Overburden Dump</span>
                   </div>
-                  <span className="text-[7.5px] text-slate-400 font-mono">Tip Heads Active</span>
+                  <span className="text-[7.5px] text-slate-500 font-mono">Tip Heads Active</span>
                 </div>
 
                 {/* Live Moving Haul Truck Pins (Projected from actual route waypoints) */}
@@ -652,12 +653,12 @@ export function FleetCommandCenter({ mineId, zone }: { mineId?: string; zone?: a
                               ? 'bg-cyan-500 text-black border-cyan-300'
                               : truck.status === 'LOADING'
                                 ? 'bg-amber-500 text-black border-amber-300 animate-pulse'
-                                : 'bg-purple-500 text-white border-purple-300'
+                                : 'bg-purple-500 text-slate-900 border-purple-300'
                         }`}>
                           <Truck className="w-3.5 h-3.5" />
                         </div>
                         <span className={`text-[8px] font-mono font-black px-1 rounded shadow-md mt-0.5 whitespace-nowrap ${
-                          isSelected ? 'bg-amber-400 text-black' : 'bg-slate-900/90 text-slate-200 border border-slate-700'
+                          isSelected ? 'bg-amber-400 text-black' : 'bg-white/90 text-slate-700 border border-slate-300'
                         }`}>
                           {truck.id} • {truck.speed_kmh.toFixed(0)} km/h
                         </span>
@@ -669,30 +670,30 @@ export function FleetCommandCenter({ mineId, zone }: { mineId?: string; zone?: a
             </div>
 
             {/* Right Col: Selected Truck Telemetry HUD */}
-            <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-5 flex flex-col justify-between">
+            <div className="bg-white/90 border border-slate-200 rounded-2xl p-5 flex flex-col justify-between">
               {selectedTruck ? (
                 <div className="space-y-4">
                   {/* Truck Header */}
-                  <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+                  <div className="flex items-center justify-between border-b border-slate-200 pb-3">
                     <div>
                       <div className="flex items-center gap-2">
                         <Truck className="w-5 h-5 text-cyan-400" />
-                        <h3 className="text-lg font-black text-white">{selectedTruck.id}</h3>
+                        <h3 className="text-lg font-black text-slate-900">{selectedTruck.id}</h3>
                       </div>
-                      <span className="text-xs text-slate-400 font-mono">{selectedTruck.model}</span>
+                      <span className="text-xs text-slate-500 font-mono">{selectedTruck.model}</span>
                     </div>
                     {getStatusBadge(selectedTruck.status)}
                   </div>
 
                   {/* Live Gauges */}
                   <div className="grid grid-cols-2 gap-3">
-                    <div className="bg-slate-800/80 border border-slate-700/60 rounded-xl p-3">
-                      <span className="text-[10px] text-slate-400 uppercase font-semibold">Payload</span>
+                    <div className="bg-slate-100/80 border border-slate-300/60 rounded-xl p-3">
+                      <span className="text-[10px] text-slate-500 uppercase font-semibold">Payload</span>
                       <div className="mt-1 flex items-baseline gap-1">
-                        <span className="text-xl font-black text-white">{selectedTruck.payload_t}</span>
-                        <span className="text-[10px] text-slate-400 font-mono">/ {selectedTruck.capacity_t} T</span>
+                        <span className="text-xl font-black text-slate-900">{selectedTruck.payload_t}</span>
+                        <span className="text-[10px] text-slate-500 font-mono">/ {selectedTruck.capacity_t} T</span>
                       </div>
-                      <div className="w-full bg-slate-700 h-1 rounded-full mt-2 overflow-hidden">
+                      <div className="w-full bg-slate-200 h-1 rounded-full mt-2 overflow-hidden">
                         <div 
                           className="bg-emerald-400 h-full rounded-full" 
                           style={{ width: `${(selectedTruck.payload_t / selectedTruck.capacity_t) * 100}%` }}
@@ -700,39 +701,39 @@ export function FleetCommandCenter({ mineId, zone }: { mineId?: string; zone?: a
                       </div>
                     </div>
 
-                    <div className="bg-slate-800/80 border border-slate-700/60 rounded-xl p-3">
-                      <span className="text-[10px] text-slate-400 uppercase font-semibold">Tire TKPH</span>
+                    <div className="bg-slate-100/80 border border-slate-300/60 rounded-xl p-3">
+                      <span className="text-[10px] text-slate-500 uppercase font-semibold">Tire TKPH</span>
                       <div className="mt-1 flex items-baseline gap-1">
                         <span className="text-xl font-black text-amber-400">{selectedTruck.telemetry?.tkph || 135}</span>
-                        <span className="text-[10px] text-slate-400 font-mono">/ 420 Max</span>
+                        <span className="text-[10px] text-slate-500 font-mono">/ 420 Max</span>
                       </div>
                       <span className="text-[9px] text-emerald-400 font-medium">Safe Thermal Zone</span>
                     </div>
                   </div>
 
                   {/* Engine & Chassis Telemetry */}
-                  <div className="space-y-2 bg-slate-950/60 border border-slate-800/80 rounded-xl p-3 text-xs font-mono">
-                    <div className="flex items-center justify-between text-slate-300">
-                      <span className="flex items-center gap-1.5 text-slate-400"><Thermometer className="w-3.5 h-3.5 text-rose-400" /> Coolant Temp</span>
+                  <div className="space-y-2 bg-slate-100/60 border border-slate-200/80 rounded-xl p-3 text-xs font-mono">
+                    <div className="flex items-center justify-between text-slate-600">
+                      <span className="flex items-center gap-1.5 text-slate-500"><Thermometer className="w-3.5 h-3.5 text-rose-400" /> Coolant Temp</span>
                       <span className="font-bold">{selectedTruck.telemetry?.coolant_temp_c.toFixed(1) || 88.2}°C</span>
                     </div>
-                    <div className="flex items-center justify-between text-slate-300">
-                      <span className="flex items-center gap-1.5 text-slate-400"><Fuel className="w-3.5 h-3.5 text-amber-400" /> Fuel Burn Rate</span>
+                    <div className="flex items-center justify-between text-slate-600">
+                      <span className="flex items-center gap-1.5 text-slate-500"><Fuel className="w-3.5 h-3.5 text-amber-400" /> Fuel Burn Rate</span>
                       <span className="font-bold">{selectedTruck.telemetry?.fuel_burn_rate_lph.toFixed(1) || 58.0} L/h</span>
                     </div>
-                    <div className="flex items-center justify-between text-slate-300">
-                      <span className="flex items-center gap-1.5 text-slate-400"><Zap className="w-3.5 h-3.5 text-cyan-400" /> Engine RPM</span>
+                    <div className="flex items-center justify-between text-slate-600">
+                      <span className="flex items-center gap-1.5 text-slate-500"><Zap className="w-3.5 h-3.5 text-cyan-400" /> Engine RPM</span>
                       <span className="font-bold">{selectedTruck.telemetry?.engine_rpm || 1780} RPM</span>
                     </div>
-                    <div className="flex items-center justify-between text-slate-300">
-                      <span className="flex items-center gap-1.5 text-slate-400"><Scale className="w-3.5 h-3.5 text-purple-400" /> Strut Pressure</span>
+                    <div className="flex items-center justify-between text-slate-600">
+                      <span className="flex items-center gap-1.5 text-slate-500"><Scale className="w-3.5 h-3.5 text-purple-400" /> Strut Pressure</span>
                       <span className="font-bold">{selectedTruck.telemetry?.strut_pressure_rear_psi.toFixed(0) || 310} PSI</span>
                     </div>
                   </div>
 
                   {/* Dynamic Reroute Dispatch Buttons */}
                   <div className="pt-2">
-                    <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block mb-2">Dynamic In-Pit Dispatch Reroute</span>
+                    <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block mb-2">Dynamic In-Pit Dispatch Reroute</span>
                     <div className="grid grid-cols-2 gap-2">
                       <button
                         onClick={() => handleApplyAction({
@@ -788,14 +789,14 @@ export function FleetCommandCenter({ mineId, zone }: { mineId?: string; zone?: a
           {/* Left 2 Cols: Hourly Yield Variance & Root Cause Bottlenecks */}
           <div className="lg:col-span-2 space-y-6">
             {/* Hourly Trend Bar Chart Table */}
-            <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-5 shadow-xl">
-              <div className="flex items-center justify-between border-b border-slate-800 pb-3 mb-4">
+            <div className="bg-white/90 border border-slate-200 rounded-2xl p-5 shadow-xl">
+              <div className="flex items-center justify-between border-b border-slate-200 pb-3 mb-4">
                 <div>
-                  <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                  <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
                     <TrendingUp className="w-4 h-4 text-amber-400" />
                     <span>Hourly Extraction Yield Gap (Target vs Actual Crusher Feed)</span>
                   </h3>
-                  <p className="text-xs text-slate-400">Shift 1 (06:00 - 14:00) • Real-Time Delta Tonnage</p>
+                  <p className="text-xs text-slate-500">Shift 1 (06:00 - 14:00) • Real-Time Delta Tonnage</p>
                 </div>
                 <span className="bg-amber-950/90 text-amber-300 border border-amber-500/70 px-2.5 py-1 rounded-lg text-xs font-mono font-bold">
                   Gap: -{(shortfall?.projected_shortfall_tons - recoveredTonnage) > 0 ? (shortfall?.projected_shortfall_tons - recoveredTonnage) : 0} Tons
@@ -806,12 +807,12 @@ export function FleetCommandCenter({ mineId, zone }: { mineId?: string; zone?: a
               <div className="space-y-3">
                 {shortfall?.hourly_trend?.map((hr: any) => (
                   <div key={hr.hour} className="flex items-center gap-3 text-xs font-mono">
-                    <span className="w-12 text-slate-400">{hr.hour}</span>
-                    <div className="flex-1 flex items-center gap-2 bg-slate-950/80 rounded-lg p-2 border border-slate-800/80">
-                      <div className="w-24 text-[11px] text-slate-300">
-                        <span className="font-bold text-white">{hr.actual_tons}</span> / {hr.target_tons} T
+                    <span className="w-12 text-slate-500">{hr.hour}</span>
+                    <div className="flex-1 flex items-center gap-2 bg-slate-100/80 rounded-lg p-2 border border-slate-200/80">
+                      <div className="w-24 text-[11px] text-slate-600">
+                        <span className="font-bold text-slate-900">{hr.actual_tons}</span> / {hr.target_tons} T
                       </div>
-                      <div className="flex-1 bg-slate-800 h-2.5 rounded-full overflow-hidden flex">
+                      <div className="flex-1 bg-slate-100 h-2.5 rounded-full overflow-hidden flex">
                         <div 
                           className={`h-full rounded-full transition-all ${
                             hr.actual_tons >= hr.target_tons 
@@ -835,24 +836,24 @@ export function FleetCommandCenter({ mineId, zone }: { mineId?: string; zone?: a
             </div>
 
             {/* Root-Cause Bottleneck Attribution Cards */}
-            <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-5 shadow-xl">
-              <h3 className="text-sm font-bold text-white flex items-center gap-2 mb-3">
+            <div className="bg-white/90 border border-slate-200 rounded-2xl p-5 shadow-xl">
+              <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2 mb-3">
                 <AlertTriangle className="w-4 h-4 text-rose-400" />
                 <span>Shortfall Root-Cause Constraint Attribution</span>
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 {shortfall?.bottlenecks?.map((b: any, idx: number) => (
-                  <div key={idx} className="bg-slate-950/70 border border-slate-800 rounded-xl p-3 flex flex-col justify-between">
+                  <div key={idx} className="bg-slate-100/70 border border-slate-200 rounded-xl p-3 flex flex-col justify-between">
                     <div>
                       <div className="flex items-center justify-between">
-                        <span className="text-xs font-bold text-slate-200">{b.cause}</span>
+                        <span className="text-xs font-bold text-slate-700">{b.cause}</span>
                         <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded ${
                           b.severity === 'HIGH' ? 'bg-rose-950 text-rose-300 border border-rose-600/70' : 'bg-amber-950 text-amber-300 border border-amber-600/70'
                         }`}>
                           {b.severity}
                         </span>
                       </div>
-                      <p className="text-[11px] text-slate-400 mt-1">{b.bench} • Duration: {b.duration_min} min</p>
+                      <p className="text-[11px] text-slate-500 mt-1">{b.bench} • Duration: {b.duration_min} min</p>
                     </div>
                     <div className="mt-3 flex items-center justify-between text-xs font-mono">
                       <span className="text-rose-400 font-bold">-{b.loss_tons} T Production Loss</span>
@@ -866,12 +867,12 @@ export function FleetCommandCenter({ mineId, zone }: { mineId?: string; zone?: a
 
           {/* Right Col: 1-Click Engineering Corrective Actions */}
           <div className="space-y-4">
-            <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-5 shadow-xl">
+            <div className="bg-white/90 border border-slate-200 rounded-2xl p-5 shadow-xl">
               <div className="flex items-center gap-2 text-xs font-bold text-emerald-400 uppercase tracking-wider mb-2">
                 <Sparkles className="w-4 h-4" />
                 <span>AI Prescriptive Corrective Solver</span>
               </div>
-              <h3 className="text-sm font-black text-white mb-4">Execute Tonnage Recovery Actions</h3>
+              <h3 className="text-sm font-black text-slate-900 mb-4">Execute Tonnage Recovery Actions</h3>
 
               <div className="space-y-3">
                 {correctiveActions.map((action) => {
@@ -882,18 +883,18 @@ export function FleetCommandCenter({ mineId, zone }: { mineId?: string; zone?: a
                       className={`border rounded-xl p-3.5 transition-all ${
                         isApplied 
                           ? 'bg-emerald-950/40 border-emerald-500/60' 
-                          : 'bg-slate-950/80 border-slate-800 hover:border-slate-700'
+                          : 'bg-slate-100/80 border-slate-200 hover:border-slate-300'
                       }`}
                     >
                       <div className="flex items-center justify-between">
-                        <span className="text-xs font-bold text-white">{action.title}</span>
+                        <span className="text-xs font-bold text-slate-900">{action.title}</span>
                         <span className="text-[10px] font-mono font-bold text-emerald-400 bg-emerald-950 px-2 py-0.5 rounded border border-emerald-600/60">
                           +{action.tonnage_recovery_tons} T
                         </span>
                       </div>
-                      <p className="text-[11px] text-slate-400 mt-1.5 leading-relaxed">{action.description}</p>
+                      <p className="text-[11px] text-slate-500 mt-1.5 leading-relaxed">{action.description}</p>
                       
-                      <div className="mt-3 flex items-center justify-between pt-2 border-t border-slate-800/80">
+                      <div className="mt-3 flex items-center justify-between pt-2 border-t border-slate-200/80">
                         <span className="text-[10px] text-slate-500 font-mono">Impact: ~{action.recovery_time_min} mins</span>
                         
                         <button
@@ -901,8 +902,8 @@ export function FleetCommandCenter({ mineId, zone }: { mineId?: string; zone?: a
                           disabled={isApplied}
                           className={`px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all ${
                             isApplied
-                              ? 'bg-emerald-600 text-white cursor-default shadow-md shadow-emerald-950'
-                              : 'bg-cyan-600 hover:bg-cyan-500 text-white shadow-lg shadow-cyan-950'
+                              ? 'bg-emerald-600 text-slate-900 cursor-default shadow-md shadow-emerald-950'
+                              : 'bg-cyan-600 hover:bg-cyan-500 text-slate-900 shadow-lg shadow-cyan-950'
                           }`}
                         >
                           {isApplied ? (
@@ -925,13 +926,13 @@ export function FleetCommandCenter({ mineId, zone }: { mineId?: string; zone?: a
             </div>
 
             {/* Grade Blending Status Card */}
-            <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 shadow-xl">
+            <div className="bg-white/90 border border-slate-200 rounded-2xl p-4 shadow-xl">
               <span className="text-xs font-bold text-cyan-400 uppercase tracking-wider block mb-1">Contract Grade Blending Control</span>
               <div className="mt-2 flex items-baseline justify-between">
-                <span className="text-xs text-slate-300">Crusher Feed Grade:</span>
-                <span className="text-sm font-mono font-bold text-white">42.8% Mn (Target: 43.5%)</span>
+                <span className="text-xs text-slate-600">Crusher Feed Grade:</span>
+                <span className="text-sm font-mono font-bold text-slate-900">42.8% Mn (Target: 43.5%)</span>
               </div>
-              <p className="text-[11px] text-slate-400 mt-2 bg-slate-950 p-2.5 rounded-lg border border-slate-800">
+              <p className="text-[11px] text-slate-500 mt-2 bg-slate-100 p-2.5 rounded-lg border border-slate-200">
                 {shortfall?.blending_status?.remedy || 'Add 25 t/h high-grade lump from Stockpile HG-01 to primary feeder.'}
               </p>
             </div>
@@ -942,15 +943,15 @@ export function FleetCommandCenter({ mineId, zone }: { mineId?: string; zone?: a
       {/* Tab 3: Truck Telemetry & TKPH HUD */}
       {activeTab === 'telemetry' && (
         <div className="space-y-4">
-          <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-5 shadow-xl">
-            <h3 className="text-sm font-bold text-white mb-4 flex items-center gap-2">
+          <div className="bg-white/90 border border-slate-200 rounded-2xl p-5 shadow-xl">
+            <h3 className="text-sm font-bold text-slate-900 mb-4 flex items-center gap-2">
               <Activity className="w-4 h-4 text-emerald-400" />
               <span>Full Truck Fleet Telemetry &amp; Component Health Matrix</span>
             </h3>
 
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs font-mono">
-                <thead className="bg-slate-950 text-slate-400 border-b border-slate-800">
+                <thead className="bg-slate-100 text-slate-500 border-b border-slate-200">
                   <tr>
                     <th className="p-3">Truck ID</th>
                     <th className="p-3">Model</th>
@@ -965,16 +966,16 @@ export function FleetCommandCenter({ mineId, zone }: { mineId?: string; zone?: a
                 </thead>
                 <tbody className="divide-y divide-slate-800/60">
                   {trucks.map((truck) => (
-                    <tr key={truck.id} className="hover:bg-slate-800/40 transition-colors">
-                      <td className="p-3 font-bold text-white flex items-center gap-1.5">
+                    <tr key={truck.id} className="hover:bg-slate-100/40 transition-colors">
+                      <td className="p-3 font-bold text-slate-900 flex items-center gap-1.5">
                         <Truck className="w-3.5 h-3.5 text-cyan-400" />
                         {truck.id}
                       </td>
-                      <td className="p-3 text-slate-300">{truck.model}</td>
+                      <td className="p-3 text-slate-600">{truck.model}</td>
                       <td className="p-3">{getStatusBadge(truck.status)}</td>
-                      <td className="p-3 font-bold text-white">{truck.payload_t} / {truck.capacity_t}</td>
-                      <td className="p-3 text-slate-300">{truck.speed_kmh.toFixed(1)}</td>
-                      <td className="p-3 text-slate-300">{truck.telemetry?.coolant_temp_c.toFixed(1)}°C</td>
+                      <td className="p-3 font-bold text-slate-900">{truck.payload_t} / {truck.capacity_t}</td>
+                      <td className="p-3 text-slate-600">{truck.speed_kmh.toFixed(1)}</td>
+                      <td className="p-3 text-slate-600">{truck.telemetry?.coolant_temp_c.toFixed(1)}°C</td>
                       <td className="p-3 text-amber-300">{truck.telemetry?.fuel_burn_rate_lph.toFixed(1)}</td>
                       <td className="p-3 font-bold text-emerald-400">{truck.telemetry?.tkph || 135}</td>
                       <td className="p-3">
@@ -1000,33 +1001,33 @@ export function FleetCommandCenter({ mineId, zone }: { mineId?: string; zone?: a
         <div className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {hemmData?.hemm_units?.map((unit: HemmUnit) => (
-              <div key={unit.unit_id} className="bg-slate-900/90 border border-slate-800 rounded-2xl p-5 shadow-xl flex flex-col justify-between">
+              <div key={unit.unit_id} className="bg-white/90 border border-slate-200 rounded-2xl p-5 shadow-xl flex flex-col justify-between">
                 <div>
-                  <div className="flex items-center justify-between border-b border-slate-800 pb-2 mb-3">
-                    <span className="text-sm font-black text-white">{unit.unit_id}</span>
+                  <div className="flex items-center justify-between border-b border-slate-200 pb-2 mb-3">
+                    <span className="text-sm font-black text-slate-900">{unit.unit_id}</span>
                     <span className="bg-purple-950 text-purple-300 border border-purple-600/60 px-2 py-0.5 rounded text-[10px] font-mono font-bold">
                       {unit.availability_pct}% Avail
                     </span>
                   </div>
-                  <h4 className="text-xs font-semibold text-slate-300">{unit.type}</h4>
+                  <h4 className="text-xs font-semibold text-slate-600">{unit.type}</h4>
                   
-                  <div className="mt-4 space-y-2 text-xs font-mono text-slate-400">
+                  <div className="mt-4 space-y-2 text-xs font-mono text-slate-500">
                     <div className="flex justify-between">
                       <span>MTBF (Reliability):</span>
-                      <span className="font-bold text-white">{unit.mtbf_hours} Hours</span>
+                      <span className="font-bold text-slate-900">{unit.mtbf_hours} Hours</span>
                     </div>
                     <div className="flex justify-between">
                       <span>MTTR (Repair Time):</span>
-                      <span className="font-bold text-slate-300">{unit.mttr_hours} Hours</span>
+                      <span className="font-bold text-slate-600">{unit.mttr_hours} Hours</span>
                     </div>
                     <div className="flex justify-between">
                       <span>Operating Hours:</span>
-                      <span className="font-bold text-slate-300">{unit.operating_hours} h</span>
+                      <span className="font-bold text-slate-600">{unit.operating_hours} h</span>
                     </div>
                   </div>
                 </div>
 
-                <div className="mt-4 pt-3 border-t border-slate-800">
+                <div className="mt-4 pt-3 border-t border-slate-200">
                   <span className="text-[10px] text-slate-500 uppercase font-bold block mb-1">Critical Subsystem</span>
                   <span className="text-[11px] font-bold text-amber-300">{unit.critical_subsystem}</span>
                 </div>
@@ -1035,6 +1036,9 @@ export function FleetCommandCenter({ mineId, zone }: { mineId?: string; zone?: a
           </div>
         </div>
       )}
+
+      {/* Legacy Telemetry Module from main page */}
+      <LegacyFleetTelemetry zone={zone} />
     </div>
   );
 }

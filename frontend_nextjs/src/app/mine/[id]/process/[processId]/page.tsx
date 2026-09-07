@@ -6,6 +6,7 @@ import { RESERVE_ZONES } from '@/data/moilData';
 import { MINE_PROCESS_STEPS, MineProcessFlowchart } from '@/components/MineProcessFlowchart';
 import { BlastingPitStudio3D } from '@/components/BlastingPitStudio3D';
 import { FleetCommandCenter } from '@/components/FleetCommandCenter';
+import { ExplorationDetails } from '@/components/ExplorationDetails';
 import { ArrowLeft, Sparkles, Sliders, Database, AlertCircle, FileSpreadsheet, Activity, Truck, Flame } from 'lucide-react';
 
 export default function ProcessDetailPage() {
@@ -74,14 +75,7 @@ export default function ProcessDetailPage() {
           </div>
         </div>
 
-        {/* Status */}
-        <div className="flex items-center gap-2">
-          <span className="text-xs text-slate-600">Pipeline Status:</span>
-          <span className="text-xs font-semibold text-amber-400 bg-amber-500/10 px-2.5 py-1 rounded-full border border-amber-500/30 flex items-center gap-1.5">
-            <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
-            {currentProcess.badge}
-          </span>
-        </div>
+
       </div>
 
       {/* Main Page Workspace */}
@@ -101,6 +95,8 @@ export default function ProcessDetailPage() {
         ) : processId === 'operations' ? (
           /* Step 4: Drilling, Blasting & Heavy Fleet / Operations Command Center */
           <FleetCommandCenter mineId={mineId} zone={zone} />
+        ) : processId === 'exploration' ? (
+          <ExplorationDetails zone={zone} />
         ) : (
           /* Blank / Reserved Template State for Other Processes */
           <div className="bg-slate-100/90 border border-slate-200 rounded-2xl p-8 shadow-2xl relative overflow-hidden backdrop-blur-md">
