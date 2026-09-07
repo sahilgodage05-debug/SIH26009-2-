@@ -257,20 +257,23 @@ export default function MinePage() {
               </div>
             </div>
 
-            {/* Top 3 Equipments List */}
+            {/* All Equipments List (Scrollable) */}
             <div className="space-y-2 mt-4">
-              <div className="text-[10px] text-slate-500 uppercase">Recent Fleet Assets</div>
-              {fleet.slice(0, 3).map((f: any, idx) => (
-                <div key={idx} className="flex justify-between items-center text-xs bg-slate-950/50 p-2 rounded border border-slate-800/50">
-                  <span className="font-mono text-slate-300">{f.machine_id}</span>
-                  <span className={f.status === 'Active' ? 'text-emerald-400' : 'text-rose-400'}>{f.health_score}%</span>
-                </div>
-              ))}
-              {fleet.length > 3 && (
-                <div className="text-center text-[10px] text-slate-500 mt-2 hover:text-slate-300 cursor-pointer">
-                  View all {fleet.length} machines in Control Room
-                </div>
-              )}
+              <div className="text-[10px] text-slate-500 uppercase flex justify-between items-center">
+                <span>All Fleet Assets</span>
+                <span>{fleet.length} Total</span>
+              </div>
+              <div className="max-h-[200px] overflow-y-auto pr-1 space-y-2 custom-scrollbar">
+                {fleet.map((f: any, idx) => (
+                  <div key={idx} className="flex justify-between items-center text-xs bg-slate-950/50 p-2 rounded border border-slate-800/50">
+                    <span className="font-mono text-slate-300">{f.machine_id}</span>
+                    <div className="flex flex-col items-end">
+                      <span className={f.status === 'Active' ? 'text-emerald-400 font-bold' : 'text-rose-400 font-bold'}>{f.health_score}%</span>
+                      <span className="text-[9px] text-slate-500">{f.equipment_type}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
 
           </div>
