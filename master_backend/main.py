@@ -603,6 +603,44 @@ async def get_hemm_reliability(mine_id: str):
         raise HTTPException(status_code=500, detail=f"Error calculating HEMM reliability: {str(e)}")
 
 
+@app.get("/api/v1/production/geotechnical-overlay/{mine_id}", tags=["Space-Technology & Geotechnical"])
+async def get_geotechnical_overlay(mine_id: str):
+    """
+    Returns Satellite InSAR slope displacement, highwall stability FoS,
+    hazard bench tagging, pit catchment runoff, and sump dewatering booster pump telemetry.
+    """
+    try:
+        return production_engine.get_geotechnical_and_space_overlays(mine_id)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error fetching geotechnical overlay: {str(e)}")
+
+
+@app.get("/api/v1/production/solve-lp-reallocation/{mine_id}", tags=["Production Engineering & Shortfall"])
+async def solve_lp_reallocation(mine_id: str):
+    """
+    Solves Linear Programming / Min-Cost Flow rebalancing to reallocate haul trucks
+    to secondary open benches with equivalent manganese grades.
+    """
+    try:
+        return production_engine.solve_linear_programming_reallocation(mine_id)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error executing LP solver: {str(e)}")
+
+
+@app.get("/api/v1/fleet/workers-roster/{mine_id}", tags=["Dynamic Fleet Management"])
+async def get_workers_roster(mine_id: str):
+    """
+    Returns the mine site operational personnel roster strictly derived from CSV Workers_Count,
+    including certified haulage drivers, shovel operators, drilling masters, and hot-seat relief pool.
+    """
+    try:
+        state = fleet_engine.get_or_create_mine_fleet(mine_id)
+        return state.get("workforce_roster", {})
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error fetching workforce roster: {str(e)}")
+
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
+
