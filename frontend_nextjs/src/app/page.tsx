@@ -10,8 +10,10 @@ import { MLTrainingStudio } from '@/components/MLTrainingStudio';
 import { RESERVE_ZONES } from '@/data/moilData';
 import { LayerState, ReserveZone } from '@/types/moil';
 import { Sparkles } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 export default function Home() {
+  const router = useRouter();
   const [activeView, setActiveView] = useState<'exploration' | 'operations' | 'training'>('exploration');
   const [layers, setLayers] = useState<LayerState>({
     ndvi: true,
@@ -62,7 +64,7 @@ export default function Home() {
 
   const handleSelectZone = (zone: ReserveZone) => {
     setSelectedZone(zone);
-    setIsInspectorOpen(true);
+    router.push(`/mine/${zone.id}`);
   };
 
   const handleResetMap = () => {
@@ -141,7 +143,7 @@ export default function Home() {
             {/* Reopen Inspector Button if closed and zone is selected */}
             {!isInspectorOpen && selectedZone && (
               <button
-                onClick={() => setIsInspectorOpen(true)}
+                onClick={() => router.push(`/mine/${selectedZone.id}`)}
                 className="absolute top-4 right-4 z-[500] flex items-center gap-2 px-3 py-2 rounded-xl bg-slate-900/90 hover:bg-slate-800 text-emerald-400 border border-emerald-500/40 shadow-xl backdrop-blur-md text-xs font-semibold transition-all hover:scale-105"
               >
                 <Sparkles className="w-4 h-4 text-emerald-400" />
@@ -150,13 +152,7 @@ export default function Home() {
             )}
           </main>
 
-          {/* Right Sliding Panel: Deposit Dossier */}
-          <ConfidenceInspector
-            zone={selectedZone}
-            isOpen={isInspectorOpen}
-            onClose={() => setIsInspectorOpen(false)}
-          />
-        </div>
+            {/* Draggable Inspector Widget for Deep Analysis removed as it is now on a separate page */}</div>
       ) : activeView === 'operations' ? (
         /* Operations Room & Problem Statement 26009 Command Dashboard */
         <OperationsControlRoom 

@@ -26,12 +26,14 @@ interface ConfidenceInspectorProps {
   zone: ReserveZone | null;
   isOpen: boolean;
   onClose: () => void;
+  fullScreen?: boolean;
 }
 
 export const ConfidenceInspector: React.FC<ConfidenceInspectorProps> = ({
   zone,
   isOpen,
-  onClose
+  onClose,
+  fullScreen = false
 }) => {
   const [activeTab, setActiveTab] = useState<'geology' | 'stratigraphy' | 'satellite' | 'kriging' | 'equipment'>('geology');
   const [isExporting, setIsExporting] = useState(false);
@@ -147,7 +149,7 @@ export const ConfidenceInspector: React.FC<ConfidenceInspectorProps> = ({
   };
 
   return (
-    <aside className="fixed top-16 right-0 bottom-0 w-[440px] max-w-[95vw] bg-[#0c121e]/98 border-l border-slate-800/90 shadow-2xl shadow-black/80 z-[2000] flex flex-col backdrop-blur-xl animate-in slide-in-from-right duration-300">
+    <aside className={fullScreen ? "w-full h-full bg-[#0c121e]/98 flex flex-col" : "fixed top-16 right-0 bottom-0 w-[440px] max-w-[95vw] bg-[#0c121e]/98 border-l border-slate-800/90 shadow-2xl shadow-black/80 z-[2000] flex flex-col backdrop-blur-xl animate-in slide-in-from-right duration-300"}>
       {/* Streamlined Header with Mine Details & Close Button */}
       <div className="p-4 border-b border-slate-800/90 bg-slate-900/80 backdrop-blur-md">
         <div className="flex items-start justify-between gap-3">
@@ -165,13 +167,15 @@ export const ConfidenceInspector: React.FC<ConfidenceInspectorProps> = ({
             </h3>
           </div>
           
-          <button
-            onClick={onClose}
-            className="p-1.5 rounded-lg bg-slate-800/80 hover:bg-slate-700 text-slate-400 hover:text-white transition-colors shrink-0"
-            title="Close Inspector"
-          >
-            <X className="w-4 h-4" />
-          </button>
+          {!fullScreen && (
+            <button
+              onClick={onClose}
+              className="p-1.5 rounded-lg bg-slate-800/80 hover:bg-slate-700 text-slate-400 hover:text-white transition-colors shrink-0"
+              title="Close Inspector"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          )}
         </div>
 
         {/* Exact Location Card */}
