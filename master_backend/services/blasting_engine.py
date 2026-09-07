@@ -193,53 +193,96 @@ class BlastingEngine:
         sub_drilling_m: float = 1.2,
         stemming_m: float = 3.2,
         pattern_type: str = "staggered",
-        use_adaptive_density: bool = True
+        use_adaptive_density: bool = True,
+        # Mine-specific geological parameters from satellite analysis
+        ore_center_offset: Dict[str, float] = None,
+        mn_grade_min: float = 15.0,
+        mn_grade_max: float = 48.0,
+        strike_deg: float = 65.0,
+        dip_deg: float = 55.0,
+        elevation_m: float = 310.0,
+        pit_length_m: float = 45.0,
+        pit_width_m: float = 28.0
     ) -> Dict[str, Any]:
         """
-        Generates 3D coordinates (X, Y, Z) for Open-Pit Bench Blast Pattern.
-        Supports AI Ore-Density Adaptive Drilling Grid where drillhole density 
-        is concentrated over high-grade manganese ore veins (closer spacing)
-        and wider over low-grade waste overburden.
+        Generates mine-specific 3D coordinates (X, Y, Z) for Open-Pit Bench Blast Pattern.
+        
+        The ore vein geometry is derived from the mine's satellite parameter profile:
+        - Ore body is elongated along the geological strike direction (anisotropic)
+        - Mn grade gradient follows the mine's specific grade range
+        - Pit dimensions, ore center offset, and elevation are mine-specific
+        - Each mine produces a genuinely different drillhole layout
         """
         holes = []
         
-        # Bench physical dimensions
-        base_width_x = holes_per_row * spacing_m
-        base_depth_y = num_rows * burden_m
+        # Bench physical dimensions from mine-specific pit footprint
+        base_width_x = max(holes_per_row * spacing_m, pit_length_m)
+        base_depth_y = max(num_rows * burden_m, pit_width_m)
 
-        # High-density Mn Ore Vein Center (Dongri Buzurg Ore Lode Profile)
-        center_x = base_width_x * 0.45
-        center_y = base_depth_y * 0.50
-        ore_vein_radius = max(base_width_x, base_depth_y) * 0.38
+        # Mine-specific ore vein center from satellite profile
+        if ore_center_offset:
+            center_x = ore_center_offset.get("x", base_width_x * 0.45)
+            center_y = ore_center_offset.get("y", base_depth_y * 0.50)
+        else:
+            center_x = base_width_x * 0.45
+            center_y = base_depth_y * 0.50
+
+        # Ore vein radius scaled by mine-specific pit dimensions
+        ore_vein_radius_major = max(pit_length_m, pit_width_m) * 0.42
+        ore_vein_radius_minor = min(pit_length_m, pit_width_m) * 0.35
+
+        # Strike direction controls ore body elongation axis (anisotropic distance)
+        strike_rad = math.radians(strike_deg)
+        # Dip angle influences asymmetric grade fall-off (steeper dip = sharper gradient on one side)
+        dip_factor = math.sin(math.radians(dip_deg))
+
+        # Mn grade range from mine satellite profile
+        grade_range = mn_grade_max - mn_grade_min
+        grade_base = mn_grade_min
+
+        # Elevation-based Z offset (normalized relative to 300m baseline)
+        z_elevation_offset = (elevation_m - 300.0) * 0.02
 
         # Generate variable-density coordinate sampling if adaptive mode is ON
         raw_grid_points = []
         if use_adaptive_density:
-            # Create fine spatial sampling grid and perturb density by Mn ore grade
             y_steps = np.linspace(0, base_depth_y, num_rows + 2)
             for r_idx, y_val in enumerate(y_steps):
-                # Stagger alternate rows
                 stagger = (spacing_m * 0.4) if (pattern_type == "staggered" and r_idx % 2 == 1) else 0.0
                 x_steps = np.linspace(stagger, base_width_x + stagger, holes_per_row + 2)
                 
                 for c_idx, x_val in enumerate(x_steps):
-                    # Distance from high-density Mn ore core
-                    dist = math.sqrt((x_val - center_x) ** 2 + (y_val - center_y) ** 2)
+                    # Anisotropic distance along geological strike direction
+                    # Rotate (dx, dy) by strike angle, then apply different radii
+                    dx = x_val - center_x
+                    dy = y_val - center_y
                     
-                    # Localized Mn Grade (%) & Density (t/m3) model
-                    # Core ore zone has high grade (42-48% Mn, 4.2 t/m3)
-                    # Edge waste zone has low grade (15-22% Mn, 2.7 t/m3)
-                    mn_grade_pct = 18.0 + 28.0 * math.exp(-((dist / (ore_vein_radius + 1e-6)) ** 2))
-                    mn_grade_pct = float(np.clip(mn_grade_pct, 15.0, 48.0))
+                    # Rotated coordinates aligned to strike direction
+                    dx_rot = dx * math.cos(strike_rad) + dy * math.sin(strike_rad)
+                    dy_rot = -dx * math.sin(strike_rad) + dy * math.cos(strike_rad)
                     
-                    ore_density_t_m3 = 2.65 + (mn_grade_pct / 48.0) * 1.55
+                    # Anisotropic distance: elongated along strike, narrow across
+                    dist_aniso = math.sqrt(
+                        (dx_rot / (ore_vein_radius_major + 1e-6)) ** 2 +
+                        (dy_rot / (ore_vein_radius_minor + 1e-6)) ** 2
+                    )
+                    
+                    # Dip-induced asymmetry: grade falls off faster on footwall side
+                    dip_asymmetry = 1.0 + 0.3 * dip_factor * (dy_rot / (ore_vein_radius_minor + 1e-6))
+                    effective_dist = dist_aniso * max(0.5, dip_asymmetry)
+                    
+                    # Localized Mn Grade (%) using mine-specific grade range
+                    mn_grade_pct = grade_base + grade_range * math.exp(-(effective_dist ** 2))
+                    mn_grade_pct = float(np.clip(mn_grade_pct, mn_grade_min, mn_grade_max))
+                    
+                    ore_density_t_m3 = 2.65 + (mn_grade_pct / mn_grade_max) * 1.55
                     ore_density_t_m3 = float(np.clip(ore_density_t_m3, 2.65, 4.35))
 
-                    # High mineral density -> tighter spacing factor (0.6x to 1.3x base spacing)
-                    density_spacing_factor = 1.35 - 0.70 * (mn_grade_pct - 15.0) / 33.0
+                    density_spacing_factor = 1.35 - 0.70 * (mn_grade_pct - mn_grade_min) / (grade_range + 1e-6)
                     
-                    # If high grade, add intermediate fill-in holes to increase drillhole density
-                    is_high_grade = mn_grade_pct >= 36.0
+                    # High grade threshold scaled to mine's grade range
+                    high_grade_threshold = mn_grade_min + grade_range * 0.65
+                    is_high_grade = mn_grade_pct >= high_grade_threshold
                     
                     raw_grid_points.append({
                         "row": r_idx,
@@ -252,7 +295,7 @@ class BlastingEngine:
                         "is_high_grade": is_high_grade
                     })
         else:
-            # Standard uniform grid
+            avg_grade = (mn_grade_min + mn_grade_max) / 2.0
             for r in range(num_rows):
                 row_offset = (spacing_m / 2.0) if (pattern_type == "staggered" and r % 2 == 1) else 0.0
                 y_pos = r * burden_m
@@ -263,7 +306,7 @@ class BlastingEngine:
                         "col": h,
                         "x": x_pos,
                         "y": y_pos,
-                        "mn_grade_pct": 32.5,
+                        "mn_grade_pct": round(avg_grade, 1),
                         "ore_density_t_m3": 3.65,
                         "density_spacing_factor": 1.0,
                         "is_high_grade": False
@@ -272,6 +315,10 @@ class BlastingEngine:
         # Inter-hole delay (e.g., 17 ms) and Inter-row delay (e.g., 42 ms)
         inter_hole_delay_ms = 17
         inter_row_delay_ms = 42
+
+        # High grade threshold for zone classification (mine-specific)
+        high_grade_cutoff = mn_grade_min + grade_range * 0.75
+        medium_grade_cutoff = mn_grade_min + grade_range * 0.40
 
         total_holes = 0
         for idx, pt in enumerate(raw_grid_points):
@@ -282,26 +329,28 @@ class BlastingEngine:
             mn_grade = pt["mn_grade_pct"]
             density = pt["ore_density_t_m3"]
             
-            # Detonation delay (ms)
             delay_ms = (r * inter_row_delay_ms) + (h * inter_hole_delay_ms)
 
-            zone_type = "HIGH_GRADE_ORE" if mn_grade >= 40.0 else "MEDIUM_GRADE_ORE" if mn_grade >= 28.0 else "WASTE_OVERBURDEN"
+            zone_type = "HIGH_GRADE_ORE" if mn_grade >= high_grade_cutoff else "MEDIUM_GRADE_ORE" if mn_grade >= medium_grade_cutoff else "WASTE_OVERBURDEN"
 
-            # Explosive charge adjustment: High density ore requires heavier powder charge
             charge_multiplier = 1.25 if zone_type == "HIGH_GRADE_ORE" else 1.0 if zone_type == "MEDIUM_GRADE_ORE" else 0.75
             
+            # Apply elevation-based Z offset so terrain height differs per mine
+            z_top = bench_height_m + z_elevation_offset
+            z_bottom = -sub_drilling_m + z_elevation_offset
+
             holes.append({
                 "hole_id": f"BH-R{r+1}-H{h+1}",
                 "row_index": r,
                 "col_index": h,
                 "x": round(x_pos, 2),
                 "y": round(y_pos, 2),
-                "z_top": round(bench_height_m, 2),
-                "z_bottom": round(-sub_drilling_m, 2),
-                "stemming_top_z": round(bench_height_m, 2),
-                "stemming_bottom_z": round(bench_height_m - stemming_m, 2),
-                "charge_top_z": round(bench_height_m - stemming_m, 2),
-                "charge_bottom_z": round(-sub_drilling_m, 2),
+                "z_top": round(z_top, 2),
+                "z_bottom": round(z_bottom, 2),
+                "stemming_top_z": round(z_top, 2),
+                "stemming_bottom_z": round(z_top - stemming_m, 2),
+                "charge_top_z": round(z_top - stemming_m, 2),
+                "charge_bottom_z": round(z_bottom, 2),
                 "delay_ms": delay_ms,
                 "mn_grade_pct": mn_grade,
                 "ore_density_t_m3": density,
@@ -311,7 +360,6 @@ class BlastingEngine:
             })
             total_holes += 1
 
-        # Bench mesh bounds
         max_x = max(h["x"] for h in holes) + spacing_m
         max_y = max(h["y"] for h in holes) + burden_m
 
@@ -323,6 +371,13 @@ class BlastingEngine:
             "is_adaptive_density": use_adaptive_density,
             "ore_vein_center": {"x": round(center_x, 1), "y": round(center_y, 1)},
             "high_grade_holes_count": sum(1 for h in holes if h["zone_type"] == "HIGH_GRADE_ORE"),
+            "mine_geology": {
+                "strike_deg": strike_deg,
+                "dip_deg": dip_deg,
+                "elevation_m": elevation_m,
+                "mn_grade_range": [mn_grade_min, mn_grade_max],
+                "pit_footprint": {"length_m": pit_length_m, "width_m": pit_width_m}
+            },
             "bench_dimensions": {
                 "length_x_m": round(max_x, 1),
                 "width_y_m": round(max_y, 1),

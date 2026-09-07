@@ -122,7 +122,10 @@ function BenchAndBlastGrid3D({
   showOreHeatmap = true,
   useAdaptiveDensity = true,
   baseLat = 21.5420,
-  baseLng = 79.6780
+  baseLng = 79.6780,
+  strikeLabel = 'N65°E',
+  dipLabel = '55° NW',
+  srLabel = '1:4.8'
 }: { 
   holes: BlastHoleData[]; 
   benchHeight: number; 
@@ -138,6 +141,9 @@ function BenchAndBlastGrid3D({
   useAdaptiveDensity?: boolean;
   baseLat?: number;
   baseLng?: number;
+  strikeLabel?: string;
+  dipLabel?: string;
+  srLabel?: string;
 }) {
   const meshRef = useRef<THREE.Group>(null);
 
@@ -202,17 +208,17 @@ function BenchAndBlastGrid3D({
                 <meshBasicMaterial color="#ef4444" transparent opacity={0.85} side={THREE.DoubleSide} />
               </mesh>
 
-              {/* 3D Label Badge for Break-Even Stripping Limit */}
+              {/* 3D Label Badge for Break-Even Stripping Limit (Mine-Specific) */}
               <Html position={[Math.max(widthX, depthY) * 0.54, 0.4, 0]} center distanceFactor={28}>
                 <div className="bg-red-950/90 text-red-300 border border-red-500/80 px-2 py-1 rounded text-[9px] font-mono font-bold whitespace-nowrap shadow-xl">
-                  Break-Even Cutoff Limit (SR = 1:4.8) • Pit Limit
+                  Break-Even Cutoff Limit (SR = {srLabel}) • Pit Limit
                 </div>
               </Html>
 
-              {/* Geological Strike Lineament Vector N65°E */}
+              {/* Geological Strike Lineament Vector (Mine-Specific from Satellite Analysis) */}
               <Html position={[-Math.max(widthX, depthY) * 0.4, 0.3, -Math.max(widthX, depthY) * 0.2]} center distanceFactor={28}>
                 <div className="bg-emerald-950/90 text-emerald-300 border border-emerald-500/80 px-2 py-0.5 rounded text-[8px] font-mono font-bold whitespace-nowrap shadow-xl flex items-center gap-1">
-                  <span>Geological Strike: N65°E (Dip 55° NW)</span>
+                  <span>Geological Strike: {strikeLabel} (Dip {dipLabel})</span>
                 </div>
               </Html>
             </group>
@@ -404,7 +410,7 @@ export function BlastingPitStudio3D({ mineId, zone }: { mineId?: string; zone?: 
   };
 
   useEffect(() => {
-    // Mine-specific satellite & geotechnical preset profile sync
+    // Mine-specific satellite & geotechnical preset profile sync (all 11 MOIL mines)
     if (mineId === 'zone-balaghat') {
       setBenchHeight(18.0); setBurden(3.8); setSpacing(4.2); setPowderFactor(0.75); setRmrRating(78); setHoleDiameter(165);
     } else if (mineId === 'zone-dongri-buzurg') {
@@ -419,6 +425,14 @@ export function BlastingPitStudio3D({ mineId, zone }: { mineId?: string; zone?: 
       setBenchHeight(16.0); setBurden(4.0); setSpacing(4.4); setPowderFactor(0.70); setRmrRating(74); setHoleDiameter(160);
     } else if (mineId === 'zone-sitapatore') {
       setBenchHeight(7.5); setBurden(5.0); setSpacing(6.0); setPowderFactor(0.38); setRmrRating(54); setHoleDiameter(115);
+    } else if (mineId === 'zone-gumgaon') {
+      setBenchHeight(9.5); setBurden(4.4); setSpacing(5.1); setPowderFactor(0.50); setRmrRating(60); setHoleDiameter(130);
+    } else if (mineId === 'zone-tirodi') {
+      setBenchHeight(11.0); setBurden(4.2); setSpacing(4.8); setPowderFactor(0.58); setRmrRating(66); setHoleDiameter(145);
+    } else if (mineId === 'zone-parsoda') {
+      setBenchHeight(8.5); setBurden(4.6); setSpacing(5.4); setPowderFactor(0.42); setRmrRating(56); setHoleDiameter(120);
+    } else if (mineId === 'zone-ramtek') {
+      setBenchHeight(9.0); setBurden(4.5); setSpacing(5.2); setPowderFactor(0.48); setRmrRating(61); setHoleDiameter(125);
     }
   }, [mineId]);
 
@@ -472,6 +486,7 @@ export function BlastingPitStudio3D({ mineId, zone }: { mineId?: string; zone?: 
   const kuzRam = results?.fragmentation_kuz_ram;
   const vibration = results?.vibration_ppv;
   const satProfile = results?.mine_satellite_profile;
+  const geoCtx = results?.mine_geological_context;
   const hoveredData = holes.find(h => h.hole_id === hoveredHole);
   const hoveredGPS = hoveredData ? convertHoleToGPS(hoveredData.x, hoveredData.y, baseLat, baseLng) : null;
 
@@ -828,6 +843,9 @@ export function BlastingPitStudio3D({ mineId, zone }: { mineId?: string; zone?: 
               useAdaptiveDensity={useAdaptiveDensity}
               baseLat={baseLat}
               baseLng={baseLng}
+              strikeLabel={geoCtx?.strike || 'N65°E'}
+              dipLabel={geoCtx?.dip || '55° NW'}
+              srLabel={geoCtx?.overburden_ratio || '1:4.8'}
             />
           </Canvas>
         </div>
@@ -878,17 +896,17 @@ export function BlastingPitStudio3D({ mineId, zone }: { mineId?: string; zone?: 
           </p>
         </div>
 
-        {/* Card 4: Economic Stripping Ratio & Geology */}
+        {/* Card 4: Economic Stripping Ratio & Geology (Mine-Specific) */}
         <div className="bg-slate-900/80 border border-slate-800 rounded-xl p-4 space-y-1">
           <div className="flex items-center justify-between text-xs text-slate-400">
             <span>Stripping Ratio &amp; Dip</span>
             <Compass className="w-4 h-4 text-cyan-400" />
           </div>
           <div className="text-xl font-bold font-mono text-cyan-300">
-            1:2.4 <span className="text-xs font-normal text-slate-400">(Max 1:4.8)</span>
+            {geoCtx?.overburden_ratio || '1:2.8'} <span className="text-xs font-normal text-slate-400">(Mn {geoCtx?.mn_grade_pct || 44}%)</span>
           </div>
           <p className="text-[10px] text-cyan-400 truncate">
-            Strike N65°E • Dip 55° NW
+            Strike {geoCtx?.strike || 'N65°E'} • Dip {geoCtx?.dip || '55° NW'}
           </p>
         </div>
 

@@ -163,6 +163,36 @@ async def optimize_blasting_design(payload: BlastingDesignRequest):
         holes_per_row = mine_satellite_profile.get("holes_per_row", 9)
         bench_height = payload.bench_height_m if payload.bench_height_m != 10.0 else mine_satellite_profile.get("bench_height_m", 10.0)
 
+        # Extract mine-specific geological parameters from satellite profile
+        ore_center_offset = mine_satellite_profile.get("ore_center_offset", {"x": 14.0, "y": 12.0})
+        pit_length_m = mine_satellite_profile.get("pit_length_m", 45.0)
+        pit_width_m = mine_satellite_profile.get("pit_width_m", 28.0)
+        elevation_m = mine_satellite_profile.get("elevation_m", 310.0)
+        
+        # Parse strike angle from profile string (e.g., "N65°E" -> 65.0)
+        strike_str = mine_satellite_profile.get("strike", "N65°E")
+        try:
+            strike_deg = float(''.join(c for c in strike_str if c.isdigit() or c == '.'))
+        except (ValueError, TypeError):
+            strike_deg = 65.0
+        
+        # Parse dip angle from profile string (e.g., "55° NW" -> 55.0)
+        dip_str = mine_satellite_profile.get("dip", "55° NW")
+        try:
+            dip_deg = float(''.join(c for c in dip_str.split('°')[0] if c.isdigit() or c == '.'))
+        except (ValueError, TypeError):
+            dip_deg = 55.0
+        
+        # Derive mine-specific Mn grade range from profile
+        mn_grade_max = mine_satellite_profile.get("mn_grade_pct", 44.0)
+        # Lower bound derived from overburden ratio (higher ratio = more waste = lower min grade)
+        overburden_str = mine_satellite_profile.get("overburden_ratio", "1 : 2.8")
+        try:
+            ob_ratio = float(overburden_str.split(':')[-1].strip())
+        except (ValueError, IndexError):
+            ob_ratio = 2.8
+        mn_grade_min = max(12.0, 22.0 - ob_ratio * 2.5)
+
         pattern_3d = blasting_engine.generate_blast_pattern_3d(
             num_rows=num_rows,
             holes_per_row=holes_per_row,
@@ -172,7 +202,15 @@ async def optimize_blasting_design(payload: BlastingDesignRequest):
             sub_drilling_m=payload.sub_drilling_m,
             stemming_m=payload.stemming_m,
             pattern_type="staggered",
-            use_adaptive_density=payload.use_adaptive_density
+            use_adaptive_density=payload.use_adaptive_density,
+            ore_center_offset=ore_center_offset,
+            mn_grade_min=mn_grade_min,
+            mn_grade_max=mn_grade_max,
+            strike_deg=strike_deg,
+            dip_deg=dip_deg,
+            elevation_m=elevation_m,
+            pit_length_m=pit_length_m,
+            pit_width_m=pit_width_m
         )
 
         # 4. USBM Ground Vibration PPV
@@ -181,10 +219,27 @@ async def optimize_blasting_design(payload: BlastingDesignRequest):
             distance_to_structure_m=payload.distance_to_structure_m
         )
 
+        # 5. Mine geological context for frontend dynamic labels
+        mine_geological_context = {
+            "base_lat": mine_satellite_profile.get("base_lat", payload.lat or 21.5420),
+            "base_lng": mine_satellite_profile.get("base_lng", payload.lng or 79.6780),
+            "strike": mine_satellite_profile.get("strike", "N65°E"),
+            "dip": mine_satellite_profile.get("dip", "55° NW"),
+            "overburden_ratio": mine_satellite_profile.get("overburden_ratio", "1 : 2.8"),
+            "elevation_m": elevation_m,
+            "mn_grade_pct": mn_grade_max,
+            "mn_grade_range": [round(mn_grade_min, 1), round(mn_grade_max, 1)],
+            "pit_length_m": pit_length_m,
+            "pit_width_m": pit_width_m,
+            "strike_deg": strike_deg,
+            "dip_deg": dip_deg
+        }
+
         return {
             "status": "success",
             "mine_type": "MOIL Open-Pit Manganese Operation",
             "mine_satellite_profile": mine_satellite_profile,
+            "mine_geological_context": mine_geological_context,
             "blastability": lilly,
             "fragmentation_kuz_ram": kuz_ram,
             "blast_pattern_3d": pattern_3d,
