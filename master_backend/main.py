@@ -100,6 +100,9 @@ class SentinelPredictRequest(BaseModel):
 
 
 class BlastingDesignRequest(BaseModel):
+    mine_id: Optional[str] = Field(default="zone-dongri-buzurg", description="Unique MOIL Mine Identifier")
+    lat: Optional[float] = Field(default=21.5420, description="Latitude (deg N)")
+    lng: Optional[float] = Field(default=79.6780, description="Longitude (deg E)")
     hole_diameter_mm: float = Field(default=150.0, ge=85.0, le=250.0, description="Drillhole Diameter (mm)")
     burden_m: float = Field(default=4.2, ge=2.0, le=8.0, description="Burden Distance (m)")
     spacing_m: float = Field(default=5.0, ge=2.5, le=10.0, description="Hole Spacing (m)")
@@ -111,6 +114,7 @@ class BlastingDesignRequest(BaseModel):
     rmr_rating: float = Field(default=65.0, ge=20.0, le=95.0, description="Rock Mass Rating (RMR)")
     ucs_mpa: float = Field(default=120.0, ge=30.0, le=280.0, description="Unconfined Compressive Strength (MPa)")
     distance_to_structure_m: float = Field(default=250.0, ge=50.0, le=1000.0, description="Distance to Mine Office / Structure (m)")
+    use_adaptive_density: bool = Field(default=True, description="Enable AI Ore-Density Adaptive Drilling Grid")
 
 
 # -------------------------------------------------------------
@@ -121,12 +125,22 @@ class BlastingDesignRequest(BaseModel):
 async def optimize_blasting_design(payload: BlastingDesignRequest):
     """
     Computes Kuz-Ram fragmentation size distribution, 3D open-pit blast pattern,
-    PPV ground vibration safety limits, and downstream comminution crushing cost savings.
+    PPV ground vibration safety limits, and satellite-derived parameter profile per mine.
     """
     try:
+        # Ingest satellite & physical telemetry for specific mine
+        param_engine = ParameterEngine(base_lat=payload.lat or 21.5420, base_lng=payload.lng or 79.6780)
+        mine_satellite_profile = param_engine.get_mine_satellite_parameter_profile(
+            mine_id=payload.mine_id or "zone-dongri-buzurg",
+            lat=payload.lat or 21.5420,
+            lng=payload.lng or 79.6780
+        )
+
+        effective_rmr = payload.rmr_rating if payload.rmr_rating != 65 else mine_satellite_profile["rmr_rating"]
+
         # 1. Calculate Lilly Blastability Index
         lilly = blasting_engine.calculate_lilly_blastability(
-            rmr_rating=payload.rmr_rating,
+            rmr_rating=effective_rmr,
             unconfined_compressive_strength_mpa=payload.ucs_mpa,
             rock_density_t_m3=3.65
         )
@@ -144,16 +158,21 @@ async def optimize_blasting_design(payload: BlastingDesignRequest):
             blastability_index=lilly["blastability_index"]
         )
 
-        # 3. Generate 3D Blast Pattern Grid
+        # 3. Generate 3D Blast Pattern Grid (Mine-Specific Satellite & Geotechnical Dimensions)
+        num_rows = mine_satellite_profile.get("num_rows", 5)
+        holes_per_row = mine_satellite_profile.get("holes_per_row", 9)
+        bench_height = payload.bench_height_m if payload.bench_height_m != 10.0 else mine_satellite_profile.get("bench_height_m", 10.0)
+
         pattern_3d = blasting_engine.generate_blast_pattern_3d(
-            num_rows=4,
-            holes_per_row=8,
+            num_rows=num_rows,
+            holes_per_row=holes_per_row,
             burden_m=payload.burden_m,
             spacing_m=payload.spacing_m,
-            bench_height_m=payload.bench_height_m,
+            bench_height_m=bench_height,
             sub_drilling_m=payload.sub_drilling_m,
             stemming_m=payload.stemming_m,
-            pattern_type="staggered"
+            pattern_type="staggered",
+            use_adaptive_density=payload.use_adaptive_density
         )
 
         # 4. USBM Ground Vibration PPV
@@ -165,10 +184,35 @@ async def optimize_blasting_design(payload: BlastingDesignRequest):
         return {
             "status": "success",
             "mine_type": "MOIL Open-Pit Manganese Operation",
+            "mine_satellite_profile": mine_satellite_profile,
             "blastability": lilly,
             "fragmentation_kuz_ram": kuz_ram,
             "blast_pattern_3d": pattern_3d,
             "vibration_ppv": vibration
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/api/v1/pit-design/economic-stripping-ratio", tags=["Pit Design & Economic Limits"])
+async def get_economic_stripping_ratio_analysis():
+    """
+    Returns Geological Strike/Dip vectors, Break-Even Stripping Ratio cutoff limits,
+    and irregular pit clustering geometry based on natural manganese seam apexes.
+    """
+    try:
+        engine = ParameterEngine()
+        analysis = engine.compute_geological_strike_dip_stripping_ratio(
+            mn_grade_pct=44.0,
+            ore_price_per_tonne_usd=165.0,
+            mining_processing_cost_per_t_usd=48.0,
+            waste_removal_cost_per_m3_usd=24.5,
+            strike_orientation_deg=65.0,
+            dip_angle_deg=55.0
+        )
+        return {
+            "status": "success",
+            "geological_formation": "Sausar Group Mansar Formation Manganese Ore Lode",
+            "economic_stripping_analysis": analysis
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

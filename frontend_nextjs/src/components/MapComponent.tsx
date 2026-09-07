@@ -11,7 +11,9 @@ import {
   SOIL_MOISTURE_ZONES,
   LAND_TEMP_ZONES,
   MOIL_MAP_CENTER,
-  DEFAULT_ZOOM
+  DEFAULT_ZOOM,
+  GEOLOGICAL_FAULT_CORRIDORS,
+  IRREGULAR_PIT_POLYGONS
 } from '@/data/moilData';
 import { LayerState, ReserveZone } from '@/types/moil';
 import {
@@ -131,6 +133,8 @@ export const MapComponent: React.FC<MapComponentProps> = ({
     setFlyTarget([...MOIL_MAP_CENTER] as [number, number]);
   };
 
+  const [hoveredZone, setHoveredZone] = useState<ReserveZone | null>(null);
+
   return (
     <div className="relative w-full h-full bg-[#0c121e]">
       <Map
@@ -143,6 +147,67 @@ export const MapComponent: React.FC<MapComponentProps> = ({
         interactiveLayerIds={['reserve-zones']}
       >
         <MapViewController targetCoordinates={flyTarget} />
+
+        {/* --- Layer: Geological Fault Lineament Corridor (Strike N65°E) --- */}
+        {GEOLOGICAL_FAULT_CORRIDORS.map(corridor => {
+          const geojson = {
+            type: 'FeatureCollection',
+            features: [{
+              type: 'Feature',
+              geometry: {
+                type: 'LineString',
+                coordinates: corridor.coordinates
+              }
+            }]
+          };
+          return (
+            <Source key={corridor.id} type="geojson" data={geojson as any}>
+              <Layer
+                id={`fault-line-${corridor.id}`}
+                type="line"
+                paint={{
+                  'line-color': '#c084fc',
+                  'line-width': 3,
+                  'line-dasharray': [3, 2]
+                }}
+              />
+            </Source>
+          );
+        })}
+
+        {/* --- Layer: Irregular Organic Pit Cluster Polygons (SR <= 1:4.8) --- */}
+        {IRREGULAR_PIT_POLYGONS.map(pit => {
+          const geojson = {
+            type: 'FeatureCollection',
+            features: [{
+              type: 'Feature',
+              geometry: {
+                type: 'Polygon',
+                coordinates: [pit.coordinates]
+              }
+            }]
+          };
+          return (
+            <Source key={pit.id} type="geojson" data={geojson as any}>
+              <Layer
+                id={`pit-fill-${pit.id}`}
+                type="fill"
+                paint={{
+                  'fill-color': '#06b6d4',
+                  'fill-opacity': 0.25
+                }}
+              />
+              <Layer
+                id={`pit-outline-${pit.id}`}
+                type="line"
+                paint={{
+                  'line-color': '#22d3ee',
+                  'line-width': 2
+                }}
+              />
+            </Source>
+          );
+        })}
 
         {/* --- Layers: AI Heatmap --- */}
         {layers.aiHeatmap && AI_HEATMAP_CLUSTERS.map(cluster => {
@@ -178,8 +243,6 @@ export const MapComponent: React.FC<MapComponentProps> = ({
 
         {/* --- Layers: NDVI --- */}
         {layers.ndvi && NDVI_ANOMALY_ZONES.map((zone: any, idx) => {
-          // If zone is a circle with center and radius, we can draw a circle layer, 
-          // or just a point layer styled as a circle. MapLibre supports circle layers natively.
           const geojson = {
             type: 'FeatureCollection',
             features: [
@@ -204,7 +267,7 @@ export const MapComponent: React.FC<MapComponentProps> = ({
                 paint={{
                   'circle-color': zone.type === 'High Stress' ? '#ef4444' : '#10b981',
                   'circle-opacity': 0.3,
-                  'circle-radius': 50 // simplistic radius representation
+                  'circle-radius': 50
                 }}
               />
             </Source>
@@ -227,7 +290,12 @@ export const MapComponent: React.FC<MapComponentProps> = ({
                 onSelectZone(zone);
               }}
             >
-              <div className="cursor-pointer" style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '36px', height: '36px' }}>
+              <div 
+                className="cursor-pointer group"
+                onMouseEnter={() => setHoveredZone(zone)}
+                onMouseLeave={() => setHoveredZone(null)}
+                style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '36px', height: '36px' }}
+              >
                 <div style={{
                   position: 'absolute', width: '32px', height: '32px', borderRadius: '50%',
                   background: color, opacity: 0.35, animation: 'pulse-ring 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite'
@@ -250,6 +318,43 @@ export const MapComponent: React.FC<MapComponentProps> = ({
             </Marker>
           );
         })}
+
+        {/* --- Hover GPS Location Popup --- */}
+        {hoveredZone && (
+          <Popup
+            longitude={hoveredZone.coordinates[1]}
+            latitude={hoveredZone.coordinates[0]}
+            closeButton={false}
+            closeOnClick={false}
+            anchor="bottom"
+            offset={25}
+          >
+            <div className="p-2.5 bg-slate-900/95 border border-emerald-500/50 rounded-xl text-white font-mono shadow-2xl backdrop-blur-md space-y-1 text-xs">
+              <div className="font-bold text-emerald-400 border-b border-slate-800 pb-1 flex items-center justify-between gap-3">
+                <span>{hoveredZone.name}</span>
+                <span className="text-[10px] px-1.5 py-0.2 rounded bg-emerald-950 border border-emerald-500/30">
+                  {hoveredZone.manganeseProbability}% Mn
+                </span>
+              </div>
+              <div className="text-[11px] text-slate-200">
+                <span className="text-slate-400">Lat/Lng: </span>
+                <strong className="text-cyan-300">{hoveredZone.coordinates[0].toFixed(4)}° N, {hoveredZone.coordinates[1].toFixed(4)}° E</strong>
+              </div>
+              <div className="text-[10px] text-slate-400">
+                <span>DMS: </span>
+                <span className="text-amber-300 font-bold">{hoveredZone.exactLocation?.dms || 'N/A'}</span>
+              </div>
+              <div className="text-[10px] text-cyan-300 pt-0.5 border-t border-slate-800 flex justify-between">
+                <span>Stripping Ratio: <strong className="text-white">{hoveredZone.overburdenRatio}</strong></span>
+                <span>Break-Even Limit: <strong className="text-emerald-400">1:4.8</strong></span>
+              </div>
+              <div className="text-[9px] text-purple-300">
+                <span>Geological Strike: </span>
+                <strong>N65°E • Dip 55° NW</strong>
+              </div>
+            </div>
+          </Popup>
+        )}
 
         {/* --- Layers: Drilling Sites --- */}
         {layers.historicalDrilling && DRILLING_SITES.map(site => (

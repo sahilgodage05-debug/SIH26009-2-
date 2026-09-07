@@ -43,6 +43,9 @@ export interface ReserveZone {
     mnGrade: number;
     color: string;
   }[];
+  strikeDip?: string;
+  breakEvenStrippingLimit?: string;
+  pitPlacementGeology?: string;
   aiRecommendation: string;
 }
 

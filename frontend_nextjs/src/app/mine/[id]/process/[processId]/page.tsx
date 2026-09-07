@@ -95,7 +95,7 @@ export default function ProcessDetailPage() {
 
         {/* Render 3D Drilling & Blasting Engineering Studio if in Operations or Planning Step */}
         {isBlastingProcess ? (
-          <BlastingPitStudio3D />
+          <BlastingPitStudio3D mineId={mineId} zone={zone} />
         ) : (
           /* Blank / Reserved Template State for Other Processes */
           <div className="bg-[#0c121e]/90 border border-slate-800 rounded-2xl p-8 shadow-2xl relative overflow-hidden backdrop-blur-md">

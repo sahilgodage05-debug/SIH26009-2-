@@ -5,6 +5,63 @@ import { ReserveZone, DrillingSite, HeatmapPolygon, FleetEquipment, OperationalA
 export const MOIL_MAP_CENTER: [number, number] = [21.60, 79.74];
 export const DEFAULT_ZOOM = 9;
 
+// Natural Geological Fault Lineament Corridor (N65°E Strike Orientation)
+export const GEOLOGICAL_FAULT_CORRIDORS = [
+  {
+    id: 'fault-sausar-main',
+    name: 'Sausar Group Structural Fault Seam (Strike N65°E / Dip 55° NW)',
+    coordinates: [
+      [79.45, 21.42],
+      [79.68, 21.54],
+      [79.92, 21.68],
+      [80.23, 21.85]
+    ]
+  }
+];
+
+// Irregular Organic Pit Clusters Bounded by Break-Even Stripping Ratio (SR <= 1:4.8)
+export const IRREGULAR_PIT_POLYGONS = [
+  {
+    id: 'pit-dongri-cluster-1',
+    name: 'Dongri Buzurg Main Pit (SR 1:2.4)',
+    coordinates: [
+      [79.672, 21.538],
+      [79.679, 21.544],
+      [79.685, 21.543],
+      [79.681, 21.539],
+      [79.674, 21.536]
+    ],
+    strippingRatio: '1 : 2.4',
+    status: 'Below Break-Even Limit (SR <= 4.8)'
+  },
+  {
+    id: 'pit-mansar-cluster-2',
+    name: 'Mansar Synclinal Pit (SR 1:3.1)',
+    coordinates: [
+      [79.432, 21.392],
+      [79.439, 21.398],
+      [79.445, 21.396],
+      [79.441, 21.391],
+      [79.434, 21.389]
+    ],
+    strippingRatio: '1 : 3.1',
+    status: 'Below Break-Even Limit (SR <= 4.8)'
+  },
+  {
+    id: 'pit-chikhla-cluster-3',
+    name: 'Chikla North Ore Lode Pit (SR 1:2.9)',
+    coordinates: [
+      [79.742, 21.572],
+      [79.749, 21.578],
+      [79.755, 21.576],
+      [79.751, 21.571],
+      [79.744, 21.569]
+    ],
+    strippingRatio: '1 : 2.9',
+    status: 'Below Break-Even Limit (SR <= 4.8)'
+  }
+];
+
 // ALL 11 OPERATING MINES OF MOIL LIMITED IN INDIA
 // (6 Mines in Maharashtra + 5 Mines in Madhya Pradesh)
 // With Exact Field-Survey GPS Coordinates & Mining Lease Georeferences
