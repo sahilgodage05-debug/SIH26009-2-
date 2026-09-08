@@ -30,12 +30,12 @@ interface MiningSatelliteRAGStudioProps {
 }
 
 const QUICK_QUESTIONS = [
+  "How many workers are at Balaghat Mine?",
   "How does rock blasting work?",
   "Show Balaghat satellite data",
   "Why do dump truck tires overheat?",
   "What is the Lilly Blastability Index?",
-  "Are the mine slopes stable and safe?",
-  "Show Gumgaon satellite data"
+  "Are the mine slopes stable and safe?"
 ];
 
 export const MiningSatelliteRAGStudio: React.FC<MiningSatelliteRAGStudioProps> = ({
@@ -59,11 +59,11 @@ export const MiningSatelliteRAGStudio: React.FC<MiningSatelliteRAGStudioProps> =
           id: 'welcome',
           sender: 'assistant',
           timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-          text: "👋 **Hi! I'm your MOIL Mining Assistant.**\n\nI can answer any questions about our manganese mines in simple language. For example:\n- How our engineers calculate rock blasting and powder factors\n- Ground stability and satellite scans for Balaghat, Gumgaon, and Dongri Buzurg\n- Heavy dump truck speeds, tire safety, and shovel loading times\n\n**What would you like to explore today?**",
+          text: "👋 **Hi! I'm your MOIL Mining Assistant.**\n\nI can answer any questions about our manganese mines in simple language. For example:\n- **HR & Workforce Data**: Personnel headcount (Balaghat: 2,750 workers, Dongri: 900), shifts, and crew roles\n- **Rock Blasting**: Powder factors, Lilly Blastability Index, and ground vibration limits\n- **Ground Stability**: Sentinel-1 InSAR displacement and Sentinel-2 satellite scans\n- **Fleet Operations**: Dump truck speeds, tire TKPH safety, and shovel loading times\n\n**What would you like to explore today?**",
           suggestedFollowUps: [
+            "How many workers are at Balaghat Mine?",
             "How does rock blasting work?",
-            "Show Balaghat satellite data",
-            "Why do truck tires overheat?"
+            "Show Balaghat satellite data"
           ]
         }
       ]);
@@ -115,14 +115,16 @@ export const MiningSatelliteRAGStudio: React.FC<MiningSatelliteRAGStudioProps> =
         // Context-aware follow-up suggestions
         let followUps: string[] = [];
         const qLow = textToSubmit.toLowerCase();
-        if (qLow.includes('blast') || qLow.includes('lilly')) {
+        if (qLow.includes('worker') || qLow.includes('personnel') || qLow.includes('workforce') || qLow.includes('staff')) {
+          followUps = ["How many workers are at Dongri Buzurg?", "What are the shift timings at Balaghat?", "Show total MOIL personnel directory"];
+        } else if (qLow.includes('blast') || qLow.includes('lilly')) {
           followUps = ["What is the Kuz-Ram fragment size formula?", "What are safe ground vibration limits?"];
         } else if (qLow.includes('satellite') || qLow.includes('balaghat')) {
           followUps = ["Show Gumgaon satellite data", "How do satellites detect manganese?"];
         } else if (qLow.includes('tire') || qLow.includes('tkph') || qLow.includes('truck')) {
           followUps = ["What are the 4 haul cycle phases?", "How is tare carryback detected?"];
         } else {
-          followUps = ["Show Balaghat satellite data", "How does rock blasting work?"];
+          followUps = ["How many workers are at Balaghat Mine?", "Show Balaghat satellite data", "How does rock blasting work?"];
         }
 
         const aiMsg: ChatMessage = {

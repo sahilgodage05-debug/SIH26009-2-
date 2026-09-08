@@ -1,6 +1,6 @@
 {
-  "indexed_at": "2026-09-08T14:58:13.360626",
-  "total_chunks": 223,
+  "indexed_at": "2026-09-08T15:19:08.981966",
+  "total_chunks": 234,
   "chromadb_active": true,
   "chunks": [
     {
@@ -12,7 +12,8 @@
         "domain": "Blasting & Geotechnical Engineering",
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\blasting_engine.py",
         "char_count": 18529,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -24,7 +25,8 @@
         "domain": "Blasting & Geotechnical Engineering",
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\blasting_engine.py",
         "char_count": 18529,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -36,7 +38,8 @@
         "domain": "Blasting & Geotechnical Engineering",
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\blasting_engine.py",
         "char_count": 18529,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -50,7 +53,8 @@
         "slice_end": 900,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\blasting_engine.py",
         "char_count": 18529,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -64,7 +68,8 @@
         "slice_end": 1650,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\blasting_engine.py",
         "char_count": 18529,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -78,7 +83,8 @@
         "slice_end": 2400,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\blasting_engine.py",
         "char_count": 18529,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -92,7 +98,8 @@
         "slice_end": 3150,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\blasting_engine.py",
         "char_count": 18529,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -106,7 +113,8 @@
         "slice_end": 3900,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\blasting_engine.py",
         "char_count": 18529,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -120,7 +128,8 @@
         "slice_end": 4650,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\blasting_engine.py",
         "char_count": 18529,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -134,7 +143,8 @@
         "slice_end": 5400,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\blasting_engine.py",
         "char_count": 18529,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -148,7 +158,8 @@
         "slice_end": 6150,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\blasting_engine.py",
         "char_count": 18529,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -162,7 +173,8 @@
         "slice_end": 6900,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\blasting_engine.py",
         "char_count": 18529,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -176,7 +188,8 @@
         "slice_end": 7650,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\blasting_engine.py",
         "char_count": 18529,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -190,7 +203,8 @@
         "slice_end": 8400,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\blasting_engine.py",
         "char_count": 18529,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -204,7 +218,8 @@
         "slice_end": 9150,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\blasting_engine.py",
         "char_count": 18529,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -218,7 +233,8 @@
         "slice_end": 9900,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\blasting_engine.py",
         "char_count": 18529,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -232,7 +248,8 @@
         "slice_end": 10650,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\blasting_engine.py",
         "char_count": 18529,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -246,7 +263,8 @@
         "slice_end": 11400,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\blasting_engine.py",
         "char_count": 18529,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -260,7 +278,8 @@
         "slice_end": 12150,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\blasting_engine.py",
         "char_count": 18529,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -274,7 +293,8 @@
         "slice_end": 12900,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\blasting_engine.py",
         "char_count": 18529,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -288,7 +308,8 @@
         "slice_end": 13650,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\blasting_engine.py",
         "char_count": 18529,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -302,7 +323,8 @@
         "slice_end": 14400,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\blasting_engine.py",
         "char_count": 18529,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -316,7 +338,8 @@
         "slice_end": 15150,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\blasting_engine.py",
         "char_count": 18529,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -330,7 +353,8 @@
         "slice_end": 15900,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\blasting_engine.py",
         "char_count": 18529,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -344,7 +368,8 @@
         "slice_end": 16650,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\blasting_engine.py",
         "char_count": 18529,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -358,7 +383,8 @@
         "slice_end": 17400,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\blasting_engine.py",
         "char_count": 18529,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -372,7 +398,8 @@
         "slice_end": 17656,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\blasting_engine.py",
         "char_count": 18529,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -386,7 +413,8 @@
         "slice_end": 900,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\production_engine.py",
         "char_count": 29122,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -400,7 +428,8 @@
         "slice_end": 933,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\production_engine.py",
         "char_count": 29122,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -414,7 +443,8 @@
         "slice_end": 900,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\production_engine.py",
         "char_count": 29122,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -428,7 +458,8 @@
         "slice_end": 1650,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\production_engine.py",
         "char_count": 29122,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -442,7 +473,8 @@
         "slice_end": 2400,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\production_engine.py",
         "char_count": 29122,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -456,7 +488,8 @@
         "slice_end": 2523,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\production_engine.py",
         "char_count": 29122,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -470,7 +503,8 @@
         "slice_end": 900,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\production_engine.py",
         "char_count": 29122,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -484,7 +518,8 @@
         "slice_end": 1650,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\production_engine.py",
         "char_count": 29122,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -498,7 +533,8 @@
         "slice_end": 2400,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\production_engine.py",
         "char_count": 29122,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -512,7 +548,8 @@
         "slice_end": 3150,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\production_engine.py",
         "char_count": 29122,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -526,7 +563,8 @@
         "slice_end": 3900,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\production_engine.py",
         "char_count": 29122,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -540,7 +578,8 @@
         "slice_end": 4650,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\production_engine.py",
         "char_count": 29122,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -554,7 +593,8 @@
         "slice_end": 5400,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\production_engine.py",
         "char_count": 29122,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -568,7 +608,8 @@
         "slice_end": 6150,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\production_engine.py",
         "char_count": 29122,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -582,7 +623,8 @@
         "slice_end": 6900,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\production_engine.py",
         "char_count": 29122,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -596,7 +638,8 @@
         "slice_end": 7650,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\production_engine.py",
         "char_count": 29122,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -610,7 +653,8 @@
         "slice_end": 8400,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\production_engine.py",
         "char_count": 29122,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -624,7 +668,8 @@
         "slice_end": 9150,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\production_engine.py",
         "char_count": 29122,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -638,7 +683,8 @@
         "slice_end": 9900,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\production_engine.py",
         "char_count": 29122,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -652,7 +698,8 @@
         "slice_end": 10650,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\production_engine.py",
         "char_count": 29122,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -666,7 +713,8 @@
         "slice_end": 11400,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\production_engine.py",
         "char_count": 29122,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -680,7 +728,8 @@
         "slice_end": 12150,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\production_engine.py",
         "char_count": 29122,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -694,7 +743,8 @@
         "slice_end": 12900,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\production_engine.py",
         "char_count": 29122,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -708,7 +758,8 @@
         "slice_end": 13650,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\production_engine.py",
         "char_count": 29122,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -722,7 +773,8 @@
         "slice_end": 14400,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\production_engine.py",
         "char_count": 29122,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -736,7 +788,8 @@
         "slice_end": 15150,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\production_engine.py",
         "char_count": 29122,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -750,7 +803,8 @@
         "slice_end": 15900,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\production_engine.py",
         "char_count": 29122,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -764,7 +818,8 @@
         "slice_end": 16650,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\production_engine.py",
         "char_count": 29122,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -778,7 +833,8 @@
         "slice_end": 17400,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\production_engine.py",
         "char_count": 29122,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -792,7 +848,8 @@
         "slice_end": 18150,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\production_engine.py",
         "char_count": 29122,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -806,7 +863,8 @@
         "slice_end": 18900,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\production_engine.py",
         "char_count": 29122,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -820,7 +878,8 @@
         "slice_end": 19650,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\production_engine.py",
         "char_count": 29122,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -834,7 +893,8 @@
         "slice_end": 20400,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\production_engine.py",
         "char_count": 29122,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -848,7 +908,8 @@
         "slice_end": 21150,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\production_engine.py",
         "char_count": 29122,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -862,7 +923,8 @@
         "slice_end": 21900,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\production_engine.py",
         "char_count": 29122,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -876,7 +938,8 @@
         "slice_end": 22650,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\production_engine.py",
         "char_count": 29122,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -890,7 +953,8 @@
         "slice_end": 23400,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\production_engine.py",
         "char_count": 29122,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -904,7 +968,8 @@
         "slice_end": 24150,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\production_engine.py",
         "char_count": 29122,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -918,7 +983,8 @@
         "slice_end": 24900,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\production_engine.py",
         "char_count": 29122,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -932,7 +998,8 @@
         "slice_end": 25650,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\production_engine.py",
         "char_count": 29122,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -946,7 +1013,8 @@
         "slice_end": 25662,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\production_engine.py",
         "char_count": 29122,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -958,7 +1026,8 @@
         "domain": "Fleet Dispatch, TKPH, TPMS & Safety",
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\fleet_engine.py",
         "char_count": 53277,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -972,7 +1041,8 @@
         "slice_end": 900,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\fleet_engine.py",
         "char_count": 53277,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -986,7 +1056,8 @@
         "slice_end": 1650,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\fleet_engine.py",
         "char_count": 53277,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -1000,7 +1071,8 @@
         "slice_end": 2400,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\fleet_engine.py",
         "char_count": 53277,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -1014,7 +1086,8 @@
         "slice_end": 3150,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\fleet_engine.py",
         "char_count": 53277,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -1028,7 +1101,8 @@
         "slice_end": 3900,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\fleet_engine.py",
         "char_count": 53277,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -1042,7 +1116,8 @@
         "slice_end": 4650,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\fleet_engine.py",
         "char_count": 53277,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -1056,7 +1131,8 @@
         "slice_end": 5400,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\fleet_engine.py",
         "char_count": 53277,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -1070,7 +1146,8 @@
         "slice_end": 6150,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\fleet_engine.py",
         "char_count": 53277,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -1084,7 +1161,8 @@
         "slice_end": 6900,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\fleet_engine.py",
         "char_count": 53277,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -1098,7 +1176,8 @@
         "slice_end": 7650,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\fleet_engine.py",
         "char_count": 53277,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -1112,7 +1191,8 @@
         "slice_end": 8400,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\fleet_engine.py",
         "char_count": 53277,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -1126,7 +1206,8 @@
         "slice_end": 9150,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\fleet_engine.py",
         "char_count": 53277,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -1140,7 +1221,8 @@
         "slice_end": 9490,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\fleet_engine.py",
         "char_count": 53277,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -1154,7 +1236,8 @@
         "slice_end": 900,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\fleet_engine.py",
         "char_count": 53277,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -1168,7 +1251,8 @@
         "slice_end": 1650,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\fleet_engine.py",
         "char_count": 53277,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -1182,7 +1266,8 @@
         "slice_end": 2400,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\fleet_engine.py",
         "char_count": 53277,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -1196,7 +1281,8 @@
         "slice_end": 3150,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\fleet_engine.py",
         "char_count": 53277,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -1210,7 +1296,8 @@
         "slice_end": 3900,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\fleet_engine.py",
         "char_count": 53277,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -1224,7 +1311,8 @@
         "slice_end": 4650,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\fleet_engine.py",
         "char_count": 53277,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -1238,7 +1326,8 @@
         "slice_end": 5400,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\fleet_engine.py",
         "char_count": 53277,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -1252,7 +1341,8 @@
         "slice_end": 6150,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\fleet_engine.py",
         "char_count": 53277,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -1266,7 +1356,8 @@
         "slice_end": 6900,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\fleet_engine.py",
         "char_count": 53277,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -1280,7 +1371,8 @@
         "slice_end": 7650,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\fleet_engine.py",
         "char_count": 53277,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -1294,7 +1386,8 @@
         "slice_end": 8400,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\fleet_engine.py",
         "char_count": 53277,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -1308,7 +1401,8 @@
         "slice_end": 9150,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\fleet_engine.py",
         "char_count": 53277,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -1322,7 +1416,8 @@
         "slice_end": 9900,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\fleet_engine.py",
         "char_count": 53277,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -1336,7 +1431,8 @@
         "slice_end": 10650,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\fleet_engine.py",
         "char_count": 53277,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -1350,7 +1446,8 @@
         "slice_end": 11400,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\fleet_engine.py",
         "char_count": 53277,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -1364,7 +1461,8 @@
         "slice_end": 12150,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\fleet_engine.py",
         "char_count": 53277,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -1378,7 +1476,8 @@
         "slice_end": 12900,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\fleet_engine.py",
         "char_count": 53277,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -1392,7 +1491,8 @@
         "slice_end": 13650,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\fleet_engine.py",
         "char_count": 53277,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -1406,7 +1506,8 @@
         "slice_end": 14400,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\fleet_engine.py",
         "char_count": 53277,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -1420,7 +1521,8 @@
         "slice_end": 15150,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\fleet_engine.py",
         "char_count": 53277,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -1434,7 +1536,8 @@
         "slice_end": 15900,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\fleet_engine.py",
         "char_count": 53277,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -1448,7 +1551,8 @@
         "slice_end": 16650,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\fleet_engine.py",
         "char_count": 53277,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -1462,7 +1566,8 @@
         "slice_end": 17400,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\fleet_engine.py",
         "char_count": 53277,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -1476,7 +1581,8 @@
         "slice_end": 18150,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\fleet_engine.py",
         "char_count": 53277,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -1490,7 +1596,8 @@
         "slice_end": 18900,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\fleet_engine.py",
         "char_count": 53277,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -1504,7 +1611,8 @@
         "slice_end": 19650,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\fleet_engine.py",
         "char_count": 53277,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -1518,7 +1626,8 @@
         "slice_end": 20400,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\fleet_engine.py",
         "char_count": 53277,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -1532,7 +1641,8 @@
         "slice_end": 21150,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\fleet_engine.py",
         "char_count": 53277,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -1546,7 +1656,8 @@
         "slice_end": 21900,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\fleet_engine.py",
         "char_count": 53277,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -1560,7 +1671,8 @@
         "slice_end": 22650,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\fleet_engine.py",
         "char_count": 53277,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -1574,7 +1686,8 @@
         "slice_end": 23400,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\fleet_engine.py",
         "char_count": 53277,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -1588,7 +1701,8 @@
         "slice_end": 24150,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\fleet_engine.py",
         "char_count": 53277,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -1602,7 +1716,8 @@
         "slice_end": 24900,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\fleet_engine.py",
         "char_count": 53277,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -1616,7 +1731,8 @@
         "slice_end": 25650,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\fleet_engine.py",
         "char_count": 53277,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -1630,7 +1746,8 @@
         "slice_end": 26400,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\fleet_engine.py",
         "char_count": 53277,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -1644,7 +1761,8 @@
         "slice_end": 27150,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\fleet_engine.py",
         "char_count": 53277,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -1658,7 +1776,8 @@
         "slice_end": 27900,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\fleet_engine.py",
         "char_count": 53277,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -1672,7 +1791,8 @@
         "slice_end": 28650,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\fleet_engine.py",
         "char_count": 53277,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -1686,7 +1806,8 @@
         "slice_end": 29400,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\fleet_engine.py",
         "char_count": 53277,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -1700,7 +1821,8 @@
         "slice_end": 30150,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\fleet_engine.py",
         "char_count": 53277,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -1714,7 +1836,8 @@
         "slice_end": 30900,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\fleet_engine.py",
         "char_count": 53277,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -1728,7 +1851,8 @@
         "slice_end": 31650,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\fleet_engine.py",
         "char_count": 53277,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -1742,7 +1866,8 @@
         "slice_end": 32400,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\fleet_engine.py",
         "char_count": 53277,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -1756,7 +1881,8 @@
         "slice_end": 33150,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\fleet_engine.py",
         "char_count": 53277,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -1770,7 +1896,8 @@
         "slice_end": 33900,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\fleet_engine.py",
         "char_count": 53277,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -1784,7 +1911,8 @@
         "slice_end": 34650,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\fleet_engine.py",
         "char_count": 53277,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -1798,7 +1926,8 @@
         "slice_end": 35400,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\fleet_engine.py",
         "char_count": 53277,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -1812,7 +1941,8 @@
         "slice_end": 36150,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\fleet_engine.py",
         "char_count": 53277,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -1826,7 +1956,8 @@
         "slice_end": 36900,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\fleet_engine.py",
         "char_count": 53277,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -1840,7 +1971,8 @@
         "slice_end": 37650,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\fleet_engine.py",
         "char_count": 53277,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -1854,7 +1986,8 @@
         "slice_end": 38400,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\fleet_engine.py",
         "char_count": 53277,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -1868,7 +2001,8 @@
         "slice_end": 39150,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\fleet_engine.py",
         "char_count": 53277,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -1882,7 +2016,8 @@
         "slice_end": 39900,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\fleet_engine.py",
         "char_count": 53277,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -1896,7 +2031,8 @@
         "slice_end": 40650,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\fleet_engine.py",
         "char_count": 53277,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -1910,7 +2046,8 @@
         "slice_end": 41400,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\fleet_engine.py",
         "char_count": 53277,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -1924,7 +2061,8 @@
         "slice_end": 42150,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\fleet_engine.py",
         "char_count": 53277,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -1938,7 +2076,8 @@
         "slice_end": 42900,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\fleet_engine.py",
         "char_count": 53277,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -1952,7 +2091,8 @@
         "slice_end": 43092,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\fleet_engine.py",
         "char_count": 53277,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -1964,7 +2104,8 @@
         "domain": "Copernicus Multi-Satellite & ERA5 Inversion",
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\parameter_engine.py",
         "char_count": 22629,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -1976,7 +2117,8 @@
         "domain": "Copernicus Multi-Satellite & ERA5 Inversion",
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\parameter_engine.py",
         "char_count": 22629,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -1990,7 +2132,8 @@
         "slice_end": 900,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\parameter_engine.py",
         "char_count": 22629,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -2004,7 +2147,8 @@
         "slice_end": 1650,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\parameter_engine.py",
         "char_count": 22629,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -2018,7 +2162,8 @@
         "slice_end": 2400,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\parameter_engine.py",
         "char_count": 22629,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -2032,7 +2177,8 @@
         "slice_end": 3150,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\parameter_engine.py",
         "char_count": 22629,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -2046,7 +2192,8 @@
         "slice_end": 3900,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\parameter_engine.py",
         "char_count": 22629,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -2060,7 +2207,8 @@
         "slice_end": 4650,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\parameter_engine.py",
         "char_count": 22629,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -2074,7 +2222,8 @@
         "slice_end": 5400,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\parameter_engine.py",
         "char_count": 22629,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -2088,7 +2237,8 @@
         "slice_end": 6150,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\parameter_engine.py",
         "char_count": 22629,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -2102,7 +2252,8 @@
         "slice_end": 6900,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\parameter_engine.py",
         "char_count": 22629,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -2116,7 +2267,8 @@
         "slice_end": 7650,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\parameter_engine.py",
         "char_count": 22629,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -2130,7 +2282,8 @@
         "slice_end": 8400,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\parameter_engine.py",
         "char_count": 22629,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -2144,7 +2297,8 @@
         "slice_end": 9150,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\parameter_engine.py",
         "char_count": 22629,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -2158,7 +2312,8 @@
         "slice_end": 9900,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\parameter_engine.py",
         "char_count": 22629,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -2172,7 +2327,8 @@
         "slice_end": 10650,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\parameter_engine.py",
         "char_count": 22629,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -2186,7 +2342,8 @@
         "slice_end": 11400,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\parameter_engine.py",
         "char_count": 22629,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -2200,7 +2357,8 @@
         "slice_end": 12150,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\parameter_engine.py",
         "char_count": 22629,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -2214,7 +2372,8 @@
         "slice_end": 12900,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\parameter_engine.py",
         "char_count": 22629,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -2228,7 +2387,8 @@
         "slice_end": 13650,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\parameter_engine.py",
         "char_count": 22629,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -2242,7 +2402,8 @@
         "slice_end": 14400,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\parameter_engine.py",
         "char_count": 22629,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -2256,7 +2417,8 @@
         "slice_end": 15150,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\parameter_engine.py",
         "char_count": 22629,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -2270,7 +2432,8 @@
         "slice_end": 15900,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\parameter_engine.py",
         "char_count": 22629,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -2284,7 +2447,8 @@
         "slice_end": 16650,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\parameter_engine.py",
         "char_count": 22629,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -2298,7 +2462,8 @@
         "slice_end": 17400,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\parameter_engine.py",
         "char_count": 22629,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -2312,7 +2477,8 @@
         "slice_end": 18150,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\parameter_engine.py",
         "char_count": 22629,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -2326,7 +2492,8 @@
         "slice_end": 18900,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\parameter_engine.py",
         "char_count": 22629,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -2340,7 +2507,8 @@
         "slice_end": 19650,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\parameter_engine.py",
         "char_count": 22629,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -2354,7 +2522,8 @@
         "slice_end": 20400,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\parameter_engine.py",
         "char_count": 22629,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -2368,7 +2537,8 @@
         "slice_end": 21150,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\parameter_engine.py",
         "char_count": 22629,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -2382,7 +2552,8 @@
         "slice_end": 21900,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\parameter_engine.py",
         "char_count": 22629,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -2396,7 +2567,8 @@
         "slice_end": 22091,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\parameter_engine.py",
         "char_count": 22629,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -2408,7 +2580,8 @@
         "domain": "Bayesian AI Manganese Exploration",
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\prospector_engine.py",
         "char_count": 12650,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -2420,7 +2593,8 @@
         "domain": "Bayesian AI Manganese Exploration",
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\prospector_engine.py",
         "char_count": 12650,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -2434,7 +2608,8 @@
         "slice_end": 900,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\prospector_engine.py",
         "char_count": 12650,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -2448,7 +2623,8 @@
         "slice_end": 1650,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\prospector_engine.py",
         "char_count": 12650,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -2462,7 +2638,8 @@
         "slice_end": 2400,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\prospector_engine.py",
         "char_count": 12650,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -2476,7 +2653,8 @@
         "slice_end": 3150,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\prospector_engine.py",
         "char_count": 12650,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -2490,7 +2668,8 @@
         "slice_end": 3900,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\prospector_engine.py",
         "char_count": 12650,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -2504,7 +2683,8 @@
         "slice_end": 4650,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\prospector_engine.py",
         "char_count": 12650,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -2518,7 +2698,8 @@
         "slice_end": 5400,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\prospector_engine.py",
         "char_count": 12650,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -2532,7 +2713,8 @@
         "slice_end": 6062,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\prospector_engine.py",
         "char_count": 12650,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -2546,7 +2728,8 @@
         "slice_end": 900,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\prospector_engine.py",
         "char_count": 12650,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -2560,7 +2743,8 @@
         "slice_end": 1650,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\prospector_engine.py",
         "char_count": 12650,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -2574,7 +2758,8 @@
         "slice_end": 2400,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\prospector_engine.py",
         "char_count": 12650,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -2588,7 +2773,8 @@
         "slice_end": 3150,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\prospector_engine.py",
         "char_count": 12650,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -2602,7 +2788,8 @@
         "slice_end": 3900,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\prospector_engine.py",
         "char_count": 12650,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -2616,7 +2803,8 @@
         "slice_end": 4650,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\prospector_engine.py",
         "char_count": 12650,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -2630,7 +2818,8 @@
         "slice_end": 5400,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\prospector_engine.py",
         "char_count": 12650,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -2644,7 +2833,8 @@
         "slice_end": 5752,
         "file_path": "C:\\Users\\Aditi\\Desktop\\mine\\master_backend\\services\\prospector_engine.py",
         "char_count": 12650,
-        "language": "python"
+        "language": "python",
+        "category": "engineering"
       }
     },
     {
@@ -2661,7 +2851,9 @@
           "Sentinel-1 InSAR",
           "Sentinel-3 SLSTR",
           "Copernicus ERA5"
-        ]
+        ],
+        "category": "engineering",
+        "sub_category": "geology"
       }
     },
     {
@@ -2678,7 +2870,9 @@
           "Sentinel-1 InSAR",
           "Sentinel-3 SLSTR",
           "Copernicus ERA5"
-        ]
+        ],
+        "category": "engineering",
+        "sub_category": "geology"
       }
     },
     {
@@ -2695,7 +2889,9 @@
           "Sentinel-1 InSAR",
           "Sentinel-3 SLSTR",
           "Copernicus ERA5"
-        ]
+        ],
+        "category": "engineering",
+        "sub_category": "geology"
       }
     },
     {
@@ -2712,7 +2908,9 @@
           "Sentinel-1 InSAR",
           "Sentinel-3 SLSTR",
           "Copernicus ERA5"
-        ]
+        ],
+        "category": "engineering",
+        "sub_category": "geology"
       }
     },
     {
@@ -2729,7 +2927,9 @@
           "Sentinel-1 InSAR",
           "Sentinel-3 SLSTR",
           "Copernicus ERA5"
-        ]
+        ],
+        "category": "engineering",
+        "sub_category": "geology"
       }
     },
     {
@@ -2746,7 +2946,9 @@
           "Sentinel-1 InSAR",
           "Sentinel-3 SLSTR",
           "Copernicus ERA5"
-        ]
+        ],
+        "category": "engineering",
+        "sub_category": "geology"
       }
     },
     {
@@ -2763,7 +2965,9 @@
           "Sentinel-1 InSAR",
           "Sentinel-3 SLSTR",
           "Copernicus ERA5"
-        ]
+        ],
+        "category": "engineering",
+        "sub_category": "geology"
       }
     },
     {
@@ -2780,7 +2984,9 @@
           "Sentinel-1 InSAR",
           "Sentinel-3 SLSTR",
           "Copernicus ERA5"
-        ]
+        ],
+        "category": "engineering",
+        "sub_category": "geology"
       }
     },
     {
@@ -2797,7 +3003,9 @@
           "Sentinel-1 InSAR",
           "Sentinel-3 SLSTR",
           "Copernicus ERA5"
-        ]
+        ],
+        "category": "engineering",
+        "sub_category": "geology"
       }
     },
     {
@@ -2814,7 +3022,9 @@
           "Sentinel-1 InSAR",
           "Sentinel-3 SLSTR",
           "Copernicus ERA5"
-        ]
+        ],
+        "category": "engineering",
+        "sub_category": "geology"
       }
     },
     {
@@ -2831,7 +3041,9 @@
           "Sentinel-1 InSAR",
           "Sentinel-3 SLSTR",
           "Copernicus ERA5"
-        ]
+        ],
+        "category": "engineering",
+        "sub_category": "geology"
       }
     },
     {
@@ -2848,7 +3060,9 @@
           "Sentinel-1 InSAR",
           "Sentinel-3 SLSTR",
           "Copernicus ERA5"
-        ]
+        ],
+        "category": "engineering",
+        "sub_category": "geology"
       }
     },
     {
@@ -2865,7 +3079,9 @@
           "Sentinel-1 InSAR",
           "Sentinel-3 SLSTR",
           "Copernicus ERA5"
-        ]
+        ],
+        "category": "engineering",
+        "sub_category": "geology"
       }
     },
     {
@@ -2882,7 +3098,9 @@
           "Sentinel-1 InSAR",
           "Sentinel-3 SLSTR",
           "Copernicus ERA5"
-        ]
+        ],
+        "category": "engineering",
+        "sub_category": "geology"
       }
     },
     {
@@ -2899,7 +3117,9 @@
           "Sentinel-1 InSAR",
           "Sentinel-3 SLSTR",
           "Copernicus ERA5"
-        ]
+        ],
+        "category": "engineering",
+        "sub_category": "geology"
       }
     },
     {
@@ -2916,7 +3136,9 @@
           "Sentinel-1 InSAR",
           "Sentinel-3 SLSTR",
           "Copernicus ERA5"
-        ]
+        ],
+        "category": "engineering",
+        "sub_category": "geology"
       }
     },
     {
@@ -2933,7 +3155,9 @@
           "Sentinel-1 InSAR",
           "Sentinel-3 SLSTR",
           "Copernicus ERA5"
-        ]
+        ],
+        "category": "engineering",
+        "sub_category": "geology"
       }
     },
     {
@@ -2950,7 +3174,9 @@
           "Sentinel-1 InSAR",
           "Sentinel-3 SLSTR",
           "Copernicus ERA5"
-        ]
+        ],
+        "category": "engineering",
+        "sub_category": "geology"
       }
     },
     {
@@ -2967,7 +3193,9 @@
           "Sentinel-1 InSAR",
           "Sentinel-3 SLSTR",
           "Copernicus ERA5"
-        ]
+        ],
+        "category": "engineering",
+        "sub_category": "geology"
       }
     },
     {
@@ -2984,7 +3212,9 @@
           "Sentinel-1 InSAR",
           "Sentinel-3 SLSTR",
           "Copernicus ERA5"
-        ]
+        ],
+        "category": "engineering",
+        "sub_category": "geology"
       }
     },
     {
@@ -3001,7 +3231,9 @@
           "Sentinel-1 InSAR",
           "Sentinel-3 SLSTR",
           "Copernicus ERA5"
-        ]
+        ],
+        "category": "engineering",
+        "sub_category": "geology"
       }
     },
     {
@@ -3018,7 +3250,9 @@
           "Sentinel-1 InSAR",
           "Sentinel-3 SLSTR",
           "Copernicus ERA5"
-        ]
+        ],
+        "category": "engineering",
+        "sub_category": "geology"
       }
     },
     {
@@ -3035,7 +3269,9 @@
           "Sentinel-1 InSAR",
           "Sentinel-3 SLSTR",
           "Copernicus ERA5"
-        ]
+        ],
+        "category": "engineering",
+        "sub_category": "geology"
       }
     },
     {
@@ -3052,7 +3288,9 @@
           "Sentinel-1 InSAR",
           "Sentinel-3 SLSTR",
           "Copernicus ERA5"
-        ]
+        ],
+        "category": "engineering",
+        "sub_category": "geology"
       }
     },
     {
@@ -3069,7 +3307,9 @@
           "Sentinel-1 InSAR",
           "Sentinel-3 SLSTR",
           "Copernicus ERA5"
-        ]
+        ],
+        "category": "engineering",
+        "sub_category": "geology"
       }
     },
     {
@@ -3086,7 +3326,9 @@
           "Sentinel-1 InSAR",
           "Sentinel-3 SLSTR",
           "Copernicus ERA5"
-        ]
+        ],
+        "category": "engineering",
+        "sub_category": "geology"
       }
     },
     {
@@ -3103,7 +3345,9 @@
           "Sentinel-1 InSAR",
           "Sentinel-3 SLSTR",
           "Copernicus ERA5"
-        ]
+        ],
+        "category": "engineering",
+        "sub_category": "geology"
       }
     },
     {
@@ -3120,7 +3364,9 @@
           "Sentinel-1 InSAR",
           "Sentinel-3 SLSTR",
           "Copernicus ERA5"
-        ]
+        ],
+        "category": "engineering",
+        "sub_category": "geology"
       }
     },
     {
@@ -3137,7 +3383,9 @@
           "Sentinel-1 InSAR",
           "Sentinel-3 SLSTR",
           "Copernicus ERA5"
-        ]
+        ],
+        "category": "engineering",
+        "sub_category": "geology"
       }
     },
     {
@@ -3154,7 +3402,9 @@
           "Sentinel-1 InSAR",
           "Sentinel-3 SLSTR",
           "Copernicus ERA5"
-        ]
+        ],
+        "category": "engineering",
+        "sub_category": "geology"
       }
     },
     {
@@ -3171,7 +3421,9 @@
           "Sentinel-1 InSAR",
           "Sentinel-3 SLSTR",
           "Copernicus ERA5"
-        ]
+        ],
+        "category": "engineering",
+        "sub_category": "geology"
       }
     },
     {
@@ -3188,7 +3440,9 @@
           "Sentinel-1 InSAR",
           "Sentinel-3 SLSTR",
           "Copernicus ERA5"
-        ]
+        ],
+        "category": "engineering",
+        "sub_category": "geology"
       }
     },
     {
@@ -3205,7 +3459,152 @@
           "Sentinel-1 InSAR",
           "Sentinel-3 SLSTR",
           "Copernicus ERA5"
-        ]
+        ],
+        "category": "engineering",
+        "sub_category": "geology"
+      }
+    },
+    {
+      "chunk_id": "CHK-0224",
+      "content": "MINE WORKFORCE & HR PERSONNEL RECORD: Balaghat Mine (ID: zone-balaghat)\n- Total Personnel / Workers Count: 2750 workers\n- Operation Type: Underground & Opencast (Deepest Manganese Mine in Asia)\n- Active Shift Headcount: 450 - 600 per shift\n- Daily Shift Distribution: 3 operational shifts (06:00-14:00, 14:00-22:00, 22:00-06:00)\n- Key Operational Crew Breakdown: 18 Excavator/Shovel Operators, 42 Heavy Dumper Drivers, 12 Surface Drillers, 8 Certified Blasters/Shotfirers, 24 Maintenance Mechanics, 6 DGMS Overmen, 30 Dewatering Pump Operators\n- Shift Handover & Meal Sequencing: Hot-seat driver changeover at 14:00 and 22:00 with asynchronous meal break sequencing to eliminate shift-change downtime.\n- Statutory Compliance: DGMS (Directorate General of Mines Safety) Mines Act 1952 compliance. Every shift staffed with certified Overmen, Mining Sirdars, and first-aid trained personnel.",
+      "metadata": {
+        "source_type": "HR_DATA",
+        "source_name": "HR Workforce Record - Balaghat Mine",
+        "domain": "Workforce, Human Resources & Personnel",
+        "mine_id": "zone-balaghat",
+        "mine_name": "Balaghat Mine",
+        "workers_count": 2750,
+        "category": "hr"
+      }
+    },
+    {
+      "chunk_id": "CHK-0225",
+      "content": "MINE WORKFORCE & HR PERSONNEL RECORD: Dongri Buzurg Mine (ID: zone-dongri-buzurg)\n- Total Personnel / Workers Count: 900 workers\n- Operation Type: Opencast Pit\n- Active Shift Headcount: 180 - 240 per shift\n- Daily Shift Distribution: 2 production shifts + 1 maintenance shift\n- Key Operational Crew Breakdown: 12 Dumper Drivers, 4 Excavator Operators, 4 Drillers, 3 Certified Blasters, 14 Maintenance Mechanics, 4 DGMS Overmen\n- Shift Handover & Meal Sequencing: Staggered hot-seat relay during 11:30-12:30 meal interval.\n- Statutory Compliance: DGMS (Directorate General of Mines Safety) Mines Act 1952 compliance. Every shift staffed with certified Overmen, Mining Sirdars, and first-aid trained personnel.",
+      "metadata": {
+        "source_type": "HR_DATA",
+        "source_name": "HR Workforce Record - Dongri Buzurg Mine",
+        "domain": "Workforce, Human Resources & Personnel",
+        "mine_id": "zone-dongri-buzurg",
+        "mine_name": "Dongri Buzurg Mine",
+        "workers_count": 900,
+        "category": "hr"
+      }
+    },
+    {
+      "chunk_id": "CHK-0226",
+      "content": "MINE WORKFORCE & HR PERSONNEL RECORD: Chikla Mine (ID: zone-chikla)\n- Total Personnel / Workers Count: 800 workers\n- Operation Type: Underground & Opencast\n- Active Shift Headcount: 150 - 200 per shift\n- Daily Shift Distribution: 3 operational shifts\n- Key Operational Crew Breakdown: 10 Dumper Drivers, 4 Shovel Operators, 4 Drillers, 3 Blasters, 12 Mechanics, 4 Mining Sirdars\n- Shift Handover & Meal Sequencing: Central crew change at main portal.\n- Statutory Compliance: DGMS (Directorate General of Mines Safety) Mines Act 1952 compliance. Every shift staffed with certified Overmen, Mining Sirdars, and first-aid trained personnel.",
+      "metadata": {
+        "source_type": "HR_DATA",
+        "source_name": "HR Workforce Record - Chikla Mine",
+        "domain": "Workforce, Human Resources & Personnel",
+        "mine_id": "zone-chikla",
+        "mine_name": "Chikla Mine",
+        "workers_count": 800,
+        "category": "hr"
+      }
+    },
+    {
+      "chunk_id": "CHK-0227",
+      "content": "MINE WORKFORCE & HR PERSONNEL RECORD: Ukwa Mine (ID: zone-ukwa)\n- Total Personnel / Workers Count: 700 workers\n- Operation Type: Underground\n- Active Shift Headcount: 140 - 180 per shift\n- Daily Shift Distribution: 3 operational shifts\n- Key Operational Crew Breakdown: 8 LHD/Hauler Drivers, 4 Underground Drillers, 4 Shotfirers, 10 Mechanics, 4 Overmen\n- Shift Handover & Meal Sequencing: Cage-hoist shaft sequencing.\n- Statutory Compliance: DGMS (Directorate General of Mines Safety) Mines Act 1952 compliance. Every shift staffed with certified Overmen, Mining Sirdars, and first-aid trained personnel.",
+      "metadata": {
+        "source_type": "HR_DATA",
+        "source_name": "HR Workforce Record - Ukwa Mine",
+        "domain": "Workforce, Human Resources & Personnel",
+        "mine_id": "zone-ukwa",
+        "mine_name": "Ukwa Mine",
+        "workers_count": 700,
+        "category": "hr"
+      }
+    },
+    {
+      "chunk_id": "CHK-0228",
+      "content": "MINE WORKFORCE & HR PERSONNEL RECORD: Kandri Mine (ID: zone-kandri)\n- Total Personnel / Workers Count: 600 workers\n- Operation Type: Opencast Pit\n- Active Shift Headcount: 120 - 150 per shift\n- Daily Shift Distribution: 2 production shifts + 1 maintenance shift\n- Key Operational Crew Breakdown: 8 Dumper Drivers, 3 Excavator Operators, 3 Drillers, 2 Blasters, 8 Mechanics, 3 Overmen\n- Shift Handover & Meal Sequencing: Bench-side hot seat swap.\n- Statutory Compliance: DGMS (Directorate General of Mines Safety) Mines Act 1952 compliance. Every shift staffed with certified Overmen, Mining Sirdars, and first-aid trained personnel.",
+      "metadata": {
+        "source_type": "HR_DATA",
+        "source_name": "HR Workforce Record - Kandri Mine",
+        "domain": "Workforce, Human Resources & Personnel",
+        "mine_id": "zone-kandri",
+        "mine_name": "Kandri Mine",
+        "workers_count": 600,
+        "category": "hr"
+      }
+    },
+    {
+      "chunk_id": "CHK-0229",
+      "content": "MINE WORKFORCE & HR PERSONNEL RECORD: Mansar Mine (ID: zone-mansar)\n- Total Personnel / Workers Count: 575 workers\n- Operation Type: Opencast Pit\n- Active Shift Headcount: 115 - 145 per shift\n- Daily Shift Distribution: 2 production shifts + 1 maintenance shift\n- Key Operational Crew Breakdown: 8 Dumper Drivers, 3 Shovel Operators, 3 Drillers, 2 Blasters, 8 Mechanics, 3 Overmen\n- Shift Handover & Meal Sequencing: Crusher hopper queue relay.\n- Statutory Compliance: DGMS (Directorate General of Mines Safety) Mines Act 1952 compliance. Every shift staffed with certified Overmen, Mining Sirdars, and first-aid trained personnel.",
+      "metadata": {
+        "source_type": "HR_DATA",
+        "source_name": "HR Workforce Record - Mansar Mine",
+        "domain": "Workforce, Human Resources & Personnel",
+        "mine_id": "zone-mansar",
+        "mine_name": "Mansar Mine",
+        "workers_count": 575,
+        "category": "hr"
+      }
+    },
+    {
+      "chunk_id": "CHK-0230",
+      "content": "MINE WORKFORCE & HR PERSONNEL RECORD: Gumgaon Mine (ID: zone-gumgaon)\n- Total Personnel / Workers Count: 525 workers\n- Operation Type: Underground\n- Active Shift Headcount: 105 - 130 per shift\n- Daily Shift Distribution: 3 operational shifts\n- Key Operational Crew Breakdown: 6 Hauler Operators, 3 Drillers, 2 Blasters, 8 Mechanics, 3 Mining Sirdars\n- Shift Handover & Meal Sequencing: Incline shaft changeover.\n- Statutory Compliance: DGMS (Directorate General of Mines Safety) Mines Act 1952 compliance. Every shift staffed with certified Overmen, Mining Sirdars, and first-aid trained personnel.",
+      "metadata": {
+        "source_type": "HR_DATA",
+        "source_name": "HR Workforce Record - Gumgaon Mine",
+        "domain": "Workforce, Human Resources & Personnel",
+        "mine_id": "zone-gumgaon",
+        "mine_name": "Gumgaon Mine",
+        "workers_count": 525,
+        "category": "hr"
+      }
+    },
+    {
+      "chunk_id": "CHK-0231",
+      "content": "MINE WORKFORCE & HR PERSONNEL RECORD: Tirodi Mine (ID: zone-tirodi)\n- Total Personnel / Workers Count: 450 workers\n- Operation Type: Opencast Pit\n- Active Shift Headcount: 90 - 115 per shift\n- Daily Shift Distribution: 2 production shifts + 1 maintenance shift\n- Key Operational Crew Breakdown: 6 Dumper Drivers, 2 Excavator Operators, 2 Drillers, 2 Blasters, 6 Mechanics, 2 Overmen\n- Shift Handover & Meal Sequencing: Bench-level relief pool.\n- Statutory Compliance: DGMS (Directorate General of Mines Safety) Mines Act 1952 compliance. Every shift staffed with certified Overmen, Mining Sirdars, and first-aid trained personnel.",
+      "metadata": {
+        "source_type": "HR_DATA",
+        "source_name": "HR Workforce Record - Tirodi Mine",
+        "domain": "Workforce, Human Resources & Personnel",
+        "mine_id": "zone-tirodi",
+        "mine_name": "Tirodi Mine",
+        "workers_count": 450,
+        "category": "hr"
+      }
+    },
+    {
+      "chunk_id": "CHK-0232",
+      "content": "MINE WORKFORCE & HR PERSONNEL RECORD: Beldongri Mine (ID: zone-beldongri)\n- Total Personnel / Workers Count: 275 workers\n- Operation Type: Opencast Pit\n- Active Shift Headcount: 55 - 70 per shift\n- Daily Shift Distribution: 2 production shifts\n- Key Operational Crew Breakdown: 4 Dumper Drivers, 2 Excavator Operators, 2 Drillers, 1 Blaster, 4 Mechanics, 2 Overmen\n- Shift Handover & Meal Sequencing: Direct shift change.\n- Statutory Compliance: DGMS (Directorate General of Mines Safety) Mines Act 1952 compliance. Every shift staffed with certified Overmen, Mining Sirdars, and first-aid trained personnel.",
+      "metadata": {
+        "source_type": "HR_DATA",
+        "source_name": "HR Workforce Record - Beldongri Mine",
+        "domain": "Workforce, Human Resources & Personnel",
+        "mine_id": "zone-beldongri",
+        "mine_name": "Beldongri Mine",
+        "workers_count": 275,
+        "category": "hr"
+      }
+    },
+    {
+      "chunk_id": "CHK-0233",
+      "content": "MINE WORKFORCE & HR PERSONNEL RECORD: Parsoda Mine (ID: zone-parsoda)\n- Total Personnel / Workers Count: 275 workers\n- Operation Type: Opencast Pit\n- Active Shift Headcount: 55 - 70 per shift\n- Daily Shift Distribution: 2 production shifts\n- Key Operational Crew Breakdown: 4 Dumper Drivers, 2 Excavator Operators, 2 Drillers, 1 Blaster, 4 Mechanics, 2 Overmen\n- Shift Handover & Meal Sequencing: Direct shift change.\n- Statutory Compliance: DGMS (Directorate General of Mines Safety) Mines Act 1952 compliance. Every shift staffed with certified Overmen, Mining Sirdars, and first-aid trained personnel.",
+      "metadata": {
+        "source_type": "HR_DATA",
+        "source_name": "HR Workforce Record - Parsoda Mine",
+        "domain": "Workforce, Human Resources & Personnel",
+        "mine_id": "zone-parsoda",
+        "mine_name": "Parsoda Mine",
+        "workers_count": 275,
+        "category": "hr"
+      }
+    },
+    {
+      "chunk_id": "CHK-0234",
+      "content": "MINE WORKFORCE & HR PERSONNEL RECORD: Sitapatore Mine (ID: zone-sitapatore)\n- Total Personnel / Workers Count: 200 workers\n- Operation Type: Opencast Pit\n- Active Shift Headcount: 40 - 50 per shift\n- Daily Shift Distribution: 2 production shifts\n- Key Operational Crew Breakdown: 3 Dumper Drivers, 2 Excavator Operators, 1 Driller, 1 Blaster, 4 Mechanics, 1 Overman\n- Shift Handover & Meal Sequencing: Direct shift change.\n- Statutory Compliance: DGMS (Directorate General of Mines Safety) Mines Act 1952 compliance. Every shift staffed with certified Overmen, Mining Sirdars, and first-aid trained personnel.",
+      "metadata": {
+        "source_type": "HR_DATA",
+        "source_name": "HR Workforce Record - Sitapatore Mine",
+        "domain": "Workforce, Human Resources & Personnel",
+        "mine_id": "zone-sitapatore",
+        "mine_name": "Sitapatore Mine",
+        "workers_count": 200,
+        "category": "hr"
       }
     }
   ]

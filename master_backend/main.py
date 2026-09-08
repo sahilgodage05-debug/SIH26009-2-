@@ -761,9 +761,10 @@ async def trigger_auto_dispatch(mine_id: str):
 # RAG (RETRIEVAL-AUGMENTED GENERATION) PIPELINE: SCRIPTS + SATELLITE
 # ==============================================================================
 class RagQueryPayload(BaseModel):
-    query: str = Field(..., description="User question about mining scripts or satellite telemetry", example="What is the Lilly blastability index formula and how are Sentinel-2 bands used in Balaghat?")
+    query: str = Field(..., description="User question about mining scripts, satellite telemetry, or HR workforce", example="How many workers are at Balaghat Mine?")
     top_k: int = Field(4, description="Number of vector chunks to retrieve", ge=1, le=10)
-    filter_source: Optional[str] = Field(None, description="Filter by SCRIPT or SATELLITE_DATA")
+    filter_source: Optional[str] = Field(None, description="Filter by SCRIPT, SATELLITE_DATA, or HR_DATA")
+    category: Optional[str] = Field(None, description="Filter by category metadata: 'engineering' or 'hr'")
 
 
 @app.post("/api/v1/rag/query", tags=["RAG AI Pipeline (Scripts & Satellite)"])
@@ -771,12 +772,17 @@ async def query_rag_pipeline(payload: RagQueryPayload):
     """
     RAG Pipeline Query:
     1. Embeds user question using multi-gram vector space.
-    2. Searches ChromaDB vector store (or Vector Cosine Index) for closest matching chunks.
-    3. Formulates strict contextual prompt and synthesizes a grounded answer referencing exact code and satellite bands.
+    2. Searches ChromaDB vector store (or Vector Cosine Index) for closest matching chunks with metadata category filtering.
+    3. Formulates strict contextual prompt with zero-hallucination fallback and synthesizes an answer referencing exact engineering/HR records.
     """
     try:
         pipeline = get_rag_pipeline()
-        result = pipeline.query_rag(payload.query, top_k=payload.top_k, filter_source=payload.filter_source)
+        result = pipeline.query_rag(
+            payload.query,
+            top_k=payload.top_k,
+            filter_source=payload.filter_source,
+            filter_category=payload.category
+        )
         return {
             "status": "success",
             **result
@@ -809,6 +815,7 @@ async def get_rag_status():
             "Sentinel-3 SLSTR Thermal (Land Surface Temperature & diurnal thermal inertia)",
             "Copernicus ERA5-Land (Monsoonal rainfall driving supergene manganese enrichment)"
         ],
+        "indexed_workforce": "MOIL HR Personnel Directory (8,050 total personnel across 11 mines; Balaghat: 2,750 workers)",
         "mines_indexed": 11
     }
 

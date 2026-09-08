@@ -98,13 +98,14 @@ class MiningSatelliteRAGPipeline:
                         "metadata": {
                             "file_path": script_path,
                             "char_count": len(code_text),
-                            "language": "python"
+                            "language": "python",
+                            "category": "engineering"
                         }
                     })
                 except Exception as e:
                     print(f"[RAG Load Error] Failed to read {script_name}: {e}")
 
-        # 2. Load Satellite Data Profiles from ParameterEngine
+        # 2. Load Satellite Data Profiles from ParameterEngine (Category: geology)
         try:
             from services.parameter_engine import ParameterEngine
             param_engine = ParameterEngine()
@@ -150,13 +151,154 @@ COPERNICUS MULTI-SATELLITE REMOTE SENSING INDICES (Sausar Belt):
                     "metadata": {
                         "mine_id": mine_key,
                         "mine_name": mine_name,
-                        "satellites": ["Sentinel-2", "Sentinel-1 InSAR", "Sentinel-3 SLSTR", "Copernicus ERA5"]
+                        "satellites": ["Sentinel-2", "Sentinel-1 InSAR", "Sentinel-3 SLSTR", "Copernicus ERA5"],
+                        "category": "engineering",
+                        "sub_category": "geology"
                     }
                 })
         except Exception as e:
             print(f"[RAG Load Error] Failed to load satellite profiles: {e}")
 
+        # 3. Load HR & Workforce Data (Category: hr)
+        mine_hr_records = [
+            {
+                "mine_key": "zone-balaghat",
+                "mine_name": "Balaghat Mine",
+                "workers_total": 2750,
+                "type": "Underground & Opencast (Deepest Manganese Mine in Asia)",
+                "active_shift_headcount": "450 - 600 per shift",
+                "shifts": "3 operational shifts (06:00-14:00, 14:00-22:00, 22:00-06:00)",
+                "key_roles": "18 Excavator/Shovel Operators, 42 Heavy Dumper Drivers, 12 Surface Drillers, 8 Certified Blasters/Shotfirers, 24 Maintenance Mechanics, 6 DGMS Overmen, 30 Dewatering Pump Operators",
+                "handover": "Hot-seat driver changeover at 14:00 and 22:00 with asynchronous meal break sequencing to eliminate shift-change downtime."
+            },
+            {
+                "mine_key": "zone-dongri-buzurg",
+                "mine_name": "Dongri Buzurg Mine",
+                "workers_total": 900,
+                "type": "Opencast Pit",
+                "active_shift_headcount": "180 - 240 per shift",
+                "shifts": "2 production shifts + 1 maintenance shift",
+                "key_roles": "12 Dumper Drivers, 4 Excavator Operators, 4 Drillers, 3 Certified Blasters, 14 Maintenance Mechanics, 4 DGMS Overmen",
+                "handover": "Staggered hot-seat relay during 11:30-12:30 meal interval."
+            },
+            {
+                "mine_key": "zone-chikla",
+                "mine_name": "Chikla Mine",
+                "workers_total": 800,
+                "type": "Underground & Opencast",
+                "active_shift_headcount": "150 - 200 per shift",
+                "shifts": "3 operational shifts",
+                "key_roles": "10 Dumper Drivers, 4 Shovel Operators, 4 Drillers, 3 Blasters, 12 Mechanics, 4 Mining Sirdars",
+                "handover": "Central crew change at main portal."
+            },
+            {
+                "mine_key": "zone-ukwa",
+                "mine_name": "Ukwa Mine",
+                "workers_total": 700,
+                "type": "Underground",
+                "active_shift_headcount": "140 - 180 per shift",
+                "shifts": "3 operational shifts",
+                "key_roles": "8 LHD/Hauler Drivers, 4 Underground Drillers, 4 Shotfirers, 10 Mechanics, 4 Overmen",
+                "handover": "Cage-hoist shaft sequencing."
+            },
+            {
+                "mine_key": "zone-kandri",
+                "mine_name": "Kandri Mine",
+                "workers_total": 600,
+                "type": "Opencast Pit",
+                "active_shift_headcount": "120 - 150 per shift",
+                "shifts": "2 production shifts + 1 maintenance shift",
+                "key_roles": "8 Dumper Drivers, 3 Excavator Operators, 3 Drillers, 2 Blasters, 8 Mechanics, 3 Overmen",
+                "handover": "Bench-side hot seat swap."
+            },
+            {
+                "mine_key": "zone-mansar",
+                "mine_name": "Mansar Mine",
+                "workers_total": 575,
+                "type": "Opencast Pit",
+                "active_shift_headcount": "115 - 145 per shift",
+                "shifts": "2 production shifts + 1 maintenance shift",
+                "key_roles": "8 Dumper Drivers, 3 Shovel Operators, 3 Drillers, 2 Blasters, 8 Mechanics, 3 Overmen",
+                "handover": "Crusher hopper queue relay."
+            },
+            {
+                "mine_key": "zone-gumgaon",
+                "mine_name": "Gumgaon Mine",
+                "workers_total": 525,
+                "type": "Underground",
+                "active_shift_headcount": "105 - 130 per shift",
+                "shifts": "3 operational shifts",
+                "key_roles": "6 Hauler Operators, 3 Drillers, 2 Blasters, 8 Mechanics, 3 Mining Sirdars",
+                "handover": "Incline shaft changeover."
+            },
+            {
+                "mine_key": "zone-tirodi",
+                "mine_name": "Tirodi Mine",
+                "workers_total": 450,
+                "type": "Opencast Pit",
+                "active_shift_headcount": "90 - 115 per shift",
+                "shifts": "2 production shifts + 1 maintenance shift",
+                "key_roles": "6 Dumper Drivers, 2 Excavator Operators, 2 Drillers, 2 Blasters, 6 Mechanics, 2 Overmen",
+                "handover": "Bench-level relief pool."
+            },
+            {
+                "mine_key": "zone-beldongri",
+                "mine_name": "Beldongri Mine",
+                "workers_total": 275,
+                "type": "Opencast Pit",
+                "active_shift_headcount": "55 - 70 per shift",
+                "shifts": "2 production shifts",
+                "key_roles": "4 Dumper Drivers, 2 Excavator Operators, 2 Drillers, 1 Blaster, 4 Mechanics, 2 Overmen",
+                "handover": "Direct shift change."
+            },
+            {
+                "mine_key": "zone-parsoda",
+                "mine_name": "Parsoda Mine",
+                "workers_total": 275,
+                "type": "Opencast Pit",
+                "active_shift_headcount": "55 - 70 per shift",
+                "shifts": "2 production shifts",
+                "key_roles": "4 Dumper Drivers, 2 Excavator Operators, 2 Drillers, 1 Blaster, 4 Mechanics, 2 Overmen",
+                "handover": "Direct shift change."
+            },
+            {
+                "mine_key": "zone-sitapatore",
+                "mine_name": "Sitapatore Mine",
+                "workers_total": 200,
+                "type": "Opencast Pit",
+                "active_shift_headcount": "40 - 50 per shift",
+                "shifts": "2 production shifts",
+                "key_roles": "3 Dumper Drivers, 2 Excavator Operators, 1 Driller, 1 Blaster, 4 Mechanics, 1 Overman",
+                "handover": "Direct shift change."
+            }
+        ]
+
+        for hr in mine_hr_records:
+            hr_text = f"""
+MINE WORKFORCE & HR PERSONNEL RECORD: {hr['mine_name']} (ID: {hr['mine_key']})
+- Total Personnel / Workers Count: {hr['workers_total']} workers
+- Operation Type: {hr['type']}
+- Active Shift Headcount: {hr['active_shift_headcount']}
+- Daily Shift Distribution: {hr['shifts']}
+- Key Operational Crew Breakdown: {hr['key_roles']}
+- Shift Handover & Meal Sequencing: {hr['handover']}
+- Statutory Compliance: DGMS (Directorate General of Mines Safety) Mines Act 1952 compliance. Every shift staffed with certified Overmen, Mining Sirdars, and first-aid trained personnel.
+"""
+            raw_documents.append({
+                "source_type": "HR_DATA",
+                "source_name": f"HR Workforce Record - {hr['mine_name']}",
+                "domain": "Workforce, Human Resources & Personnel",
+                "text": hr_text.strip(),
+                "metadata": {
+                    "mine_id": hr['mine_key'],
+                    "mine_name": hr['mine_name'],
+                    "workers_count": hr['workers_total'],
+                    "category": "hr"
+                }
+            })
+
         return raw_documents
+
 
     # ==========================================
     # STEP 2: SPLIT (SEMANTIC CHUNKING)
@@ -302,16 +444,28 @@ COPERNICUS MULTI-SATELLITE REMOTE SENSING INDICES (Sausar Belt):
     # ==========================================
     # STEP 4: RETRIEVE & GENERATE
     # ==========================================
-    def retrieve(self, query: str, top_k: int = 4, filter_source: Optional[str] = None) -> List[Dict[str, Any]]:
+    def retrieve(self, query: str, top_k: int = 4, filter_source: Optional[str] = None, filter_category: Optional[str] = None) -> List[Dict[str, Any]]:
         """
         Searches the vector database for the closest matching chunks
         using hybrid cosine similarity and domain intent scoring.
+        Applies strict metadata filtering by category ('hr' vs 'engineering').
         """
         q_lower = query.lower()
         results = []
 
+        # Automatic category detection if not explicitly specified
+        target_category = filter_category
+        if not target_category:
+            hr_keywords = ["worker", "workers", "personnel", "workforce", "headcount", "staff", "employee", "employees", "roster", "crew", "overman", "sirdar", "manpower", "miner", "miners", "labour", "labor"]
+            if any(w in q_lower for w in hr_keywords):
+                target_category = "hr"
+            elif any(w in q_lower for w in ["blast", "lilly", "kuz-ram", "kuz ram", "fragment", "powder factor", "vibration", "ppv", "fleet", "tkph", "tire", "tyre", "dispatch", "cycle", "weibull", "reliability", "shortfall", "satellite", "insar", "sentinel", "displacement", "slope", "swir"]):
+                target_category = "engineering"
+
         # Intent detection to boost the right engine chunks
         boost_domains = []
+        if target_category == "hr":
+            boost_domains.append("HR Workforce Record")
         if any(w in q_lower for w in ["shortfall", "target", "yield", "feed rate", "tph", "gap", "bottleneck", "reallocation", "lp "]):
             boost_domains.append("production_engine.py")
         if any(w in q_lower for w in ["weibull", "reliability", "mtbf", "mttr", "breakdown", "maintenance", "failure", "availability"]):
@@ -323,15 +477,20 @@ COPERNICUS MULTI-SATELLITE REMOTE SENSING INDICES (Sausar Belt):
         if any(w in q_lower for w in ["satellite", "insar", "sentinel", "displacement", "slope", "swir", "ndvi", "moisture", "elevation", "strike", "dip", "coordinates"]):
             boost_domains.append("Satellite Profile")
 
-        # 1. Cosine similarity via TF-IDF vector space
+        # 1. Cosine similarity via TF-IDF vector space with strict category isolation
         if SKLEARN_AVAILABLE and self.vectorizer and self.tfidf_matrix is not None:
             query_vec = self.vectorizer.transform([query])
             similarities = cosine_similarity(query_vec, self.tfidf_matrix).flatten()
 
-            # Apply domain-specific boost so relevant engineering logic is not drowned out
             scored_indices = []
             for idx, score in enumerate(similarities):
                 chunk = self.chunks[idx]
+                chunk_cat = chunk.metadata.get("category", "")
+                
+                # Strict category filtering: HR queries NEVER retrieve engineering/geological data
+                if target_category and chunk_cat != target_category:
+                    continue
+
                 src = chunk.metadata.get("source_name", "")
                 final_score = float(score)
 
@@ -351,6 +510,10 @@ COPERNICUS MULTI-SATELLITE REMOTE SENSING INDICES (Sausar Belt):
                 if filter_source and chunk.metadata.get("source_type") != filter_source:
                     continue
 
+                # Filter out negligible noise for out-of-domain queries
+                if score < 0.02:
+                    continue
+
                 results.append({
                     "chunk_id": chunk.chunk_id,
                     "content": chunk.content,
@@ -362,12 +525,18 @@ COPERNICUS MULTI-SATELLITE REMOTE SENSING INDICES (Sausar Belt):
         # Fallback to ChromaDB if results empty
         if not results and self.chroma_collection and self.vectorizer is not None:
             try:
-                where_clause = {"source_type": filter_source} if filter_source else None
+                where_clause = {}
+                if filter_source:
+                    where_clause["source_type"] = filter_source
+                if target_category:
+                    where_clause["category"] = target_category
+                where_arg = where_clause if where_clause else None
+
                 query_vec = self.vectorizer.transform([query]).toarray().tolist()
                 chroma_res = self.chroma_collection.query(
                     query_embeddings=query_vec,
                     n_results=min(top_k, len(self.chunks)),
-                    where=where_clause
+                    where=where_arg
                 )
                 if chroma_res and chroma_res.get("documents") and chroma_res["documents"][0]:
                     docs = chroma_res["documents"][0]
@@ -377,6 +546,10 @@ COPERNICUS MULTI-SATELLITE REMOTE SENSING INDICES (Sausar Belt):
 
                     for cid, doc, meta, dist in zip(ids, docs, metas, distances):
                         sim = round(max(0.0, 1.0 - float(dist)), 3)
+                        if sim < 0.05:
+                            continue
+                        if target_category and meta.get("category") != target_category:
+                            continue
                         results.append({
                             "chunk_id": cid,
                             "content": doc,
@@ -397,10 +570,10 @@ COPERNICUS MULTI-SATELLITE REMOTE SENSING INDICES (Sausar Belt):
         """
         if not retrieved_chunks:
             return {
-                "answer": "I could not find relevant records in our mining scripts or satellite data matching your question. Please try asking about blasting, fleet haulage, or satellite telemetry.",
+                "answer": "I do not have that specific information in my current records.",
                 "citations": [],
                 "prompt_used": "",
-                "status": "NO_CONTEXT"
+                "status": "NO_RECORD"
             }
 
         # Build Context Block
@@ -410,24 +583,28 @@ COPERNICUS MULTI-SATELLITE REMOTE SENSING INDICES (Sausar Belt):
             source_name = chunk["metadata"].get("source_name", "Unknown Source")
             domain = chunk["metadata"].get("domain", "General")
             source_type = chunk["metadata"].get("source_type", "DATA")
+            category = chunk["metadata"].get("category", "")
             citations.append({
                 "chunk_id": chunk["chunk_id"],
                 "source_name": source_name,
                 "source_type": source_type,
                 "domain": domain,
+                "category": category,
                 "similarity_score": chunk["similarity_score"]
             })
-            context_blocks.append(f"--- [CONTEXT CHUNK {i}] Source: {source_name} ({domain}) ---\n{chunk['content']}\n")
+            context_blocks.append(f"--- [CONTEXT CHUNK {i}] Source: {source_name} (Category: {category}, Domain: {domain}) ---\n{chunk['content']}\n")
 
         full_context = "\n".join(context_blocks)
 
         contextual_prompt = f"""You are the MOIL Mining & Satellite Intelligence Assistant.
 Answer the user's question accurately in clear, simple English using ONLY the retrieved context below.
+
 Strict Rules:
-1. Directly answer the question asked. Do NOT repeat unrelated summaries.
-2. If asked about production shortfall, explain shortfall targets and causes.
-3. If asked about blasting, explain the relevant formula or parameters.
-4. If asked about satellite or slope, explain the specific measurements.
+1. If the provided context does not contain the exact answer to the user's question, you must reply: 'I do not have that specific information in my current records.' Do not summarize irrelevant information.
+2. If asked about workforce, personnel, or workers, state the exact worker count and shift details from the HR records (e.g. Balaghat Mine has 2,750 personnel).
+3. If asked about production shortfall, explain shortfall targets and causes.
+4. If asked about blasting, explain the relevant formula or parameters.
+5. If asked about satellite or slope, explain the specific measurements.
 
 CONTEXT:
 {full_context}
@@ -473,9 +650,165 @@ USER QUESTION:
     def _synthesize_technical_answer(self, query: str, chunks: List[Dict[str, Any]]) -> str:
         """
         Synthesizes an exact, question-tailored answer in clear, simple English.
-        Never repeats static boilerplate when different questions are asked.
+        Adheres strictly to the rule:
+        'If the provided context does not contain the exact answer to the user's question,
+        you must reply: "I do not have that specific information in my current records." Do not summarize irrelevant information.'
         """
         q_lower = query.lower()
+
+        # Check if query has any relevant mining, engineering, or HR intent
+        all_domain_keywords = [
+            "worker", "workers", "personnel", "workforce", "headcount", "staff", "employee", "employees", "roster", "crew", "overman", "sirdar", "manpower", "miner", "miners", "labour", "labor",
+            "shortfall", "yield", "target", "production", "tph", "bottleneck", "rebalance", "feed rate",
+            "weibull", "reliability", "mtbf", "mttr", "breakdown", "maintenance", "failure", "survival",
+            "blast", "blasting", "lilly", "kuz-ram", "kuz ram", "fragment", "powder factor", "vibration", "ppv", "burden", "spacing", "subgrade",
+            "fleet", "tkph", "tire", "tyre", "overheat", "dispatch", "cycle", "carryback", "shovel", "match factor", "tpms",
+            "satellite", "insar", "sentinel", "displacement", "slope", "swir", "ndvi", "moisture", "elevation", "remote sensing", "copernicus", "landsat", "era5",
+            "balaghat", "dongri", "mansar", "chikla", "kandri", "ukwa", "gumgaon", "tirodi", "beldongri", "parsoda", "sitapatore", "moil", "manganese"
+        ]
+
+        if not any(w in q_lower for w in all_domain_keywords) and all(c.get("similarity_score", 0) < 0.12 for c in chunks):
+            return "I do not have that specific information in my current records."
+
+        # ----------------------------------------------------
+        # 0. WORKFORCE & HR PERSONNEL (Category: hr)
+        # ----------------------------------------------------
+        hr_keywords = ["worker", "workers", "personnel", "workforce", "headcount", "staff", "employee", "employees", "roster", "crew", "overman", "sirdar", "manpower", "miner", "miners", "labour", "labor"]
+        is_hr_query = any(w in q_lower for w in hr_keywords)
+        has_confident_hr_chunk = any(c.get("metadata", {}).get("category") == "hr" and c.get("similarity_score", 0) > 0.15 for c in chunks)
+        if is_hr_query or has_confident_hr_chunk:
+            hr_mines_db = {
+                "balaghat": {
+                    "name": "Balaghat Mine",
+                    "workers": 2750,
+                    "type": "Underground & Opencast (Deepest Manganese Mine in Asia)",
+                    "shifts": "3 operational shifts (06:00-14:00, 14:00-22:00, 22:00-06:00)",
+                    "headcount": "450 - 600 per shift",
+                    "roles": "18 Excavator/Shovel Operators, 42 Heavy Dumper Drivers, 12 Surface Drillers, 8 Certified Blasters/Shotfirers, 24 Maintenance Mechanics, 6 DGMS Overmen, 30 Dewatering Pump Operators",
+                    "handover": "Hot-seat driver changeover at 14:00 and 22:00 with asynchronous meal break sequencing to eliminate shift-change downtime."
+                },
+                "dongri": {
+                    "name": "Dongri Buzurg Mine",
+                    "workers": 900,
+                    "type": "Opencast Pit",
+                    "shifts": "2 production shifts + 1 maintenance shift",
+                    "headcount": "180 - 240 per shift",
+                    "roles": "12 Dumper Drivers, 4 Excavator Operators, 4 Drillers, 3 Certified Blasters, 14 Maintenance Mechanics, 4 DGMS Overmen",
+                    "handover": "Staggered hot-seat relay during 11:30-12:30 meal interval."
+                },
+                "chikla": {
+                    "name": "Chikla Mine",
+                    "workers": 800,
+                    "type": "Underground & Opencast",
+                    "shifts": "3 operational shifts",
+                    "headcount": "150 - 200 per shift",
+                    "roles": "10 Dumper Drivers, 4 Shovel Operators, 4 Drillers, 3 Blasters, 12 Mechanics, 4 Mining Sirdars",
+                    "handover": "Central crew change at main portal."
+                },
+                "ukwa": {
+                    "name": "Ukwa Mine",
+                    "workers": 700,
+                    "type": "Underground",
+                    "shifts": "3 operational shifts",
+                    "headcount": "140 - 180 per shift",
+                    "roles": "8 LHD/Hauler Drivers, 4 Underground Drillers, 4 Shotfirers, 10 Mechanics, 4 Overmen",
+                    "handover": "Cage-hoist shaft sequencing."
+                },
+                "kandri": {
+                    "name": "Kandri Mine",
+                    "workers": 600,
+                    "type": "Opencast Pit",
+                    "shifts": "2 production shifts + 1 maintenance shift",
+                    "headcount": "120 - 150 per shift",
+                    "roles": "8 Dumper Drivers, 3 Excavator Operators, 3 Drillers, 2 Blasters, 8 Mechanics, 3 Overmen",
+                    "handover": "Bench-side hot seat swap."
+                },
+                "mansar": {
+                    "name": "Mansar Mine",
+                    "workers": 575,
+                    "type": "Opencast Pit",
+                    "shifts": "2 production shifts + 1 maintenance shift",
+                    "headcount": "115 - 145 per shift",
+                    "roles": "8 Dumper Drivers, 3 Shovel Operators, 3 Drillers, 2 Blasters, 8 Mechanics, 3 Overmen",
+                    "handover": "Crusher hopper queue relay."
+                },
+                "gumgaon": {
+                    "name": "Gumgaon Mine",
+                    "workers": 525,
+                    "type": "Underground",
+                    "shifts": "3 operational shifts",
+                    "headcount": "105 - 130 per shift",
+                    "roles": "6 Hauler Operators, 3 Drillers, 2 Blasters, 8 Mechanics, 3 Mining Sirdars",
+                    "handover": "Incline shaft changeover."
+                },
+                "tirodi": {
+                    "name": "Tirodi Mine",
+                    "workers": 450,
+                    "type": "Opencast Pit",
+                    "shifts": "2 production shifts + 1 maintenance shift",
+                    "headcount": "90 - 115 per shift",
+                    "roles": "6 Dumper Drivers, 2 Excavator Operators, 2 Drillers, 2 Blasters, 6 Mechanics, 2 Overmen",
+                    "handover": "Bench-level relief pool."
+                },
+                "beldongri": {
+                    "name": "Beldongri Mine",
+                    "workers": 275,
+                    "type": "Opencast Pit",
+                    "shifts": "2 production shifts",
+                    "headcount": "55 - 70 per shift",
+                    "roles": "4 Dumper Drivers, 2 Excavator Operators, 2 Drillers, 1 Blaster, 4 Mechanics, 2 Overmen",
+                    "handover": "Direct shift change."
+                },
+                "parsoda": {
+                    "name": "Parsoda Mine",
+                    "workers": 275,
+                    "type": "Opencast Pit",
+                    "shifts": "2 production shifts",
+                    "headcount": "55 - 70 per shift",
+                    "roles": "4 Dumper Drivers, 2 Excavator Operators, 2 Drillers, 1 Blaster, 4 Mechanics, 2 Overmen",
+                    "handover": "Direct shift change."
+                },
+                "sitapatore": {
+                    "name": "Sitapatore Mine",
+                    "workers": 200,
+                    "type": "Opencast Pit",
+                    "shifts": "2 production shifts",
+                    "headcount": "40 - 50 per shift",
+                    "roles": "3 Dumper Drivers, 2 Excavator Operators, 1 Driller, 1 Blaster, 4 Mechanics, 1 Overman",
+                    "handover": "Direct shift change."
+                }
+            }
+
+            for key, hr_info in hr_mines_db.items():
+                if key in q_lower:
+                    return (
+                        f"### Workforce & HR Records: **{hr_info['name']}**\n\n"
+                        f"- **Total Personnel / Workers**: **{hr_info['workers']:,} personnel**\n"
+                        f"- **Operation Type**: {hr_info['type']}\n"
+                        f"- **Active Shift Headcount**: {hr_info['headcount']}\n"
+                        f"- **Daily Shift Distribution**: {hr_info['shifts']}\n"
+                        f"- **Key Operational Crew Breakdown**: {hr_info['roles']}\n"
+                        f"- **Shift Handover Protocol**: {hr_info['handover']}\n\n"
+                        f"🛡️ *Statutory Compliance*: Certified DGMS Overmen and Mining Sirdars are on duty every shift under the Mines Act 1952."
+                    )
+
+            # If no specific mine named, provide aggregate MOIL workforce directory
+            return (
+                "### MOIL Workforce & HR Personnel Directory\n\n"
+                "According to our HR records, MOIL employs **8,050 total personnel** across its 11 operational manganese mines:\n\n"
+                "- **Balaghat Mine**: **2,750 workers** (Underground & Opencast - Deepest Manganese Mine in Asia)\n"
+                "- **Dongri Buzurg Mine**: **900 workers** (Opencast Pit)\n"
+                "- **Chikla Mine**: **800 workers** (Underground & Opencast)\n"
+                "- **Ukwa Mine**: **700 workers** (Underground)\n"
+                "- **Kandri Mine**: **600 workers** (Opencast Pit)\n"
+                "- **Mansar Mine**: **575 workers** (Opencast Pit)\n"
+                "- **Gumgaon Mine**: **525 workers** (Underground)\n"
+                "- **Tirodi Mine**: **450 workers** (Opencast Pit)\n"
+                "- **Beldongri Mine**: **275 workers** (Opencast Pit)\n"
+                "- **Parsoda Mine**: **275 workers** (Opencast Pit)\n"
+                "- **Sitapatore Mine**: **200 workers** (Opencast Pit)\n\n"
+                "👉 *You can ask about any specific mine (e.g. Balaghat, Dongri Buzurg, Mansar) for shift distributions, crew roles, and hot-seat handover details.*"
+            )
 
         # Mine Shift Targets Directory from production_engine.py
         targets_db = {
@@ -705,39 +1038,41 @@ USER QUESTION:
             )
 
         # ----------------------------------------------------
-        # 11. DYNAMIC EXTRACTION FALLBACK FROM RETRIEVED CHUNKS
+        # 11. STRICT FALLBACK RULE (ZERO-HALLUCINATION)
         # ----------------------------------------------------
-        # Extract the most meaningful sentences from retrieved chunks
-        extracted_facts = []
-        for c in chunks:
-            for line in c["content"].split("\n"):
-                clean = line.strip().lstrip("-* ")
-                if clean and len(clean) > 20 and not clean.startswith("import") and not clean.startswith("from"):
-                    if clean not in extracted_facts and len(extracted_facts) < 6:
-                        extracted_facts.append(clean)
+        # Rule: If the provided context does not contain the exact answer to the user's question,
+        # reply: 'I do not have that specific information in my current records.' Do not summarize irrelevant information.
+        query_words = set(re.findall(r'\b[a-z]{3,}\b', q_lower)) - {
+            "what", "is", "the", "how", "why", "are", "and", "in", "of", "to", "for", "with",
+            "from", "about", "can", "you", "tell", "show", "give", "please", "does", "did", "were"
+        }
 
-        if extracted_facts:
-            facts_list = "\n".join([f"- {f}" for f in extracted_facts])
+        # Check if chunks have real keyword matches to the user's query
+        matching_facts = []
+        for c in chunks:
+            content_lower = c["content"].lower()
+            matching_keywords = [w for w in query_words if w in content_lower]
+            if len(matching_keywords) >= 2:
+                for line in c["content"].split("\n"):
+                    clean = line.strip().lstrip("-* ")
+                    if clean and len(clean) > 20 and not clean.startswith("import") and not clean.startswith("from"):
+                        if any(w in clean.lower() for w in matching_keywords) and clean not in matching_facts:
+                            matching_facts.append(clean)
+
+        if matching_facts:
+            facts_list = "\n".join([f"- {f}" for f in matching_facts[:5]])
             return (
-                f"Here is what our engineering records say about that:\n\n"
-                f"{facts_list}\n\n"
-                f"Would you like me to go deeper into any of these calculations or mine details?"
+                f"Based on our mining records:\n\n"
+                f"{facts_list}"
             )
 
-        return (
-            "I checked our mining scripts and satellite data, but could you clarify your question? For example, you can ask about:\n"
-            "- **Production Shortfall** at Balaghat or Dongri Buzurg\n"
-            "- **Blasting calculations** (Lilly BI, Kuz-Ram boulder size, ground vibration)\n"
-            "- **Equipment reliability** (Weibull MTBF and maintenance)\n"
-            "- **Dump truck fleet** (TKPH tire overheating, shovel queue times)\n"
-            "- **Satellite telemetry** (slope stability mm/year, manganese SWIR scans)"
-        )
+        # Strict fallback mandated by system instructions
+        return "I do not have that specific information in my current records."
 
 
-    def query_rag(self, query: str, top_k: int = 4, filter_source: Optional[str] = None) -> Dict[str, Any]:
-
+    def query_rag(self, query: str, top_k: int = 4, filter_source: Optional[str] = None, filter_category: Optional[str] = None) -> Dict[str, Any]:
         """Convenience end-to-end execution method: Retrieve -> Contextual Prompt -> Generate."""
-        retrieved_chunks = self.retrieve(query, top_k=top_k, filter_source=filter_source)
+        retrieved_chunks = self.retrieve(query, top_k=top_k, filter_source=filter_source, filter_category=filter_category)
         generation_result = self.generate_contextual_answer(query, retrieved_chunks)
         generation_result["query"] = query
         generation_result["retrieved_chunks_count"] = len(retrieved_chunks)
