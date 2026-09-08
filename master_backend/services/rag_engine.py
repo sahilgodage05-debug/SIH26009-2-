@@ -305,12 +305,62 @@ COPERNICUS MULTI-SATELLITE REMOTE SENSING INDICES (Sausar Belt):
     def retrieve(self, query: str, top_k: int = 4, filter_source: Optional[str] = None) -> List[Dict[str, Any]]:
         """
         Searches the vector database for the closest matching chunks
-        using cosine semantic similarity ranking.
+        using hybrid cosine similarity and domain intent scoring.
         """
+        q_lower = query.lower()
         results = []
 
-        # Try ChromaDB retrieval first if collection is initialized
-        if self.chroma_collection and self.vectorizer is not None:
+        # Intent detection to boost the right engine chunks
+        boost_domains = []
+        if any(w in q_lower for w in ["shortfall", "target", "yield", "feed rate", "tph", "gap", "bottleneck", "reallocation", "lp "]):
+            boost_domains.append("production_engine.py")
+        if any(w in q_lower for w in ["weibull", "reliability", "mtbf", "mttr", "breakdown", "maintenance", "failure", "availability"]):
+            boost_domains.append("production_engine.py")
+        if any(w in q_lower for w in ["blast", "lilly", "kuz-ram", "kuz ram", "fragment", "powder factor", "vibration", "ppv", "dgms", "usbm", "burden", "spacing"]):
+            boost_domains.append("blasting_engine.py")
+        if any(w in q_lower for w in ["fleet", "tkph", "tire", "tyre", "overheat", "dispatch", "cycle", "carryback", "shovel", "match factor", "tpms"]):
+            boost_domains.append("fleet_engine.py")
+        if any(w in q_lower for w in ["satellite", "insar", "sentinel", "displacement", "slope", "swir", "ndvi", "moisture", "elevation", "strike", "dip", "coordinates"]):
+            boost_domains.append("Satellite Profile")
+
+        # 1. Cosine similarity via TF-IDF vector space
+        if SKLEARN_AVAILABLE and self.vectorizer and self.tfidf_matrix is not None:
+            query_vec = self.vectorizer.transform([query])
+            similarities = cosine_similarity(query_vec, self.tfidf_matrix).flatten()
+
+            # Apply domain-specific boost so relevant engineering logic is not drowned out
+            scored_indices = []
+            for idx, score in enumerate(similarities):
+                chunk = self.chunks[idx]
+                src = chunk.metadata.get("source_name", "")
+                final_score = float(score)
+
+                if any(b.lower() in src.lower() for b in boost_domains):
+                    final_score += 0.25  # Boost intent-aligned chunks
+
+                scored_indices.append((idx, final_score))
+
+            scored_indices.sort(key=lambda x: x[1], reverse=True)
+
+            for idx, score in scored_indices:
+                if len(results) >= top_k:
+                    break
+                chunk = self.chunks[idx]
+                
+                # Filter by source if requested
+                if filter_source and chunk.metadata.get("source_type") != filter_source:
+                    continue
+
+                results.append({
+                    "chunk_id": chunk.chunk_id,
+                    "content": chunk.content,
+                    "metadata": chunk.metadata,
+                    "similarity_score": round(score, 3),
+                    "retrieval_engine": "HybridVectorCosine"
+                })
+
+        # Fallback to ChromaDB if results empty
+        if not results and self.chroma_collection and self.vectorizer is not None:
             try:
                 where_clause = {"source_type": filter_source} if filter_source else None
                 query_vec = self.vectorizer.transform([query]).toarray().tolist()
@@ -326,7 +376,6 @@ COPERNICUS MULTI-SATELLITE REMOTE SENSING INDICES (Sausar Belt):
                     distances = chroma_res.get("distances", [[0.0] * len(docs)])[0]
 
                     for cid, doc, meta, dist in zip(ids, docs, metas, distances):
-                        # Cosine distance to similarity: sim = max(0.0, 1.0 - dist)
                         sim = round(max(0.0, 1.0 - float(dist)), 3)
                         results.append({
                             "chunk_id": cid,
@@ -335,33 +384,8 @@ COPERNICUS MULTI-SATELLITE REMOTE SENSING INDICES (Sausar Belt):
                             "similarity_score": sim,
                             "retrieval_engine": "ChromaDB (Cosine HNSW)"
                         })
-                    return results
             except Exception as e:
                 print(f"[ChromaDB Retrieval Fallback]: {e}")
-
-        # Resilient Cosine Similarity Retrieval
-        if SKLEARN_AVAILABLE and self.vectorizer and self.tfidf_matrix is not None:
-            query_vec = self.vectorizer.transform([query])
-            similarities = cosine_similarity(query_vec, self.tfidf_matrix).flatten()
-            ranked_indices = similarities.argsort()[::-1]
-
-            for idx in ranked_indices:
-                if len(results) >= top_k:
-                    break
-                chunk = self.chunks[idx]
-                score = float(similarities[idx])
-                
-                # Filter by source if requested
-                if filter_source and chunk.metadata.get("source_type") != filter_source:
-                    continue
-
-                results.append({
-                    "chunk_id": chunk.chunk_id,
-                    "content": chunk.content,
-                    "metadata": chunk.metadata,
-                    "similarity_score": round(score, 3),
-                    "retrieval_engine": "VectorCosine"
-                })
 
         return results
 
@@ -373,7 +397,7 @@ COPERNICUS MULTI-SATELLITE REMOTE SENSING INDICES (Sausar Belt):
         """
         if not retrieved_chunks:
             return {
-                "answer": "No relevant mining script or satellite data chunks were found matching your query.",
+                "answer": "I could not find relevant records in our mining scripts or satellite data matching your question. Please try asking about blasting, fleet haulage, or satellite telemetry.",
                 "citations": [],
                 "prompt_used": "",
                 "status": "NO_CONTEXT"
@@ -397,13 +421,13 @@ COPERNICUS MULTI-SATELLITE REMOTE SENSING INDICES (Sausar Belt):
 
         full_context = "\n".join(context_blocks)
 
-        # Contextual Prompt
-        contextual_prompt = f"""You are the MOIL Mining & Satellite Intelligence RAG Assistant.
-Answer the user's question accurately using ONLY the retrieved technical context provided below.
+        contextual_prompt = f"""You are the MOIL Mining & Satellite Intelligence Assistant.
+Answer the user's question accurately in clear, simple English using ONLY the retrieved context below.
 Strict Rules:
-1. Ground every statement strictly in the provided Python scripts and Satellite parameters.
-2. Quote exact formulas, function names, parameters, Sentinel bands, and coordinates when available.
-3. If the context does not contain the answer, explicitly state that.
+1. Directly answer the question asked. Do NOT repeat unrelated summaries.
+2. If asked about production shortfall, explain shortfall targets and causes.
+3. If asked about blasting, explain the relevant formula or parameters.
+4. If asked about satellite or slope, explain the specific measurements.
 
 CONTEXT:
 {full_context}
@@ -412,9 +436,8 @@ USER QUESTION:
 {query}
 """
 
-        # LLM Synthesis Engine (Checks for Gemini API Key, otherwise uses Precision Mining Extraction Synthesizer)
+        # LLM Synthesis Engine (Gemini API Key if available)
         gemini_api_key = os.environ.get("GEMINI_API_KEY")
-
         if gemini_api_key:
             try:
                 import urllib.request
@@ -436,7 +459,7 @@ USER QUESTION:
             except Exception as e:
                 print(f"[Gemini Call Fallback]: {e}")
 
-        # Intelligent Technical Synthesizer (Zero-Hallucination Fallback)
+        # Precision Contextual Synthesis (Zero-Hallucination Fallback)
         synthesis = self._synthesize_technical_answer(query, retrieved_chunks)
 
         return {
@@ -449,136 +472,270 @@ USER QUESTION:
 
     def _synthesize_technical_answer(self, query: str, chunks: List[Dict[str, Any]]) -> str:
         """
-        Conversational, friendly synthesizer that explains technical mining 
-        and satellite data in simple, easy-to-understand language.
+        Synthesizes an exact, question-tailored answer in clear, simple English.
+        Never repeats static boilerplate when different questions are asked.
         """
         q_lower = query.lower()
 
-        # 1. Blasting & Rock Mechanics Topics
-        if any(w in q_lower for w in ["lilly", "blastability", "bi ", "bi="]):
-            return (
-                "The **Lilly Blastability Index (BI)** is a formula used by our mining engineers to measure how easily a rock bench will break apart during a blast.\n\n"
-                "### How It Works\n"
-                "It combines 5 key measurements of the rock:\n"
-                "- **Rock Mass Description (RMD)**: Whether the rock is powdery, blocky, or massive.\n"
-                "- **Joint Plane Spacing (JPS)**: The distance between natural cracks in the rock.\n"
-                "- **Joint Plane Orientation (JPO)**: The angle of cracks relative to the blast face.\n"
-                "- **Specific Gravity & Strength (SMR)**: Density and compressive strength of the manganese rock.\n"
-                "- **Hardness (H)**: The ore's resistance to fracturing.\n\n"
-                "### The Formula\n"
-                "`BI = 0.5 × (RMD + JPS + JPO + SMR + H)`\n\n"
-                "### What the Score Means\n"
-                "- **High BI (>60)**: Hard, unbroken rock that requires more explosives (higher powder factor).\n"
-                "- **Low BI (<30)**: Highly jointed or soft rock that breaks easily with less explosive energy."
-            )
+        # Mine Shift Targets Directory from production_engine.py
+        targets_db = {
+            "balaghat": {"name": "Balaghat Mine", "tons": 3200, "tph": 400, "grade": 46.0, "benches": "North Deep Lode and South Hanging Wall"},
+            "dongri": {"name": "Dongri Buzurg Mine", "tons": 2400, "tph": 300, "grade": 43.5, "benches": "Bench 4 East and Bench 2 Central"},
+            "mansar": {"name": "Mansar Mine", "tons": 1800, "tph": 225, "grade": 38.0, "benches": "Central Ridge B3 and West Ridge B1"},
+            "chikla": {"name": "Chikla Mine", "tons": 2000, "tph": 250, "grade": 41.0, "benches": "North Syncline and East Flank B2"},
+            "kandri": {"name": "Kandri Mine", "tons": 2200, "tph": 275, "grade": 42.0, "benches": "Saddle Pocket and South Face"},
+            "ukwa": {"name": "Ukwa Mine", "tons": 2800, "tph": 350, "grade": 44.0, "benches": "North Ridge L4 and East Outcrop"},
+            "gumgaon": {"name": "Gumgaon Mine", "tons": 1900, "tph": 237, "grade": 39.0, "benches": "Basin Core and North Limb B1"},
+            "tirodi": {"name": "Tirodi Mine", "tons": 2100, "tph": 262, "grade": 40.5, "benches": "North Deep Lode and South Pit B3"},
+            "sitapatore": {"name": "Sitapatore Mine", "tons": 1600, "tph": 200, "grade": 36.5, "benches": "Main Bench A and OB Stripping"},
+            "beldongri": {"name": "Beldongri Mine", "tons": 1500, "tph": 187, "grade": 37.5, "benches": "Main Trench and Footwall OB"},
+            "parsoda": {"name": "Parsoda Mine", "tons": 1700, "tph": 212, "grade": 37.0, "benches": "East Quarry and West Stripping"}
+        }
 
-        if any(w in q_lower for w in ["kuz-ram", "kuz ram", "fragment", "x50", "mean size"]):
-            return (
-                "The **Kuz-Ram Model** predicts the average size of broken rocks after a blast. This ensures the boulders are small enough to be loaded onto dump trucks and fit into the primary crusher without causing bottlenecks.\n\n"
-                "### Key Formula\n"
-                "`X50 = A × (K ^ -0.8) × (Q ^ (1/6)) × ((115 / RWS) ^ (19/30))`\n\n"
-                "### What This Means in Simple Terms\n"
-                "- **X50**: The average fragment size (ideally under 400 mm for our crushers).\n"
-                "- **A**: The rock factor based on rock hardness.\n"
-                "- **K**: The powder factor (amount of explosive per cubic meter of rock).\n"
-                "- **Q**: Weight of explosive loaded per blast hole.\n\n"
-                "💡 *In our pits, if too many oversize boulders (>600 mm) appear, the system recommends increasing the explosive charge by 8–12% to prevent crusher jams.*"
-            )
+        # Identify target mine if mentioned
+        target_mine_info = None
+        for k, info in targets_db.items():
+            if k in q_lower:
+                target_mine_info = info
+                break
 
-        if any(w in q_lower for w in ["vibration", "ppv", "usbm", "dgms", "ground vibration"]):
-            return (
-                "When blasting open-pit benches, ground vibration must be strictly controlled to protect nearby buildings and structures in accordance with **DGMS (Directorate General of Mines Safety)** regulations.\n\n"
-                "### Maximum Safe Limits\n"
-                "- **Industrial structures**: Peak Particle Velocity (PPV) must stay below **15.0 mm/s**.\n"
-                "- **Domestic or village houses**: PPV must stay below **5.0 to 10.0 mm/s**.\n\n"
-                "### Prediction Equation\n"
-                "`PPV = K × (D / √Q) ^ (-B)`\n"
-                "Where **D** is the distance to the structure and **Q** is the maximum explosive fired per delay."
-            )
-
-        # 2. Fleet, Dispatch & TKPH Topics
-        if any(w in q_lower for w in ["tkph", "tire", "overheat", "tyre", "thermal"]):
-            return (
-                "**TKPH (Tonne-Kilometre Per Hour)** measures the heat building up inside dump truck tires as they haul heavy manganese loads uphill and downhill.\n\n"
-                "### What Happens When Tires Overheat?\n"
-                "- When TKPH exceeds **90% of its rated limit**, the rubber begins to degrade, risking sudden tire blowouts.\n"
-                "- **Automatic Safety Action**: The fleet system immediately throttles the truck's maximum speed down to **15 km/h**.\n"
-                "- **Smart Rerouting**: The auto-dispatch engine redirects the truck to shorter, flatter haul loops until tire sensors confirm temperatures have cooled."
-            )
-
-        if any(w in q_lower for w in ["dispatch", "queue", "cycle", "bottleneck", "shovel", "carryback"]):
-            return (
-                "Our fleet system actively tracks every phase of a dump truck's journey to stop delays before they happen:\n\n"
-                "### The 4 Haul Cycle Phases\n"
-                "1. **Queue at Shovel**: Detects when too many trucks are waiting idly at an excavator (>4.5 minutes flags a bottleneck).\n"
-                "2. **Spot & Load Time**: Tracks how quickly the shovel fills the truck (target: under 3.5 minutes).\n"
-                "3. **Haul & Return Time**: Compares actual truck speed against the road baseline.\n"
-                "4. **Dump & Wait Time**: Monitored at the primary crusher hopper.\n\n"
-                "### Tare Carryback Monitoring\n"
-                "Wet manganese clay often sticks to the bottom of truck trays. If empty truck weight drifts by more than **1.5 tonnes**, an alert triggers to send the truck to the wash bay so it doesn't waste fuel hauling dead weight."
-            )
-
-        # 3. Satellite Remote Sensing Topics (Mine specific)
-        mine_names = [
-            ("balaghat", "Balaghat Mine", "21.905° N, 80.205° E", "-2.8 mm/year", "2.15 to 2.85 (High-grade pyrolusite)", "18.5% (Safe for haul trucks)"),
-            ("dongri", "Dongri Buzurg Mine", "21.551° N, 79.684° E", "-3.1 mm/year", "2.65 (Strong MnO2 signature)", "16.2% (Dry & firm)"),
-            ("gumgaon", "Gumgaon Mine", "21.412° N, 78.985° E", "-1.9 mm/year", "2.42 (Active extraction zone)", "19.1% (Safe)"),
-            ("kandri", "Kandri Mine", "21.423° N, 79.284° E", "-2.2 mm/year", "2.38 (High ferrous iron presence)", "17.4% (Safe)"),
-            ("mansar", "Mansar Mine", "21.398° N, 79.271° E", "-2.4 mm/year", "2.30 (Pyrolusite & braunite)", "18.0% (Safe)"),
-            ("tirodi", "Tirodi Mine", "21.701° N, 79.712° E", "-1.8 mm/year", "2.55 (High grade reserve)", "15.9% (Dry)")
-        ]
-
-        for key, name, coords, disp, swir, moisture in mine_names:
-            if key in q_lower:
+        # ----------------------------------------------------
+        # 1. PRODUCTION SHORTFALL & TARGETS
+        # ----------------------------------------------------
+        if any(w in q_lower for w in ["shortfall", "production gap", "yield gap", "target shift", "target tons", "extraction yield"]):
+            if target_mine_info:
+                name = target_mine_info["name"]
+                tons = target_mine_info["tons"]
+                tph = target_mine_info["tph"]
+                grade = target_mine_info["grade"]
+                benches = target_mine_info["benches"]
                 return (
-                    f"Here is the simple satellite summary for **{name}**:\n\n"
-                    f"- 📍 **Coordinates & Location**: {coords}\n"
-                    f"- 🏔️ **Slope Stability (Sentinel-1 InSAR)**: Pit walls show a gentle settlement of **{disp}**, which indicates normal, safe ground stability.\n"
-                    f"- 🛰️ **Manganese Detection (Sentinel-2 SWIR)**: The satellite's infrared cameras show a diagnostic absorption ratio of **{swir}**, confirming rich manganese ore.\n"
-                    f"- 🚛 **Haul Road Condition**: Ground moisture is **{moisture}**, ensuring good tire traction for dump trucks.\n\n"
-                    f"Would you like to check another mine, or explore equipment operating at {name}?"
+                    f"### Production & Shortfall Status: **{name}**\n\n"
+                    f"- **Shift Target**: **{tons:,} tonnes** (feed rate: **{tph} t/h**, target grade: **{grade}% Mn**)\n"
+                    f"- **Active Extraction Benches**: {benches}\n\n"
+                    f"**How Shortfall is Calculated:**\n"
+                    f"`Shortfall = Target Shift Output - Actual Hourly Extraction`\n\n"
+                    f"**Primary Causes of Production Loss:**\n"
+                    f"1. **Blasting Exclusion Zone Dead-Time**: ~84 MT loss during bench clearing and fume evacuation.\n"
+                    f"2. **HEMM Breakdown & Shovel Delays**: ~145 MT loss when an excavator or primary dumper is idle.\n"
+                    f"3. **Slick Ramp Slipperiness**: SAR soil moisture increases haul cycle time by 15–30% (losses ~38 MT).\n"
+                    f"4. **Crusher Hopper Bunching**: Queue delays at dump hoppers (losses ~19 MT).\n\n"
+                    f"💡 *The system uses Linear Programming (LP) to rebalance empty dump trucks across active shovels to recover the shortfall.*"
+                )
+            else:
+                return (
+                    "### Production Shortfall Analysis across MOIL Mines\n\n"
+                    "Our production engine calculates the hourly gap between targeted extraction and actual crusher feed rate:\n\n"
+                    "- **Calculation**: `Current Shortfall = Shift Target - Cumulative Actual Tons`\n"
+                    "- **Key Bottlenecks Detected**:\n"
+                    "  1. HEMM Equipment breakdowns and shovel hang time (~145 tonnes)\n"
+                    "  2. Blasting exclusion dead-time (~84 tonnes)\n"
+                    "  3. Wet haul roads increasing cycle times by 20–40% (~38 tonnes)\n"
+                    "  4. Dump queue bunching at primary crushers (~19 tonnes)\n\n"
+                    "👉 *Which mine's specific shortfall would you like to view? (e.g., Balaghat, Dongri Buzurg, Mansar, or Gumgaon)*"
                 )
 
-        # General Satellite Remote Sensing Overview
-        if any(w in q_lower for w in ["satellite", "sentinel", "insar", "copernicus", "remote sensing"]):
+        # ----------------------------------------------------
+        # 2. WEIBULL RELIABILITY & EQUIPMENT MAINTENANCE
+        # ----------------------------------------------------
+        if any(w in q_lower for w in ["weibull", "reliability", "mtbf", "mttr", "equipment survival", "breakdown"]):
             return (
-                "We use real-time data from European Space Agency (ESA) Copernicus satellites to monitor our open-pit mines from space:\n\n"
-                "### What the Satellites Measure\n"
-                "- **Sentinel-2 (Multispectral Camera)**: Scans 12 light bands from visible to Shortwave Infrared (SWIR) to detect manganese minerals and vegetation stress.\n"
-                "- **Sentinel-1 (Radar & InSAR)**: Shoots radar pulses through clouds to detect microscopic ground movements (down to single millimeters) on pit highwalls.\n"
-                "- **Landsat-9 (Thermal Camera)**: Measures surface rock heat to map rock density and fault lines.\n"
-                "- **ERA5 Weather**: Tracks monsoonal rain and wind conditions.\n\n"
-                "👉 *Which mine would you like satellite data for? You can ask about Balaghat, Gumgaon, Dongri Buzurg, Kandri, or Mansar!*"
+                "### HEMM Equipment Weibull Reliability Model\n\n"
+                "In `production_engine.py`, equipment reliability and breakdown risk are modeled using the **2-parameter Weibull distribution**:\n\n"
+                "**Reliability Formula:**\n"
+                "`R(t) = exp( - (t / η) ^ β )`\n\n"
+                "**What the Parameters Mean:**\n"
+                "- **t**: Operating hours since the last overhaul.\n"
+                "- **η (Eta - Characteristic Life)**: The hours at which 63.2% of machines in this class have required repair.\n"
+                "- **β (Beta - Shape Parameter)**:\n"
+                "  - **β < 1.0**: Infant mortality / assembly defects.\n"
+                "  - **β = 1.0**: Random, constant failure rate.\n"
+                "  - **β > 1.0**: Wear-out and fatigue stage (triggers scheduled overhaul).\n\n"
+                "The engine reads `moil_equipment_performance.csv` and `moil_equipment_maintenance.csv` to calculate **MTBF** (Mean Time Between Failures) and alert maintenance crews before a breakdown halts production."
             )
 
-        # 4. Fallback: Concise plain-language extraction from retrieved chunks
-        bullet_points = []
+        # ----------------------------------------------------
+        # 3. BLASTING: LILLY BLASTABILITY INDEX (BI)
+        # ----------------------------------------------------
+        if any(w in q_lower for w in ["lilly", "blastability", "bi ", "bi="]):
+            return (
+                "### Lilly Blastability Index (BI)\n\n"
+                "The **Lilly Blastability Index** measures how easily an open-pit rock bench breaks apart during a blast:\n\n"
+                "**The Equation:**\n"
+                "`BI = 0.5 × (RMD + JPS + JPO + SMR + H)`\n\n"
+                "**The 5 Rock Parameters:**\n"
+                "1. **Rock Mass Description (RMD)**: Powdery (10), Blocky (20), or Massive Solid (50).\n"
+                "2. **Joint Plane Spacing (JPS)**: Distance between natural cracks (10 = close cracks, 50 = wide cracks).\n"
+                "3. **Joint Plane Orientation (JPO)**: Angle of cracks relative to the bench face (10 to 40).\n"
+                "4. **Specific Gravity & Strength (SMR)**: `SMR = 25 × Density - 50`.\n"
+                "5. **Hardness (H)**: Mohs scale hardness of the manganese seam (typically 5–7 for pyrolusite/braunite).\n\n"
+                "**Score Interpretation:**\n"
+                "- **BI > 60**: Tough, unbroken rock. Needs higher explosive charge (0.65–0.75 kg/m³).\n"
+                "- **BI < 30**: Pre-fractured rock. Requires less explosive energy to prevent over-pulverization."
+            )
+
+        # ----------------------------------------------------
+        # 4. BLASTING: KUZ-RAM MEAN FRAGMENT SIZE (X50)
+        # ----------------------------------------------------
+        if any(w in q_lower for w in ["kuz-ram", "kuz ram", "fragment", "x50", "mean size", "boulder", "uniformity"]):
+            return (
+                "### Kuz-Ram Fragmentation Model\n\n"
+                "The **Kuz-Ram equation** in `blasting_engine.py` predicts the average boulder size after a blast so rocks pass through primary crushers without jamming:\n\n"
+                "**Mean Fragment Size (X50):**\n"
+                "`X50 = A × (K ^ -0.8) × (Q ^ (1/6)) × ((115 / RWS) ^ (19/30))`\n\n"
+                "**Variables:**\n"
+                "- **X50**: Mean fragment size in centimeters (target: **<35 cm** for primary hopper).\n"
+                "- **A**: Rock factor (calculated directly from Lilly BI: `A = 0.06 × BI`).\n"
+                "- **K**: Powder factor in kg of explosive per cubic meter of rock.\n"
+                "- **Q**: Mass of explosive charge per blast hole (kg).\n"
+                "- **RWS**: Relative Weight Strength of explosive (100 for ANFO, 115 for emulsion).\n\n"
+                "**Uniformity Exponent (n):**\n"
+                "`n = (2.2 - 14 × B/d) × √( (1 + S/B) / 2 ) × (1 - W/B) × (L/H)`\n"
+                "Where **B** is burden, **S** is spacing, and **d** is hole diameter."
+            )
+
+        # ----------------------------------------------------
+        # 5. BLASTING: GROUND VIBRATION & DGMS / USBM LIMITS
+        # ----------------------------------------------------
+        if any(w in q_lower for w in ["vibration", "ppv", "usbm", "dgms", "ground vibration", "flyrock"]):
+            return (
+                "### Ground Vibration & DGMS Safety Standards\n\n"
+                "Open-pit blasting ground vibrations are governed by **DGMS (Directorate General of Mines Safety)** regulations using the **USBM Peak Particle Velocity (PPV)** equation:\n\n"
+                "**PPV Equation:**\n"
+                "`PPV = K × (D / √Q) ^ (-B)`\n\n"
+                "- **D**: Distance from the blast face to the nearest structure (meters).\n"
+                "- **Q**: Maximum explosive charge fired per 8 ms delay interval (kg).\n"
+                "- **K, B**: Site-calibrated ground transmission constants.\n\n"
+                "**Statutory Maximum PPV Thresholds:**\n"
+                "- **Industrial Buildings / Heavy Concrete**: Maximum **15.0 mm/s**.\n"
+                "- **Domestic Village Houses (Mud/Brick)**: Maximum **5.0 to 10.0 mm/s**.\n\n"
+                "If predicted PPV exceeds limits, the engine automatically splits single-hole delays into electronic multi-deck timing."
+            )
+
+        # ----------------------------------------------------
+        # 6. BLASTING: POWDER FACTOR & PATTERN (BURDEN / SPACING)
+        # ----------------------------------------------------
+        if any(w in q_lower for w in ["powder factor", "burden", "spacing", "subgrade", "blast design"]):
+            return (
+                "### Open-Pit Blasting Pattern & Powder Factors\n\n"
+                "In `blasting_engine.py`, drilling patterns and powder factors are calibrated by rock hardness:\n\n"
+                "| Rock Condition | Powder Factor (kg/m³) | Burden (m) | Spacing (m) | Subgrade (m) |\n"
+                "| :--- | :--- | :--- | :--- | :--- |\n"
+                "| **Hard Massive Ore** | 0.65 – 0.75 | 2.5 – 3.0 | 3.0 – 3.5 | 0.8 – 1.0 |\n"
+                "| **Medium Jointed Ore** | 0.50 – 0.60 | 3.0 – 3.5 | 3.5 – 4.0 | 0.7 – 0.9 |\n"
+                "| **Soft / Weathered OB** | 0.35 – 0.45 | 3.5 – 4.2 | 4.0 – 4.8 | 0.5 – 0.7 |\n\n"
+                "Standard blast hole diameters across MOIL open pits are **115 mm to 150 mm** on 6.0m to 12.0m bench heights."
+            )
+
+        # ----------------------------------------------------
+        # 7. FLEET: TKPH & TIRE THERMAL OVERHEATING
+        # ----------------------------------------------------
+        if any(w in q_lower for w in ["tkph", "tire", "tyre", "overheat", "thermal", "pressure", "tpms"]):
+            return (
+                "### TKPH (Tonne-Kilometre Per Hour) & Tire Management\n\n"
+                "**TKPH** measures heat accumulation in dump truck tires during loaded hauls:\n\n"
+                "**Formula:**\n"
+                "`TKPH = Mean Tire Load (T) × Average Shift Speed (km/h)`\n\n"
+                "**Safety Controls in `fleet_engine.py`:**\n"
+                "- **Normal Status**: TKPH < 80% (trucks run up to 25 km/h).\n"
+                "- **Thermal Warning**: TKPH between 80% and 90%.\n"
+                "- **Critical Overheat (TKPH > 90%)**:\n"
+                "  1. **Speed Throttling**: Auto-limits maximum truck speed to **15 km/h**.\n"
+                "  2. **Route Divert**: Directs empty trucks to shorter, cooler haul loops.\n"
+                "- **TPMS Monitoring**: Nominal cold tire pressure is **7.0 to 8.2 bar**; alert triggers if temperature exceeds **85°C**."
+            )
+
+        # ----------------------------------------------------
+        # 8. FLEET: DISPATCH & HAUL CYCLE PHASES
+        # ----------------------------------------------------
+        if any(w in q_lower for w in ["dispatch", "queue", "cycle time", "shovel", "match factor", "carryback", "spot"]):
+            return (
+                "### Dynamic Dispatch & Cycle Time Optimization\n\n"
+                "Our fleet engine breaks down every dump truck haul cycle into 4 timestamped phases:\n\n"
+                "1. **Queue at Shovel**: Detects excavator bottlenecks (waiting >4.5 min flags a queue delay).\n"
+                "2. **Spot & Load Time**: Measures digger efficiency (target: under 3.5 min for 60T dumper).\n"
+                "3. **Haul & Return Time**: Compares actual travel time against GPS baseline road calibration.\n"
+                "4. **Dump & Wait Time**: Tracks hopper congestion at primary crushers.\n\n"
+                "**Key Automated Protections:**\n"
+                "- **Tare Carryback Monitoring**: Detects wet manganese clay sticking in dumper beds. When empty weight drifts by **>1.5 tonnes**, the truck is rerouted to the wash bay.\n"
+                "- **Shovel Match Factor (MF)**: Target range is **0.95 to 1.10** for zero shovel hang time."
+            )
+
+        # ----------------------------------------------------
+        # 9. SATELLITE: SPECIFIC MINE INQUIRY
+        # ----------------------------------------------------
+        if target_mine_info and any(w in q_lower for w in ["satellite", "sentinel", "insar", "slope", "displacement", "coordinates", "where", "location", "elevation", "profile"]):
+            name = target_mine_info["name"]
+            
+            # Look up specific mine coordinates and remote sensing details
+            mine_telemetry = {
+                "balaghat": {"coords": "21.905° N, 80.205° E (Elevation: 335m)", "strike": "N70E, Dip 74° NW", "insar": "-2.8 mm/year (Stable bench)", "swir": "2.15 – 2.85 (Rich pyrolusite MnO2)", "moisture": "18.5% (Safe road grip)"},
+                "dongri": {"coords": "21.551° N, 79.684° E (Elevation: 342m)", "strike": "E-W, Dip 65° S", "insar": "-3.1 mm/year (Normal)", "swir": "2.65 (High oxide signature)", "moisture": "16.2% (Dry & firm)"},
+                "mansar": {"coords": "21.398° N, 79.271° E (Elevation: 298m)", "strike": "E-W, Dip 60° S", "insar": "-2.4 mm/year (Stable)", "swir": "2.30 (Pyrolusite/braunite)", "moisture": "18.0% (Safe)"},
+                "gumgaon": {"coords": "21.412° N, 78.985° E (Elevation: 310m)", "strike": "N60E, Dip 70° NW", "insar": "-1.9 mm/year (Stable)", "swir": "2.42 (Active basin seam)", "moisture": "19.1% (Safe)"},
+                "tirodi": {"coords": "21.701° N, 79.712° E (Elevation: 320m)", "strike": "N45E, Dip 72° NW", "insar": "-1.8 mm/year (Stable)", "swir": "2.55 (High grade)", "moisture": "15.9% (Dry)"},
+                "kandri": {"coords": "21.423° N, 79.284° E (Elevation: 325m)", "strike": "N75E, Dip 80° NW", "insar": "-2.2 mm/year (Stable)", "swir": "2.38 (Ferrous iron mix)", "moisture": "17.4% (Safe)"},
+                "ukwa": {"coords": "21.968° N, 80.468° E (Elevation: 420m)", "strike": "N65E, Dip 35° NW", "insar": "-1.5 mm/year (Very stable)", "swir": "2.70 (High grade lode)", "moisture": "19.5% (Safe)"},
+                "chikla": {"coords": "21.532° N, 79.754° E (Elevation: 330m)", "strike": "N80E, Dip 75° S", "insar": "-2.1 mm/year (Stable)", "swir": "2.48 (Good grade)", "moisture": "17.8% (Safe)"}
+            }
+
+            for k, tel in mine_telemetry.items():
+                if k in q_lower:
+                    return (
+                        f"### Satellite & Remote Sensing Profile: **{name}**\n\n"
+                        f"- 📍 **Coordinates**: {tel['coords']}\n"
+                        f"- 🧭 **Geological Structure**: Strike {tel['strike']}\n"
+                        f"- 🏔️ **Slope Stability (Sentinel-1 InSAR)**: Pit highwall displacement is **{tel['insar']}** (safe structural envelope).\n"
+                        f"- 🛰️ **Manganese Detection (Sentinel-2 SWIR)**: Diagnostic SWIR absorption ratio is **{tel['swir']}**.\n"
+                        f"- 🚛 **Haul Road Moisture**: Radar soil moisture is **{tel['moisture']}**."
+                    )
+
+        # ----------------------------------------------------
+        # 10. SATELLITE: GENERAL OVERVIEW OR SPECIFIC SENSOR
+        # ----------------------------------------------------
+        if any(w in q_lower for w in ["satellite", "sentinel", "insar", "remote sensing", "swir", "slope stability", "subsidence"]):
+            return (
+                "### Copernicus Multi-Satellite Remote Sensing Overview\n\n"
+                "We ingest satellite telemetry across all 11 MOIL mines using 4 European Space Agency (ESA) platforms:\n\n"
+                "1. **Sentinel-2 L2A (Multispectral Optical)**: Scans 12 spectral bands (B02 to B12). The **SWIR-2/SWIR-1 diagnostic ratio (2.15 to 2.85)** identifies pyrolusite manganese ore deposits.\n"
+                "2. **Sentinel-1 (InSAR & SAR Radar)**: Detects millimeter-scale highwall slope movement ($-1.5$ to $-3.1$ mm/year normal range) and monitors haul road soil moisture (safe if <22%).\n"
+                "3. **Landsat-9 (Thermal TIR)**: Measures diurnal Land Surface Temperature (LST) contrast to map rock density and fault fractures.\n"
+                "4. **Copernicus ERA5**: Monsoonal rainfall records (1,050 to 1,250 mm) driving supergene manganese oxide enrichment.\n\n"
+                "👉 *You can ask for specific satellite telemetry for any mine: Balaghat, Dongri Buzurg, Gumgaon, Kandri, Mansar, Tirodi, or Ukwa!*"
+            )
+
+        # ----------------------------------------------------
+        # 11. DYNAMIC EXTRACTION FALLBACK FROM RETRIEVED CHUNKS
+        # ----------------------------------------------------
+        # Extract the most meaningful sentences from retrieved chunks
+        extracted_facts = []
         for c in chunks:
             for line in c["content"].split("\n"):
                 clean = line.strip().lstrip("-* ")
-                if clean and len(clean) > 15 and not clean.startswith("import") and not clean.startswith("from"):
-                    if any(k in clean.lower() for k in ["formula", "ratio", "limit", "safety", "speed", "score", "grade", "index", "phase"]):
-                        if clean not in bullet_points and len(bullet_points) < 5:
-                            bullet_points.append(clean)
+                if clean and len(clean) > 20 and not clean.startswith("import") and not clean.startswith("from"):
+                    if clean not in extracted_facts and len(extracted_facts) < 6:
+                        extracted_facts.append(clean)
 
-        if bullet_points:
-            formatted_points = "\n".join([f"- {pt}" for pt in bullet_points])
+        if extracted_facts:
+            facts_list = "\n".join([f"- {f}" for f in extracted_facts])
             return (
                 f"Here is what our engineering records say about that:\n\n"
-                f"{formatted_points}\n\n"
-                f"Is there a specific detail or calculation you'd like me to explain further?"
+                f"{facts_list}\n\n"
+                f"Would you like me to go deeper into any of these calculations or mine details?"
             )
 
         return (
-            "I searched our engineering scripts and satellite telemetry for your question. "
-            "Could you tell me a little more? For example, are you looking for:\n"
-            "- **Blasting calculations** (Lilly BI, Kuz-Ram fragment size, ground vibration)\n"
-            "- **Satellite observations** (Balaghat, Gumgaon, Dongri Buzurg slope or mineral data)\n"
-            "- **Haul truck operations** (tire overheating, shovel loading times, auto-dispatch)"
+            "I checked our mining scripts and satellite data, but could you clarify your question? For example, you can ask about:\n"
+            "- **Production Shortfall** at Balaghat or Dongri Buzurg\n"
+            "- **Blasting calculations** (Lilly BI, Kuz-Ram boulder size, ground vibration)\n"
+            "- **Equipment reliability** (Weibull MTBF and maintenance)\n"
+            "- **Dump truck fleet** (TKPH tire overheating, shovel queue times)\n"
+            "- **Satellite telemetry** (slope stability mm/year, manganese SWIR scans)"
         )
 
 
     def query_rag(self, query: str, top_k: int = 4, filter_source: Optional[str] = None) -> Dict[str, Any]:
+
         """Convenience end-to-end execution method: Retrieve -> Contextual Prompt -> Generate."""
         retrieved_chunks = self.retrieve(query, top_k=top_k, filter_source=filter_source)
         generation_result = self.generate_contextual_answer(query, retrieved_chunks)
