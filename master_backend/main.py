@@ -762,7 +762,7 @@ async def trigger_auto_dispatch(mine_id: str):
 # ==============================================================================
 class RagQueryPayload(BaseModel):
     query: str = Field(..., description="User question about mining scripts, satellite telemetry, or HR workforce", example="How many workers are at Balaghat Mine?")
-    top_k: int = Field(4, description="Number of vector chunks to retrieve", ge=1, le=10)
+    top_k: int = Field(5, description="Number of vector chunks to retrieve (top 3 to 5)", ge=1, le=10)
     filter_source: Optional[str] = Field(None, description="Filter by SCRIPT, SATELLITE_DATA, or HR_DATA")
     category: Optional[str] = Field(None, description="Filter by category metadata: 'engineering' or 'hr'")
 

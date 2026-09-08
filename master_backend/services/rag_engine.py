@@ -301,12 +301,13 @@ MINE WORKFORCE & HR PERSONNEL RECORD: {hr['mine_name']} (ID: {hr['mine_key']})
 
 
     # ==========================================
-    # STEP 2: SPLIT (SEMANTIC CHUNKING)
+    # STEP 2: SPLIT (FOCUSED PARAGRAPH CHUNKING: 200-300 WORDS)
     # ==========================================
-    def split_into_chunks(self, raw_documents: List[Dict[str, Any]], chunk_size: int = 900, overlap: int = 150) -> List[DocumentChunk]:
+    def split_into_chunks(self, raw_documents: List[Dict[str, Any]], target_word_limit: int = 250, overlap_words: int = 40) -> List[DocumentChunk]:
         """
-        Splits raw documents into overlapping semantic chunks (800-1000 characters),
-        preserving docstrings, code blocks, and satellite data tables.
+        Splits raw documents into small, focused semantic paragraphs (200-300 words),
+        preserving mathematical formulas, docstrings, code blocks, and satellite data tables.
+        Focused paragraph sizing prevents semantic dilution in vector embeddings.
         """
         chunks = []
         chunk_counter = 1
@@ -328,8 +329,9 @@ MINE WORKFORCE & HR PERSONNEL RECORD: {hr['mine_name']} (ID: {hr['mine_key']})
                 if not para:
                     continue
 
-                # If paragraph fits within chunk_size, keep as chunk
-                if len(para) <= chunk_size:
+                words = para.split()
+                # If paragraph is within 200-300 words, keep as a single focused chunk
+                if len(words) <= target_word_limit:
                     chunk_id = f"CHK-{chunk_counter:04d}"
                     chunks.append(DocumentChunk(
                         chunk_id=chunk_id,
@@ -338,16 +340,17 @@ MINE WORKFORCE & HR PERSONNEL RECORD: {hr['mine_name']} (ID: {hr['mine_key']})
                             "source_type": source_type,
                             "source_name": source_name,
                             "domain": domain,
+                            "word_count": len(words),
                             **doc.get("metadata", {})
                         }
                     ))
                     chunk_counter += 1
                 else:
-                    # Sliding window chunking with overlap
+                    # Split longer blocks into 200-250 word focused paragraphs with overlap
                     start = 0
-                    while start < len(para):
-                        end = min(len(para), start + chunk_size)
-                        sub_text = para[start:end].strip()
+                    while start < len(words):
+                        end = min(len(words), start + target_word_limit)
+                        sub_text = " ".join(words[start:end]).strip()
                         if sub_text:
                             chunk_id = f"CHK-{chunk_counter:04d}"
                             chunks.append(DocumentChunk(
@@ -357,15 +360,14 @@ MINE WORKFORCE & HR PERSONNEL RECORD: {hr['mine_name']} (ID: {hr['mine_key']})
                                     "source_type": source_type,
                                     "source_name": source_name,
                                     "domain": domain,
-                                    "slice_start": start,
-                                    "slice_end": end,
+                                    "word_count": end - start,
                                     **doc.get("metadata", {})
                                 }
                             ))
                             chunk_counter += 1
-                        if end == len(para):
+                        if end == len(words):
                             break
-                        start += (chunk_size - overlap)
+                        start += (target_word_limit - overlap_words)
 
         return chunks
 
@@ -444,7 +446,7 @@ MINE WORKFORCE & HR PERSONNEL RECORD: {hr['mine_name']} (ID: {hr['mine_key']})
     # ==========================================
     # STEP 4: RETRIEVE & GENERATE
     # ==========================================
-    def retrieve(self, query: str, top_k: int = 4, filter_source: Optional[str] = None, filter_category: Optional[str] = None) -> List[Dict[str, Any]]:
+    def retrieve(self, query: str, top_k: int = 5, filter_source: Optional[str] = None, filter_category: Optional[str] = None) -> List[Dict[str, Any]]:
         """
         Searches the vector database for the closest matching chunks
         using hybrid cosine similarity and domain intent scoring.
@@ -592,25 +594,28 @@ MINE WORKFORCE & HR PERSONNEL RECORD: {hr['mine_name']} (ID: {hr['mine_key']})
                 "category": category,
                 "similarity_score": chunk["similarity_score"]
             })
-            context_blocks.append(f"--- [CONTEXT CHUNK {i}] Source: {source_name} (Category: {category}, Domain: {domain}) ---\n{chunk['content']}\n")
+            context_blocks.append(f"[Chunk {i} | Source: {source_name} | Category: {category}]\n{chunk['content']}")
 
-        full_context = "\n".join(context_blocks)
+        full_context = "\n\n".join(context_blocks)
 
-        contextual_prompt = f"""You are the MOIL Mining & Satellite Intelligence Assistant.
-Answer the user's question accurately in clear, simple English using ONLY the retrieved context below.
+        contextual_prompt = f"""System Prompt:
+You are a precise, data-driven analytical assistant. Your sole purpose is to answer the user's query using strictly the information provided in the <context> block below.
 
-Strict Rules:
-1. If the provided context does not contain the exact answer to the user's question, you must reply: 'I do not have that specific information in my current records.' Do not summarize irrelevant information.
-2. If asked about workforce, personnel, or workers, state the exact worker count and shift details from the HR records (e.g. Balaghat Mine has 2,750 personnel).
-3. If asked about production shortfall, explain shortfall targets and causes.
-4. If asked about blasting, explain the relevant formula or parameters.
-5. If asked about satellite or slope, explain the specific measurements.
+Core Rules:
 
-CONTEXT:
+No External Knowledge: You must not use any outside knowledge, assumptions, or training data to answer the query.
+
+Strict Adherence: If the exact answer to the user's question is not explicitly stated within the <context> block, you must reply exactly with: "I do not have that specific information in my current records."
+
+No Guessing: Do not attempt to summarize irrelevant context just to provide a long response.
+
+Directness: Answer concisely and directly.
+
+<context>
 {full_context}
+</context>
 
-USER QUESTION:
-{query}
+User Query: {query}
 """
 
         # LLM Synthesis Engine (Gemini API Key if available)
@@ -1070,7 +1075,7 @@ USER QUESTION:
         return "I do not have that specific information in my current records."
 
 
-    def query_rag(self, query: str, top_k: int = 4, filter_source: Optional[str] = None, filter_category: Optional[str] = None) -> Dict[str, Any]:
+    def query_rag(self, query: str, top_k: int = 5, filter_source: Optional[str] = None, filter_category: Optional[str] = None) -> Dict[str, Any]:
         """Convenience end-to-end execution method: Retrieve -> Contextual Prompt -> Generate."""
         retrieved_chunks = self.retrieve(query, top_k=top_k, filter_source=filter_source, filter_category=filter_category)
         generation_result = self.generate_contextual_answer(query, retrieved_chunks)

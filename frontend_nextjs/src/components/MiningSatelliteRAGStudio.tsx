@@ -105,7 +105,7 @@ export const MiningSatelliteRAGStudio: React.FC<MiningSatelliteRAGStudioProps> =
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           query: textToSubmit,
-          top_k: 4
+          top_k: 5
         })
       });
 
