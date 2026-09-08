@@ -25,6 +25,7 @@ from services.block_model import BlockModelEngine
 from services.blasting_engine import BlastingEngine
 from services.fleet_engine import FleetEngine
 from services.production_engine import ProductionEngine
+from services.rag_engine import get_rag_pipeline
 
 app = FastAPI(
     title="MOIL AI: Exploration & Reserve Estimation Platform",
@@ -49,6 +50,7 @@ block_model_engine = BlockModelEngine(block_size_x=12.0, block_size_y=12.0, bloc
 blasting_engine = BlastingEngine(default_rock_density=3.65)
 fleet_engine = FleetEngine()
 production_engine = ProductionEngine()
+rag_pipeline = get_rag_pipeline()
 drillholes_cache = generate_balaghat_drillholes()
 
 # All 11 MOIL mine center coordinates for nearest-mine distance calculations
@@ -731,7 +733,104 @@ async def get_workers_roster(mine_id: str):
         raise HTTPException(status_code=500, detail=f"Error fetching workforce roster: {str(e)}")
 
 
+@app.get("/api/v1/fleet/crusher-blend/{mine_id}", tags=["Dynamic Fleet Management"])
+async def get_crusher_blend(mine_id: str):
+    """
+    Returns Face-to-Crusher live weighted average manganese grade, contract specification variance,
+    and automatic ore vs. low-grade vs. waste diversion logging.
+    """
+    try:
+        return fleet_engine.get_crusher_blend_reconciliation(mine_id)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error fetching crusher blend reconciliation: {str(e)}")
+
+
+@app.post("/api/v1/fleet/auto-dispatch/{mine_id}", tags=["Dynamic Fleet Management"])
+async def trigger_auto_dispatch(mine_id: str):
+    """
+    Executes dynamic auto-dispatch shovel pairing, reassigning empty trucks to the shovel
+    with the shortest queue to eliminate hang time and truck queue idling.
+    """
+    try:
+        return fleet_engine.get_auto_dispatch_recommendation(mine_id)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error running auto-dispatch: {str(e)}")
+
+
+# ==============================================================================
+# RAG (RETRIEVAL-AUGMENTED GENERATION) PIPELINE: SCRIPTS + SATELLITE
+# ==============================================================================
+class RagQueryPayload(BaseModel):
+    query: str = Field(..., description="User question about mining scripts or satellite telemetry", example="What is the Lilly blastability index formula and how are Sentinel-2 bands used in Balaghat?")
+    top_k: int = Field(4, description="Number of vector chunks to retrieve", ge=1, le=10)
+    filter_source: Optional[str] = Field(None, description="Filter by SCRIPT or SATELLITE_DATA")
+
+
+@app.post("/api/v1/rag/query", tags=["RAG AI Pipeline (Scripts & Satellite)"])
+async def query_rag_pipeline(payload: RagQueryPayload):
+    """
+    RAG Pipeline Query:
+    1. Embeds user question using multi-gram vector space.
+    2. Searches ChromaDB vector store (or Vector Cosine Index) for closest matching chunks.
+    3. Formulates strict contextual prompt and synthesizes a grounded answer referencing exact code and satellite bands.
+    """
+    try:
+        pipeline = get_rag_pipeline()
+        result = pipeline.query_rag(payload.query, top_k=payload.top_k, filter_source=payload.filter_source)
+        return {
+            "status": "success",
+            **result
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error executing RAG pipeline query: {str(e)}")
+
+
+@app.get("/api/v1/rag/status", tags=["RAG AI Pipeline (Scripts & Satellite)"])
+async def get_rag_status():
+    """
+    Returns the vector index status, chunk counts, ChromaDB state, and indexed datasets.
+    """
+    pipeline = get_rag_pipeline()
+    return {
+        "status": "online",
+        "vector_database": "ChromaDB (Persistent Cosine HNSW Space)",
+        "total_chunks_indexed": len(pipeline.chunks),
+        "chromadb_active": bool(pipeline.chroma_collection),
+        "indexed_scripts": [
+            "blasting_engine.py (Lilly BI, Kuz-Ram, USBM/DGMS PPV ground vibration)",
+            "production_engine.py (Shortfall, HEMM Weibull survival, Match Factor, LP fleet rebalancing)",
+            "fleet_engine.py (Haul cycle phases, 6-wheel TPMS, TKPH thermal throttling, CAS priority)",
+            "parameter_engine.py (Copernicus Sentinel-2, Sentinel-1 InSAR, Sentinel-3, ERA5)",
+            "prospector_engine.py (Bayesian ML manganese exploration & supergene leaching)"
+        ],
+        "indexed_satellites": [
+            "Sentinel-2 Multispectral (B02, B03, B04, B08, B11, B12, NDVI, NDWI, Clay, Ferrous, Gossan)",
+            "Sentinel-1 SAR Radar & InSAR (VV/VH backscatter, soil moisture, highwall slope displacement)",
+            "Sentinel-3 SLSTR Thermal (Land Surface Temperature & diurnal thermal inertia)",
+            "Copernicus ERA5-Land (Monsoonal rainfall driving supergene manganese enrichment)"
+        ],
+        "mines_indexed": 11
+    }
+
+
+@app.post("/api/v1/rag/reindex", tags=["RAG AI Pipeline (Scripts & Satellite)"])
+async def reindex_rag_pipeline():
+    """
+    Forces an immediate reload and reindexing of all mining scripts and satellite telemetry into ChromaDB.
+    """
+    try:
+        pipeline = get_rag_pipeline()
+        pipeline.initialize_pipeline()
+        return {
+            "status": "success",
+            "message": f"Successfully reindexed {len(pipeline.chunks)} chunks in ChromaDB vector collection."
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error reindexing RAG pipeline: {str(e)}")
+
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
+
 

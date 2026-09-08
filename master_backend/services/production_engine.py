@@ -193,6 +193,9 @@ class ProductionEngine:
             "current_shortfall_tons": abs(current_gap),
             "projected_end_shift_tons": projected_end_shift_actual,
             "projected_shortfall_tons": abs(projected_end_shift_gap),
+            "total_shift_yield_tons": projected_end_shift_actual,
+            "shift_elapsed_actual_tons": hourly_data[4]["cumulative_actual"],
+            "shift_remaining_projected_tons": round(projected_end_shift_actual - hourly_data[4]["cumulative_actual"], 1),
             "shortfall_risk_level": "CRITICAL" if abs(projected_end_shift_gap) > 280 else ("MODERATE" if abs(projected_end_shift_gap) > 120 else "LOW"),
             "hourly_trend": hourly_data,
             "bottlenecks": bottlenecks,
@@ -355,6 +358,14 @@ class ProductionEngine:
             # P(fail in 48h) = 1 - exp(- (48 / MTBF)^2.1)
             weibull_risk = round((1.0 - math.exp(- ((48.0 / max(mtbf, 10.0)) ** 2.1))) * 100, 1)
 
+            # OEE Decomposition: MA, UA, and Operational Efficiency
+            standby_hours = round(total_op_hours * 0.14, 1)
+            calendar_hours = round(total_op_hours + standby_hours + total_downtime, 1)
+            ma_pct = round(((total_op_hours + standby_hours) / max(calendar_hours, 1.0)) * 100, 1)
+            ua_pct = round((total_op_hours / max(total_op_hours + standby_hours, 1.0)) * 100, 1)
+            op_eff_pct = round(88.0 + (health * 0.10), 1)
+            oee_pct = round((ma_pct * ua_pct * op_eff_pct) / 10000.0, 1)
+
             hemm_units.append({
                 "unit_id": eq_id,
                 "type": f"{eq_type} ({cap})",
@@ -366,10 +377,20 @@ class ProductionEngine:
                 "operating_hours": round(total_op_hours, 1),
                 "next_pm_due_hours": round(max(5.0, 100.0 - (total_op_hours % 100)), 1),
                 "critical_subsystem": critical_sub,
-                "current_status": status_csv
+                "current_status": status_csv,
+                "oee_metrics": {
+                    "mechanical_availability_pct": ma_pct,
+                    "utilization_of_availability_pct": ua_pct,
+                    "operational_efficiency_pct": op_eff_pct,
+                    "overall_oee_pct": oee_pct
+                }
             })
 
         avg_avail = sum(u["availability_pct"] for u in hemm_units) / max(len(hemm_units), 1)
+        avg_ma = sum(u["oee_metrics"]["mechanical_availability_pct"] for u in hemm_units) / max(len(hemm_units), 1)
+        avg_ua = sum(u["oee_metrics"]["utilization_of_availability_pct"] for u in hemm_units) / max(len(hemm_units), 1)
+        avg_eff = sum(u["oee_metrics"]["operational_efficiency_pct"] for u in hemm_units) / max(len(hemm_units), 1)
+        overall_oee = round((avg_ma * avg_ua * avg_eff) / 10000.0, 1)
         highest_risk = max(hemm_units, key=lambda x: x["failure_risk_48h_pct"]) if hemm_units else None
 
         return {
@@ -377,6 +398,12 @@ class ProductionEngine:
             "csv_mine_location": csv_mine_name,
             "overall_fleet_availability_pct": round(avg_avail, 1),
             "overall_fleet_utilization_pct": 86.2,
+            "overall_oee_decomposition": {
+                "mechanical_availability_pct": round(avg_ma, 1),
+                "utilization_of_availability_pct": round(avg_ua, 1),
+                "operational_efficiency_pct": round(avg_eff, 1),
+                "overall_oee_pct": overall_oee
+            },
             "hemm_units": hemm_units,
             "unplanned_downtime_hours_shift": 1.4,
             "preventive_maintenance_compliance_pct": 98.4,

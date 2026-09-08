@@ -12,8 +12,10 @@ import {
   RefreshCw,
   Compass,
   Box,
-  Mountain
+  Mountain,
+  Bot
 } from 'lucide-react';
+
 
 interface NavbarProps {
   activeView: 'exploration' | 'training';
@@ -21,6 +23,7 @@ interface NavbarProps {
   activeLayersCount: number;
   aiHeatmapActive: boolean;
   onResetMap?: () => void;
+  onOpenRAG?: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -28,7 +31,8 @@ export const Navbar: React.FC<NavbarProps> = ({
   setActiveView,
   activeLayersCount,
   aiHeatmapActive,
-  onResetMap
+  onResetMap,
+  onOpenRAG
 }) => {
   const [time, setTime] = useState<string>('');
 
@@ -43,14 +47,14 @@ export const Navbar: React.FC<NavbarProps> = ({
   }, []);
 
   return (
-    <div className="absolute top-4 left-1/2 -translate-x-1/2 z-[1000] flex items-center bg-slate-50/90 p-1.5 rounded-2xl border border-slate-300/80 shadow-2xl backdrop-blur-xl">
+    <div className="absolute top-4 left-1/2 -translate-x-1/2 z-[1000] flex items-center gap-2 bg-slate-900/90 p-1.5 rounded-2xl border border-slate-700/80 shadow-2xl backdrop-blur-xl">
 
         <button
           onClick={() => setActiveView('exploration')}
           className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200 ${
             activeView === 'exploration'
-              ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-slate-900 shadow-md shadow-emerald-900/40 border border-emerald-400/30'
-              : 'text-slate-600 hover:text-slate-800 hover:bg-slate-200/60'
+              ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-md shadow-emerald-900/40 border border-emerald-400/30'
+              : 'text-slate-300 hover:text-white hover:bg-slate-800'
           }`}
         >
           <Satellite className="w-3.5 h-3.5" />
@@ -62,10 +66,19 @@ export const Navbar: React.FC<NavbarProps> = ({
           )}
         </button>
 
-
-
+        {onOpenRAG && (
+          <button
+            onClick={onOpenRAG}
+            className="flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-gradient-to-r from-emerald-600/30 to-teal-600/30 hover:from-emerald-600/50 hover:to-teal-600/50 text-emerald-200 border border-emerald-500/40 shadow-sm transition-all duration-200 hover:scale-105"
+            title="Ask anything about mines, equipment, or satellite data"
+          >
+            <Bot className="w-3.5 h-3.5 text-emerald-400" />
+            <span>Ask MOIL AI</span>
+          </button>
+        )}
 
 
     </div>
   );
 };
+

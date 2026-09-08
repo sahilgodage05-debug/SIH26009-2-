@@ -323,6 +323,13 @@ class FleetEngine:
             health_score = float(csv_exc.get("Health_Score_%", 88.0))
             is_active = csv_exc.get("Current_Status", "Active").strip().lower() == "active"
 
+            face_grade = 44.5 if i == 0 else 32.0
+            if "%" in meta["bench"]:
+                try:
+                    face_grade = float(meta["bench"].split("%")[0].split("-")[-1].strip().replace("(", ""))
+                except Exception:
+                    face_grade = 44.5 if i == 0 else 32.0
+
             shovels.append({
                 "id": csv_exc.get("Machine_ID", f"MOIL-EXC-00{i+1}"),
                 "csv_machine_id": csv_exc.get("Machine_ID"),
@@ -337,7 +344,11 @@ class FleetEngine:
                 "avg_load_time_min": meta["load_min"],
                 "queue_count": 1 if i == 0 else 0,
                 "health_pct": health_score,
-                "operator": f"Driver {csv_exc.get('Machine_ID', 'EXC')}-Shift-A"
+                "operator": f"Driver {csv_exc.get('Machine_ID', 'EXC')}-Shift-A",
+                "face_id": f"FACE-BENCH-{'04-EAST' if i == 0 else '02-CENTRAL'}",
+                "face_grade_mn_pct": face_grade,
+                "lithology": "High-Grade Metallurgical Pyrolusite" if face_grade >= 40 else "Siliceous Braunite Lode",
+                "shovel_hang_time_min": 1.2 if i == 0 else 0.4
             })
 
         # Map Haul Trucks strictly from CSV
@@ -373,8 +384,80 @@ class FleetEngine:
             payload = cap_val if "LOADED" in operational_status or operational_status == "DUMPING" else (cap_val * 0.95 if operational_status == "LOADING" else 0.0)
             speed = 28.5 if "LOADED" in operational_status else (34.0 if "RETURN" in operational_status else 0.0)
             
-            # Ton-Kilometer-Per-Hour calculation: TKPH = (Payload * Avg_Speed) / 2
-            tkph = round((payload * speed) / 2.0, 1) if payload > 0 else 55.0
+            # 1. Payload Compliance & Carryback Monitoring
+            compliance_pct = round((payload / cap_val) * 100, 1) if cap_val > 0 else 100.0
+            if payload == 0:
+                compliance_status = "EMPTY_HAUL"
+            elif compliance_pct < 90.0:
+                compliance_status = "UNDERLOADED"
+            elif compliance_pct > 110.0:
+                compliance_status = "OVERLOADED (DGMS AXLE LIMIT VIOLATION)"
+            else:
+                compliance_status = "OPTIMAL"
+
+            tare_drift_tons = round(1.2 + (idx * 0.35), 1)  # Progressive buildup of adhering wet clay/ore
+            carryback_alert = tare_drift_tons > 1.8
+
+            # 2. Haul Cycle Phase Breakdown (Minutes)
+            q_time = round(1.6 + (idx % 3) * 0.4, 1)
+            s_time = round(2.2 + (idx % 2) * 0.3, 1)
+            h_time = round(5.8 + (idx % 4) * 0.3, 1)
+            d_time = round(1.2 + (idx % 2) * 0.2, 1)
+            baseline_time = 6.2
+            variance_pct = round(((h_time - baseline_time) / baseline_time) * 100, 1)
+
+            # 3. Calibrated TKPH Monitoring & Thermal Throttling
+            # Calibrate to OEM mining standards (Front: 380 max, Rear: 420 max)
+            # DUM-0004 or idx 3 simulates elevated thermal load (388 TKPH > 90% threshold)
+            if idx == 3:
+                tkph_front = 318.5
+                tkph_rear = 388.5
+            else:
+                tkph_front = round(195.0 + (payload * 1.6), 1) if payload > 0 else 65.0
+                tkph_rear = round(240.0 + (payload * 2.1), 1) if payload > 0 else 75.0
+
+            tkph_highest = max(tkph_front, tkph_rear)
+            thermal_throttling_active = tkph_highest >= (0.90 * 420.0)
+            speed_throttled = 18.0 if thermal_throttling_active else speed
+
+            # 4. Integrated 6-Wheel TPMS (Tire Pressure PSI & Chamber Temp °C)
+            tpms_wheels = [
+                {"pos": "FL", "name": "Front-Left", "pressure_psi": round(102.0 + (payload * 0.05), 1), "temp_c": round(68.0 + (tkph_front * 0.04), 1), "status": "OPTIMAL"},
+                {"pos": "FR", "name": "Front-Right", "pressure_psi": round(102.5 + (payload * 0.05), 1), "temp_c": round(67.5 + (tkph_front * 0.04), 1), "status": "OPTIMAL"},
+                {"pos": "RLI", "name": "Rear-Left Inner", "pressure_psi": round(107.0 + (payload * 0.07), 1), "temp_c": round(76.0 + (tkph_rear * 0.04), 1), "status": "ELEVATED" if tkph_rear > 370 else "OPTIMAL"},
+                {"pos": "RLO", "name": "Rear-Left Outer", "pressure_psi": round(104.5 + (payload * 0.06), 1), "temp_c": round(72.0 + (tkph_rear * 0.04), 1), "status": "OPTIMAL"},
+                {"pos": "RRI", "name": "Rear-Right Inner", "pressure_psi": round(108.0 + (payload * 0.07), 1), "temp_c": round(77.0 + (tkph_rear * 0.04), 1), "status": "ELEVATED" if tkph_rear > 370 else "OPTIMAL"},
+                {"pos": "RRO", "name": "Rear-Right Outer", "pressure_psi": round(104.0 + (payload * 0.06), 1), "temp_c": round(71.5 + (tkph_rear * 0.04), 1), "status": "OPTIMAL"}
+            ]
+
+            # 5. Dynamic Fuel Burn Correlated with Cycle State
+            if "LOADED" in operational_status:
+                burn_lph = round(72.5 + (idx * 2.2), 1)
+                cycle_state_label = "High-Torque Laden Ramp Climbing (8.5% Grade)"
+            elif "RETURN" in operational_status:
+                burn_lph = round(24.5 + (idx * 1.1), 1)
+                cycle_state_label = "Downhill Dynamic Retarder Coasting"
+            elif operational_status in ["LOADING", "DUMPING"]:
+                burn_lph = round(19.0 + (idx * 0.8), 1)
+                cycle_state_label = "Hydraulic Spotting / Body Tipping"
+            else:
+                burn_lph = round(10.5 + (idx * 0.4), 1)
+                cycle_state_label = "Low-Idle Shovel Queue Wait"
+
+            # 6. Vibration Analysis (ISO 10816/20816 Standards)
+            vibe_rms = round(2.1 + (idx * 0.5) + (1.2 if "LOADED" in operational_status else 0.0), 2)
+            if vibe_rms < 2.8:
+                iso_zone = "Zone A/B: Normal (<2.8 mm/s)"
+                vibe_status = "NORMAL"
+                subsystem_flag = "Powertrain & Suspension Mounts Nominal"
+            elif vibe_rms <= 7.1:
+                iso_zone = "Zone C: Alert (2.8 - 7.1 mm/s)"
+                vibe_status = "ALERT"
+                subsystem_flag = "Suspension Cylinder Pressure & Driveline U-Joint Wear"
+            else:
+                iso_zone = "Zone D: Danger (>7.1 mm/s)"
+                vibe_status = "DANGER"
+                subsystem_flag = "Critical Transmission Flange or Wheel Bearing Failure"
 
             trucks.append({
                 "id": h_unit.get("Machine_ID", f"MOIL-TRUCK-{idx+1}"),
@@ -385,7 +468,7 @@ class FleetEngine:
                 "status": operational_status,
                 "route": route_tpl[0],
                 "progress": route_tpl[2],
-                "speed_kmh": speed,
+                "speed_kmh": speed_throttled,
                 "heading_deg": 35.0 + (idx * 35),
                 "target_shovel": route_tpl[3],
                 "target_geofence": "GF-CRUSHER-1" if "CRUSHER" in route_tpl[0] else ("GF-WASTE-DUMP" if "WASTE" in route_tpl[0] else "GF-SHOVEL-A"),
@@ -396,14 +479,41 @@ class FleetEngine:
                     "coolant_temp_c": round(84.0 + (idx * 1.8), 1),
                     "oil_pressure_kpa": 425.0,
                     "fuel_level_pct": round((curr_fuel / max(fuel_cap, 1.0)) * 100, 1) if fuel_cap > 0 else 72.5,
-                    "fuel_burn_rate_lph": 58.5 if "LOADED" in operational_status else 34.0,
-                    "tkph": tkph,
+                    "fuel_burn_rate_lph": burn_lph,
+                    "fuel_cycle_state": cycle_state_label,
+                    "rolling_resistance_alert": False,
+                    "tkph": tkph_highest,
+                    "tkph_front": tkph_front,
+                    "tkph_rear": tkph_rear,
                     "tkph_rating_max": 420.0,
-                    "tire_temp_c": round(64.0 + (tkph * 0.08), 1),
+                    "thermal_throttling_active": thermal_throttling_active,
+                    "speed_throttled_kmh": speed_throttled,
+                    "tpms_wheels": tpms_wheels,
+                    "tire_temp_c": round(64.0 + (tkph_highest * 0.08), 1),
+                    "vibration_rms_mms": vibe_rms,
+                    "vibration_iso_zone": iso_zone,
+                    "vibration_status": vibe_status,
+                    "vibration_subsystem": subsystem_flag,
                     "strut_pressure_front_psi": round(280.0 + (payload * 1.1), 1),
                     "strut_pressure_rear_psi": round(310.0 + (payload * 1.9), 1),
                     "driver_fatigue_index": round(0.10 + (idx * 0.03), 2),
                     "has_fuel_sensor": int(h_unit.get("Has_Fuel_Sensor", 1) or 1)
+                },
+                "payload_compliance": {
+                    "compliance_status": compliance_status,
+                    "compliance_pct": compliance_pct,
+                    "tare_drift_tons": tare_drift_tons,
+                    "carryback_alert": carryback_alert,
+                    "dgms_overload_violation": compliance_pct > 110.0
+                },
+                "cycle_phase_times": {
+                    "queue_time_shovel_min": q_time,
+                    "spot_load_time_min": s_time,
+                    "haul_travel_time_min": h_time,
+                    "calibrated_baseline_min": baseline_time,
+                    "dump_wait_time_min": d_time,
+                    "total_cycle_time_min": round(q_time + s_time + h_time + d_time, 1),
+                    "variance_vs_baseline_pct": variance_pct
                 },
                 "cycle_stats": {
                     "completed_trips_shift": 8 + (idx % 5),
@@ -445,28 +555,73 @@ class FleetEngine:
         }
 
     def _build_workforce_roster(self, mine_name: str, count_str: str, trucks: List[Dict[str, Any]], shovels: List[Dict[str, Any]], drillers: List[Dict[str, Any]], dozers: List[Dict[str, Any]]) -> Dict[str, Any]:
-        """Synthesizes structured operational crew breakdown strictly anchored to CSV Workers_Count."""
+        """Synthesizes structured operational crew breakdown strictly anchored to CSV Workers_Count with DGMS statutory compliance."""
         return {
             "mine_name": mine_name,
             "total_workforce_capacity": count_str,
-            "current_shift": "Shift-1 (Day General)",
+            "current_shift": "Shift-1 (Day General 06:00 - 14:00)",
             "active_shift_headcount": 142,
+            "changeover_gap_tracking": {
+                "bench_travel_time_min": 14.0,
+                "engine_restart_gap_min": 8.5,
+                "lost_time_at_changeover_min": 22.5,
+                "tonnage_lost_shift": 92.0,
+                "staggered_hotseat_savings_tons": 78.0,
+                "recommendation": "Deploy staggered hot-seat changeover at 11:30 to eliminate 22.5 min bench transition gap."
+            },
             "crews": {
                 "haulage_drivers": [
-                    {"operator_id": f"OP-HT-{i+1:02d}", "assigned_truck": t["id"], "experience_yrs": 4 + (i % 8), "shift_status": "ON_BENCH", "relief_due": "11:45"}
+                    {
+                        "operator_id": f"OP-HT-{i+1:02d}",
+                        "name": f"Operator {i+1}",
+                        "assigned_truck": t["id"],
+                        "experience_yrs": 4 + (i % 8),
+                        "shift_status": "ON_BENCH",
+                        "relief_due": "11:45",
+                        "continuous_driving_minutes": 180 + (i * 12),
+                        "max_continuous_allowed_min": 240,
+                        "mandatory_break_due_in_min": max(0, 240 - (180 + (i * 12))),
+                        "break_required_alert": (180 + (i * 12)) >= 230,
+                        "fatigue_camera": {
+                            "microsleep_events": 1 if i == 3 else 0,
+                            "distraction_alerts": 2 if i == 3 else 0,
+                            "gaze_deviation_pct": 14.5 if i == 3 else 3.2,
+                            "driver_fitness_status": "FATIGUE_WARNING_RELIEF_DISPATCHED" if i == 3 else "FIT_TO_OPERATE"
+                        },
+                        "statutory_dgms": {
+                            "vt_training_valid": True,
+                            "vt_rule_ref": "DGMS Vocational Training Rule 1966 Form B",
+                            "form_o_medical_fitness": "PASSED (Valid till Dec 2026)",
+                            "machine_license_lock": "AUTHORIZED (Ignition Unlocked)",
+                            "interlock_status": "UNLOCKED"
+                        }
+                    }
                     for i, t in enumerate(trucks)
                 ],
                 "shovel_operators": [
-                    {"operator_id": f"OP-SH-{i+1:02d}", "assigned_machine": s["id"], "bench": s["location_name"], "shift_status": "ACTIVE_LOADING"}
+                    {
+                        "operator_id": f"OP-SH-{i+1:02d}",
+                        "assigned_machine": s["id"],
+                        "bench": s["location_name"],
+                        "shift_status": "ACTIVE_LOADING",
+                        "face_grade_mn_pct": s.get("face_grade_mn_pct", 44.5),
+                        "vt_training_valid": True,
+                        "form_o_status": "CERTIFIED_FIT"
+                    }
                     for i, s in enumerate(shovels)
                 ],
                 "drilling_masters": [
-                    {"operator_id": f"OP-DR-{i+1:02d}", "machine_id": dr.get("Machine_ID", f"DR-{i+1}"), "pattern": "Burden 3.2m x Spacing 3.8m"}
+                    {
+                        "operator_id": f"OP-DR-{i+1:02d}",
+                        "machine_id": dr.get("Machine_ID", f"DR-{i+1}"),
+                        "pattern": "Burden 3.2m x Spacing 3.8m",
+                        "vt_training_valid": True
+                    }
                     for i, dr in enumerate(drillers[:2])
                 ],
                 "hot_seat_relief_pool": [
-                    {"relief_id": "REL-01", "qualified_machines": ["Dumper 60T/100T", "Komatsu PC1250"], "current_state": "READY_STANDBY"},
-                    {"relief_id": "REL-02", "qualified_machines": ["CAT 777D", "Dozer 400HP"], "current_state": "REST_CYCLE"}
+                    {"relief_id": "REL-01", "name": "Hot-Seat Relief A", "qualified_machines": ["Dumper 60T/100T", "Komatsu PC1250"], "current_state": "READY_STANDBY", "duty_hours_remaining": 5.5},
+                    {"relief_id": "REL-02", "name": "Hot-Seat Relief B", "qualified_machines": ["CAT 777D", "Dozer 400HP"], "current_state": "REST_CYCLE", "duty_hours_remaining": 6.0}
                 ],
                 "blasting_team": {
                     "certified_blaster": "BLASTER-MASTER-01 (DGMS First Class)",
@@ -696,3 +851,147 @@ class FleetEngine:
                 }
 
         return {"success": False, "message": f"Haul truck {truck_id} not found."}
+
+    def get_crusher_blend_reconciliation(self, mine_id: str) -> Dict[str, Any]:
+        """
+        Face-to-Crusher Ore Blending & Reconciliation:
+        1. Live weighted-average grade calculator for trucks tipping into primary crusher pocket.
+        2. Contract target manganese grade compliance (target ± 1.5% Mn).
+        3. Automated waste vs. low-grade vs. metallurgical ore diversion logging to prevent dilution.
+        """
+        state = self.get_or_create_mine_fleet(mine_id)
+        shovels = state.get("shovels", [])
+        trucks = state.get("trucks", [])
+
+        # Shovel face grades
+        shv_a_grade = shovels[0].get("face_grade_mn_pct", 44.5) if len(shovels) > 0 else 44.5
+        shv_b_grade = shovels[1].get("face_grade_mn_pct", 32.0) if len(shovels) > 1 else 32.0
+
+        # Arriving / tipping crusher trucks
+        crusher_trucks = [t for t in trucks if "CRUSHER" in t.get("route", "") and t.get("payload_t", 0) > 0]
+        if not crusher_trucks:
+            crusher_trucks = [t for t in trucks if t.get("payload_t", 0) > 0][:3]
+
+        total_tonnage = sum(t.get("payload_t", 50.0) for t in crusher_trucks) or 150.0
+        weighted_grade_sum = 0.0
+        diversion_logs = []
+
+        for idx, t in enumerate(crusher_trucks):
+            assigned_shv = t.get("target_shovel", "")
+            grade = shv_b_grade if (len(shovels) > 1 and shovels[1]["id"] == assigned_shv) else shv_a_grade
+            tonnage = t.get("payload_t", 60.0)
+            weighted_grade_sum += (grade * tonnage)
+            
+            # Destination verification
+            if grade >= 40.0:
+                dest = "Primary Gyratory Crusher Pocket (High-Grade Blend)"
+                dest_type = "METALLURGICAL_ORE"
+                compliance = "VERIFIED_CORRECT_ROUTE"
+            elif grade >= 25.0:
+                dest = "Secondary Blending Buffer HG-01"
+                dest_type = "SILICEOUS_BLEND_STOCKPILE"
+                compliance = "VERIFIED_CORRECT_ROUTE"
+            else:
+                dest = "Overburden Waste Dump Tip-Head"
+                dest_type = "BARREN_OVERBURDEN"
+                compliance = "DIVERSION_FLAG_PREVENT_DILUTION"
+
+            diversion_logs.append({
+                "truck_id": t["id"],
+                "source_face": t.get("target_shovel", "Shovel A"),
+                "face_grade_mn_pct": grade,
+                "payload_tons": tonnage,
+                "routed_destination": dest,
+                "material_class": dest_type,
+                "compliance_check": compliance,
+                "tip_timestamp": time.strftime("%H:%M:%S", time.localtime(time.time() - (idx * 320)))
+            })
+
+        blended_grade = round(weighted_grade_sum / max(total_tonnage, 1.0), 2)
+        target_spec = 43.5 if "balaghat" not in mine_id else 46.0
+        spec_variance = round(blended_grade - target_spec, 2)
+        is_in_spec = abs(spec_variance) <= 2.0
+
+        return {
+            "mine_id": mine_id,
+            "target_contract_mn_pct": target_spec,
+            "current_crusher_feed_mn_pct": blended_grade,
+            "variance_pct": spec_variance,
+            "status": "IN_SPECIFICATION" if is_in_spec else ("BELOW_SPEC_INCREASE_HIGH_GRADE" if spec_variance < 0 else "ABOVE_SPEC_RESERVE_DILUTION_RISK"),
+            "hourly_throughput_tph": round(total_tonnage * 2.1, 1),
+            "reconciliation_summary": {
+                "high_grade_tonnage": round(total_tonnage * 0.65, 1),
+                "medium_grade_tonnage": round(total_tonnage * 0.35, 1),
+                "dilution_prevention_rate_pct": 99.4
+            },
+            "diversion_logs": diversion_logs
+        }
+
+    def get_auto_dispatch_recommendation(self, mine_id: str) -> Dict[str, Any]:
+        """
+        Dynamic Auto-Dispatch & Shovel Pairing Engine:
+        Evaluates shovel queues, truck cycle progression, and reassigns returning empty haulers
+        to minimize excavator hang time and truck queue idling.
+        """
+        state = self.get_or_create_mine_fleet(mine_id)
+        shovels = state.get("shovels", [])
+        trucks = state.get("trucks", [])
+
+        if len(shovels) < 2:
+            return {"success": False, "message": "At least 2 active shovels required for pairing optimization."}
+
+        shv1, shv2 = shovels[0], shovels[1]
+        
+        # Calculate queue depth & wait time
+        shv1_q = sum(1 for t in trucks if t.get("target_shovel") == shv1["id"] and ("LOADING" in t["status"] or "QUEUE" in t["status"]))
+        shv2_q = sum(1 for t in trucks if t.get("target_shovel") == shv2["id"] and ("LOADING" in t["status"] or "QUEUE" in t["status"]))
+
+        shv1_est_wait = round(shv1_q * shv1.get("avg_load_time_min", 2.2), 1)
+        shv2_est_wait = round(shv2_q * shv2.get("avg_load_time_min", 2.5), 1)
+
+        # Candidate returning empty trucks
+        empty_trucks = [t for t in trucks if "RETURN" in t["status"] or t["status"] == "DUMPING"]
+        reassignments = []
+
+        if shv1_q > shv2_q and empty_trucks:
+            # Divert from shv1 to shv2
+            candidate = empty_trucks[0]
+            reassignments.append({
+                "truck_id": candidate["id"],
+                "reassign_from": f"{shv1['id']} ({shv1['location_name']})",
+                "reassign_to": f"{shv2['id']} ({shv2['location_name']})",
+                "reason": f"Queue imbalance: {shv1['id']} has {shv1_q} trucks ({shv1_est_wait}m wait) vs {shv2['id']} starved ({shv2_est_wait}m wait).",
+                "hang_time_saved_min": 3.4,
+                "projected_cycle_efficiency_gain_pct": +14.8
+            })
+        elif shv2_q > shv1_q and empty_trucks:
+            candidate = empty_trucks[0]
+            reassignments.append({
+                "truck_id": candidate["id"],
+                "reassign_from": f"{shv2['id']} ({shv2['location_name']})",
+                "reassign_to": f"{shv1['id']} ({shv1['location_name']})",
+                "reason": f"Queue imbalance: {shv2['id']} has {shv2_q} trucks ({shv2_est_wait}m wait) vs {shv1['id']} starving for haulers.",
+                "hang_time_saved_min": 2.8,
+                "projected_cycle_efficiency_gain_pct": +12.5
+            })
+        else:
+            reassignments.append({
+                "truck_id": empty_trucks[0]["id"] if empty_trucks else "MOIL-DUM-0002",
+                "reassign_from": f"{shv1['id']} ({shv1['location_name']})",
+                "reassign_to": f"{shv1['id']} ({shv1['location_name']})",
+                "reason": "Shovel-truck pairing currently harmonized across active benches.",
+                "hang_time_saved_min": 0.0,
+                "projected_cycle_efficiency_gain_pct": 0.0
+            })
+
+        return {
+            "mine_id": mine_id,
+            "status": "AUTO_DISPATCH_OPTIMIZED",
+            "shovel_queues": [
+                {"shovel_id": shv1["id"], "bench": shv1["location_name"], "queue_count": shv1_q, "wait_time_min": shv1_est_wait, "hang_time_min": shv1.get("shovel_hang_time_min", 1.2)},
+                {"shovel_id": shv2["id"], "bench": shv2["location_name"], "queue_count": shv2_q, "wait_time_min": shv2_est_wait, "hang_time_min": shv2.get("shovel_hang_time_min", 0.4)}
+            ],
+            "reassignments": reassignments,
+            "total_hang_time_eliminated_min": 3.4,
+            "hourly_tonnage_boost_tph": 48.0
+        }

@@ -6,14 +6,18 @@ import { RemoteSensingSidebar } from '@/components/RemoteSensingSidebar';
 import { MapWrapper } from '@/components/MapWrapper';
 import { ConfidenceInspector } from '@/components/ConfidenceInspector';
 import { MLTrainingStudio } from '@/components/MLTrainingStudio';
+import { MiningSatelliteRAGStudio } from '@/components/MiningSatelliteRAGStudio';
 import { RESERVE_ZONES } from '@/data/moilData';
 import { LayerState, ReserveZone } from '@/types/moil';
-import { Sparkles } from 'lucide-react';
+import { Sparkles, Cpu, Bot } from 'lucide-react';
+
 import { useRouter } from 'next/navigation';
 
 export default function Home() {
   const router = useRouter();
   const [activeView, setActiveView] = useState<'exploration' | 'training'>('exploration');
+  const [isRagOpen, setIsRagOpen] = useState<boolean>(false);
+
   const [layers, setLayers] = useState<LayerState>({
     ndvi: true,
     soilMoisture: true,
@@ -82,7 +86,22 @@ export default function Home() {
         activeLayersCount={Object.values(layers).filter(Boolean).length}
         aiHeatmapActive={layers.aiHeatmap}
         onResetMap={handleResetMap}
+        onOpenRAG={() => setIsRagOpen(true)}
       />
+
+      {/* Floating AI Assistant Launcher Pill (bottom-right) */}
+      <button
+        onClick={() => setIsRagOpen(true)}
+        className="fixed bottom-6 right-6 z-[600] flex items-center gap-2.5 px-4 py-2.5 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-xs shadow-2xl shadow-emerald-900/40 border border-emerald-400/40 backdrop-blur-md transition-all duration-200 hover:scale-105 active:scale-95"
+        title="Ask MOIL AI Assistant"
+      >
+        <div className="relative">
+          <Bot className="w-4 h-4 text-emerald-200" />
+          <span className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-emerald-300 animate-ping" />
+        </div>
+        <span>Ask MOIL AI</span>
+      </button>
+
 
       {/* Floating System Notification Toast */}
       {notification && (
@@ -169,12 +188,18 @@ export default function Home() {
               </button>
             )}
           </main>
-
-            {/* Draggable Inspector Widget for Deep Analysis removed as it is now on a separate page */}</div>
+        </div>
       ) : (
         /* Synthetic Ground Truth & GEE AI Studio */
         <MLTrainingStudio />
       )}
+
+      {/* 3. Dual-Stream RAG Intelligence Studio Modal */}
+      <MiningSatelliteRAGStudio
+        isOpen={isRagOpen}
+        onClose={() => setIsRagOpen(false)}
+      />
     </div>
   );
 }
+
