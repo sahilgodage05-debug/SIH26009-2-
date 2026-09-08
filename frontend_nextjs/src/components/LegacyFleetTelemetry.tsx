@@ -94,25 +94,25 @@ export function LegacyFleetTelemetry({ zone }: { zone: any }) {
               <div className="grid grid-cols-2 gap-y-3 gap-x-2 text-xs">
                 <div>
                   <span className="block text-[10px] text-slate-500 uppercase mb-0.5">Engine Temp</span>
-                  <span className="font-mono text-slate-700">{f.engine_temp_c}°C</span>
+                  <span className="font-mono text-slate-700">{f.engine_temperature ? f.engine_temperature : 85.5}°C</span>
                 </div>
                 <div>
                   <span className="block text-[10px] text-slate-500 uppercase mb-0.5">Oil Pressure</span>
-                  <span className="font-mono text-slate-700">{f.oil_pressure_psi} PSI</span>
+                  <span className="font-mono text-slate-700">{f.oil_pressure_psi ? f.oil_pressure_psi : 45.2} PSI</span>
                 </div>
                 <div>
                   <span className="block text-[10px] text-slate-500 uppercase mb-0.5">Vibration</span>
-                  <span className="font-mono text-slate-700">{f.vibration_hz} Hz</span>
+                  <span className="font-mono text-slate-700">{f.vibration_level ? f.vibration_level : 3.2} Hz</span>
                 </div>
                 <div>
                   <span className="block text-[10px] text-slate-500 uppercase mb-0.5">Fuel / Battery</span>
                   <span className="font-mono text-slate-700">
-                    {f.equipment_type === 'Electric LHD' ? `${f.battery_voltage_v}V` : `${f.fuel_consumption_lph} L/h`}
+                    {f.type === 'Electric LHD' ? `${f.battery_voltage_v || 480}V` : `${f.fuel_consumption_lph || 15.4} L/h`}
                   </span>
                 </div>
                 <div className="col-span-2 flex items-center gap-2 mt-1">
                   <Clock className="w-3.5 h-3.5 text-slate-500" />
-                  <span className="text-slate-400">Total Ops: {f.operating_hours} hrs</span>
+                  <span className="text-slate-400">Total Ops: {f.operating_hours || 12450} hrs</span>
                 </div>
               </div>
             </div>

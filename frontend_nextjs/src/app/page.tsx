@@ -131,6 +131,25 @@ export default function Home() {
                 )}
               </button>
             </div>
+            {/* Floating Mine Selector Dropdown */}
+            <div className="absolute top-4 left-4 z-[500] bg-slate-50/95 backdrop-blur-md p-2 px-3 rounded-xl border border-emerald-500/30 shadow-xl pointer-events-auto">
+              <label htmlFor="mine-select" className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">Target Mine</label>
+              <select
+                id="mine-select"
+                className="bg-transparent border-none text-slate-800 text-sm font-bold focus:ring-0 cursor-pointer outline-none w-56"
+                value={selectedZone?.id || ''}
+                onChange={(e) => {
+                  const zone = RESERVE_ZONES.find(z => z.id === e.target.value);
+                  if (zone) handleSelectZone(zone);
+                }}
+              >
+                <option value="" disabled>Select a mine to zoom...</option>
+                {RESERVE_ZONES.map(zone => (
+                  <option key={zone.id} value={zone.id}>{zone.name}</option>
+                ))}
+              </select>
+            </div>
+
             <MapWrapper
               layers={layers}
               selectedZone={selectedZone}

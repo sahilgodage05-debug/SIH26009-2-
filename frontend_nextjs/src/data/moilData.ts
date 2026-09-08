@@ -1,9 +1,9 @@
 import { ReserveZone, DrillingSite, HeatmapPolygon, FleetEquipment, OperationalAlert } from '@/types/moil';
 
 // MOIL Belt Center: Central India Manganese Belt (Nagpur - Bhandara - Balaghat)
-// Latitude: 21.6011° N, Longitude: 79.7427° E
-export const MOIL_MAP_CENTER: [number, number] = [21.60, 79.74];
-export const DEFAULT_ZOOM = 9;
+// Latitude: 21.8502° N, Longitude: 80.2274° E (Balaghat Mine)
+export const MOIL_MAP_CENTER: [number, number] = [21.8502, 80.2274];
+export const DEFAULT_ZOOM = 13; // Tighter zoom for Balaghat
 
 // Natural Geological Fault Lineament Corridor (N65°E Strike Orientation)
 export const GEOLOGICAL_FAULT_CORRIDORS = [

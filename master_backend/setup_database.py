@@ -36,17 +36,17 @@ mines = [
 ]
 
 mine_workers = {
-    'Balaghat Mine': '2,500 - 3,000',
-    'Tirodi Mine': '400 - 500',
-    'Ukwa Mine': '600 - 800',
-    'Sitapatore Mine': '150 - 250',
-    'Dongri Buzurg Mine': '800 - 1,000',
-    'Chikla Mine': '700 - 900',
-    'Kandri Mine': '500 - 700',
-    'Mansar Mine': '500 - 650',
-    'Gumgaon Mine': '450 - 600',
-    'Beldongri Mine': '200 - 350',
-    'Parsoda Mine': '200 - 350'
+    'Balaghat Mine': '2750',
+    'Tirodi Mine': '450',
+    'Ukwa Mine': '700',
+    'Sitapatore Mine': '200',
+    'Dongri Buzurg Mine': '900',
+    'Chikla Mine': '800',
+    'Kandri Mine': '600',
+    'Mansar Mine': '575',
+    'Gumgaon Mine': '525',
+    'Beldongri Mine': '275',
+    'Parsoda Mine': '275'
 }
 
 equipment_types = [
@@ -126,7 +126,7 @@ def setup_db():
             machine_counter += 1
     
     session.commit()
-    print("✅ Database created and populated with authentic MOIL machine data!")
+    print("[SUCCESS] Database created and populated with authentic MOIL machine data!")
     session.close()
 
 if __name__ == "__main__":

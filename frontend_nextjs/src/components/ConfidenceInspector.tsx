@@ -52,7 +52,7 @@ export const ConfidenceInspector: React.FC<ConfidenceInspectorProps> = ({
     // Fetch User's Equipment Data
     const fetchEquipment = async () => {
       try {
-        const url = `http://${window.location.hostname}:8000/user/api/equipment/${encodeURIComponent(baseMineName)}`;
+        const url = `http://127.0.0.1:8000/user/api/equipment/${encodeURIComponent(baseMineName)}`;
         const response = await fetch(url);
         if (response.ok) {
           const data = await response.json();
@@ -66,7 +66,7 @@ export const ConfidenceInspector: React.FC<ConfidenceInspectorProps> = ({
     // Fetch Shivam's Scheduling AI
     const fetchShivamAI = async () => {
       try {
-        const url = `http://${window.location.hostname}:8000/shivam/api/get-schedule?location=${encodeURIComponent(locationName)}`;
+        const url = `http://127.0.0.1:8000/shivam/api/get-schedule?location=${encodeURIComponent(locationName)}`;
         const response = await fetch(url);
         if (response.ok) {
           const data = await response.json();
@@ -106,7 +106,7 @@ export const ConfidenceInspector: React.FC<ConfidenceInspectorProps> = ({
     setIsCalculatingKriging(true);
     setKrigingError(null);
     try {
-      const res = await fetch('http://localhost:8000/api/v1/estimate-reserve', {
+      const res = await fetch('http://127.0.0.1:8000/api/v1/estimate-reserve', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

@@ -47,10 +47,10 @@ interface BlastHoleData {
 }
 
 // Helper to convert local X, Y grid coordinates into exact GPS Latitude and Longitude
-const BASE_PIT_LAT = 21.5420;
-const BASE_PIT_LNG = 79.6780;
+const BASE_PIT_LAT = 21.8502; // Balaghat default
+const BASE_PIT_LNG = 80.2274;
 
-function convertHoleToGPS(x: number, y: number, baseLat: number = 21.5420, baseLng: number = 79.6780) {
+function convertHoleToGPS(x: number, y: number, baseLat: number = 21.8502, baseLng: number = 80.2274) {
   const lat = baseLat + (y / 111000.0);
   const lng = baseLng + (x / 103248.0);
   
@@ -121,8 +121,8 @@ function BenchAndBlastGrid3D({
   setHoveredHole,
   showOreHeatmap = true,
   useAdaptiveDensity = true,
-  baseLat = 21.5420,
-  baseLng = 79.6780,
+  baseLat = 21.8502,
+  baseLng = 80.2274,
   strikeLabel = 'N65°E',
   dipLabel = '55° NW',
   srLabel = '1:4.8'
@@ -367,8 +367,8 @@ function BenchAndBlastGrid3D({
 // MAIN 3D BLASTING STUDIO COMPONENT
 // -------------------------------------------------------------
 export function BlastingPitStudio3D({ mineId, zone }: { mineId?: string; zone?: any }) {
-  const baseLat = zone?.coordinates ? zone.coordinates[0] : 21.5420;
-  const baseLng = zone?.coordinates ? zone.coordinates[1] : 79.6780;
+  const baseLat = zone?.coordinates ? zone.coordinates[0] : 21.8502;
+  const baseLng = zone?.coordinates ? zone.coordinates[1] : 80.2274;
   const mineName = zone?.name || (mineId ? mineId.replace('zone-', '').toUpperCase() + ' Mine' : 'MOIL Manganese Pit');
 
   // Input parameters
@@ -402,11 +402,11 @@ export function BlastingPitStudio3D({ mineId, zone }: { mineId?: string; zone?: 
   const fetchBlastingOptimization = async () => {
     setLoading(true);
     try {
-      const res = await fetch('http://localhost:8000/api/v1/blasting/optimize', {
+      const res = await fetch('http://127.0.0.1:8000/api/v1/blasting/optimize', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          mine_id: mineId || 'zone-dongri-buzurg',
+          mine_id: mineId || 'zone-balaghat',
           lat: baseLat,
           lng: baseLng,
           hole_diameter_mm: holeDiameter,
@@ -515,6 +515,10 @@ export function BlastingPitStudio3D({ mineId, zone }: { mineId?: string; zone?: 
   const geoCtx = results?.mine_geological_context;
   const hoveredData = holes.find(h => h.hole_id === hoveredHole);
   const hoveredGPS = hoveredData ? convertHoleToGPS(hoveredData.x, hoveredData.y, baseLat, baseLng) : null;
+
+  // Find the highest grade hole to suggest digging coordinates
+  const highestGradeHole = holes.length > 0 ? [...holes].sort((a, b) => (b.mn_grade_pct || 0) - (a.mn_grade_pct || 0))[0] : null;
+  const bestDigGPS = highestGradeHole ? convertHoleToGPS(highestGradeHole.x, highestGradeHole.y, baseLat, baseLng) : null;
 
   return (
     <div className="w-full bg-slate-100/95 border border-slate-200 rounded-2xl p-6 shadow-2xl space-y-6 text-slate-100 backdrop-blur-md">
@@ -669,8 +673,26 @@ export function BlastingPitStudio3D({ mineId, zone }: { mineId?: string; zone?: 
           
           {/* Top Bar Overlay: Legend + Camera View Presets + Viewport Expand */}
           <div className="absolute top-3 left-3 right-3 z-10 flex flex-wrap items-center justify-between gap-2 pointer-events-none">
-            {/* Legend Overlay: Ore Grade & Drillhole Density */}
-            <div className="pointer-events-auto bg-slate-900/95 backdrop-blur border border-slate-800 rounded-xl p-2.5 text-[11px] space-y-1.5 shadow-xl">
+            
+            <div className="flex flex-col gap-2">
+              {/* Target Digging Prediction Overlay */}
+              {bestDigGPS && highestGradeHole && (
+                <div className="pointer-events-auto bg-fuchsia-950/95 backdrop-blur border border-fuchsia-500 rounded-xl p-3 shadow-2xl animate-pulse ring-2 ring-fuchsia-400/50">
+                  <div className="flex items-center gap-2 mb-1">
+                    <Sparkles className="w-4 h-4 text-amber-300" />
+                    <span className="text-[11px] font-bold text-white tracking-widest uppercase">Target Excavation Coordinate</span>
+                  </div>
+                  <div className="text-[10px] text-fuchsia-200 mb-1">Predictive Peak Grade: <strong>{highestGradeHole.mn_grade_pct?.toFixed(1)}% Mn</strong></div>
+                  <div className="font-mono text-xs text-amber-300 font-bold bg-fuchsia-900/50 p-1.5 rounded border border-fuchsia-700">
+                    <div>{bestDigGPS.latStr}, {bestDigGPS.lngStr}</div>
+                    <div className="text-[10px] text-fuchsia-300 mt-0.5">{bestDigGPS.dms}</div>
+                  </div>
+                  <div className="text-[9px] text-slate-300 mt-1">Dig here for highest manganese reserve.</div>
+                </div>
+              )}
+              
+              {/* Legend Overlay: Ore Grade & Drillhole Density */}
+              <div className="pointer-events-auto bg-slate-900/95 backdrop-blur border border-slate-800 rounded-xl p-2.5 text-[11px] space-y-1.5 shadow-xl">
               <div className="text-[10px] font-bold text-amber-400 uppercase tracking-wider border-b border-slate-800 pb-1">
                 Mn Ore Mineral Density Legend
               </div>
@@ -691,6 +713,7 @@ export function BlastingPitStudio3D({ mineId, zone }: { mineId?: string; zone?: 
                 <span>Waste Overburden (&lt;28% Mn, Sparse Grid)</span>
               </div>
             </div>
+          </div>
 
             {/* Camera View Presets Bar + AI Adaptive Density Toggle */}
             <div className="pointer-events-auto flex items-center gap-1 bg-slate-900/95 backdrop-blur p-1 rounded-xl border border-slate-800 shadow-xl text-xs font-mono">

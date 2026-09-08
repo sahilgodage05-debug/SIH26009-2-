@@ -19,7 +19,7 @@ import pandas as pd
 from typing import Dict, Any, List, Tuple
 from pykrige.ok3d import OrdinaryKriging3D
 
-from geostatistics import generate_dongri_drillholes, run_ordinary_kriging_3d, calculate_reserves
+from geostatistics import generate_balaghat_drillholes, run_ordinary_kriging_3d, calculate_reserves
 
 class BlockModelEngine:
     """
@@ -30,7 +30,7 @@ class BlockModelEngine:
         self.dx = block_size_x
         self.dy = block_size_y
         self.dz = block_size_z
-        self.drillhole_df = generate_dongri_drillholes()
+        self.drillhole_df = generate_balaghat_drillholes()
 
     def construct_block_model(
         self,

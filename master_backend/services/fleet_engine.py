@@ -205,7 +205,7 @@ class FleetEngine:
                 workers = eq.get("Workers_Count", "").strip()
                 if workers:
                     return workers
-        return "500 - 800"
+        return "650"
 
     def get_or_create_mine_fleet(self, mine_id: str) -> Dict[str, Any]:
         """Retrieves or initializes live telemetry, directed graph network, and equipment for the mine."""
@@ -240,7 +240,9 @@ class FleetEngine:
         # If opencast dumpers are limited, include LHDs or fallback to general dumpers from CSV
         haulage_units = list(csv_dumpers)
         if len(haulage_units) < 4 and len(csv_lhds) > 0:
-            haulage_units.extend(csv_lhds)
+            for lhd in csv_lhds:
+                if lhd not in haulage_units:
+                    haulage_units.append(lhd)
         if len(haulage_units) < 3:
             # Borrow dumper records from master CSV to maintain active opencast loop
             fallback_dumpers = [eq for eq in self._equipment_master_data if "dumper" in eq.get("Equipment_Type", "").lower()][:4]
@@ -588,9 +590,9 @@ class FleetEngine:
                     start_node, end_node = end_node, start_node
 
                 p = truck["progress"]
-                # S-curve interpolation simulating switchback hairpin turns
-                truck["lat"] = start_node["lat"] + (end_node["lat"] - start_node["lat"]) * p + (math.sin(p * math.pi * 2) * 0.00032)
-                truck["lng"] = start_node["lng"] + (end_node["lng"] - start_node["lng"]) * p + (math.cos(p * math.pi * 2) * 0.00032)
+                # Linear interpolation along haul roads
+                truck["lat"] = start_node["lat"] + (end_node["lat"] - start_node["lat"]) * p
+                truck["lng"] = start_node["lng"] + (end_node["lng"] - start_node["lng"]) * p
 
                 # Intersection Right-of-Way Logic: Proximity to Switchback Node-3
                 dist_to_int = math.sqrt((truck["lat"] - state["base_lat"])**2 + (truck["lng"] - state["base_lng"])**2)

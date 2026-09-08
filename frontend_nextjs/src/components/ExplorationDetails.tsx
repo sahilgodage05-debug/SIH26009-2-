@@ -2,6 +2,7 @@ import React from 'react';
 import { Activity, Pickaxe, TrendingUp, CloudRain, Droplets, Thermometer, Leaf, Radio, Layers, Zap } from 'lucide-react';
 
 export function ExplorationDetails({ zone }: { zone: any }) {
+  if (!zone) return <div>No zone selected or data unavailable.</div>;
   const getScoreColor = (score: number) => {
     if (score >= 85) return 'text-emerald-400';
     if (score >= 70) return 'text-amber-400';

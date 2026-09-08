@@ -145,13 +145,13 @@ export function FleetCommandCenter({ mineId, zone }: { mineId?: string; zone?: a
   const fetchAllData = async () => {
     try {
       const [fleetRes, mfRes, sfRes, caRes, hemmRes, geoRes, wfRes] = await Promise.all([
-        fetch(`http://localhost:8000/api/v1/fleet/status/${currentMineId}`),
-        fetch(`http://localhost:8000/api/v1/fleet/match-factor/${currentMineId}`),
-        fetch(`http://localhost:8000/api/v1/production/shortfall/${currentMineId}`),
-        fetch(`http://localhost:8000/api/v1/production/corrective-actions/${currentMineId}`),
-        fetch(`http://localhost:8000/api/v1/production/hemm-reliability/${currentMineId}`),
-        fetch(`http://localhost:8000/api/v1/production/geotechnical-overlay/${currentMineId}`),
-        fetch(`http://localhost:8000/api/v1/fleet/workers-roster/${currentMineId}`)
+        fetch(`http://127.0.0.1:8000/api/v1/fleet/status/${currentMineId}`),
+        fetch(`http://127.0.0.1:8000/api/v1/fleet/match-factor/${currentMineId}`),
+        fetch(`http://127.0.0.1:8000/api/v1/production/shortfall/${currentMineId}`),
+        fetch(`http://127.0.0.1:8000/api/v1/production/corrective-actions/${currentMineId}`),
+        fetch(`http://127.0.0.1:8000/api/v1/production/hemm-reliability/${currentMineId}`),
+        fetch(`http://127.0.0.1:8000/api/v1/production/geotechnical-overlay/${currentMineId}`),
+        fetch(`http://127.0.0.1:8000/api/v1/fleet/workers-roster/${currentMineId}`)
       ]);
 
       if (fleetRes.ok) {
@@ -195,7 +195,7 @@ export function FleetCommandCenter({ mineId, zone }: { mineId?: string; zone?: a
     // If LP redeployment action, trigger LP solver
     if (action.action_id.includes('LP') || action.action_id.includes('DISPATCH')) {
       try {
-        const res = await fetch(`http://localhost:8000/api/v1/production/solve-lp-reallocation/${currentMineId}`);
+        const res = await fetch(`http://127.0.0.1:8000/api/v1/production/solve-lp-reallocation/${currentMineId}`);
         if (res.ok) {
           const lpData = await res.json();
           setLpSolution(lpData);
@@ -253,7 +253,7 @@ export function FleetCommandCenter({ mineId, zone }: { mineId?: string; zone?: a
               </span>
               <span className="px-2.5 py-0.5 rounded-full bg-purple-950 text-purple-300 border border-purple-500/50 text-[10px] font-mono font-bold flex items-center gap-1">
                 <Users className="w-3 h-3" />
-                Total Workforce: {fleetState?.workers_count_str || '800 - 1,000'}
+                Total Workforce: {fleetState?.workers_count_str || '900'}
               </span>
             </div>
             <h1 className="text-xl md:text-2xl font-black text-white tracking-tight flex items-center gap-2">
@@ -314,7 +314,7 @@ export function FleetCommandCenter({ mineId, zone }: { mineId?: string; zone?: a
       </div>
 
       {/* OPERATIONAL KPI CARDS ROW */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
         
         {/* Card 1: Cumulative Production Variance */}
         <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 flex flex-col justify-between shadow-xl">
@@ -373,48 +373,7 @@ export function FleetCommandCenter({ mineId, zone }: { mineId?: string; zone?: a
           </div>
         </div>
 
-        {/* Card 3: Active Fleet & TKPH Telemetry */}
-        <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 flex flex-col justify-between shadow-xl">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Active Fleet &amp; TKPH Heat</span>
-            <Truck className="w-4 h-4 text-emerald-400" />
-          </div>
-          <div className="mt-2 flex items-baseline gap-2">
-            <span className="text-2xl font-black text-white">{trucks.length}</span>
-            <span className="text-xs text-slate-400">Haul Trucks (CSV Ingested)</span>
-          </div>
-          <div className="mt-2 flex items-center justify-between text-xs">
-            <span className="text-slate-400">Avg Fleet TKPH:</span>
-            <span className="font-mono font-bold text-emerald-400">142.5 / 420 Max</span>
-          </div>
-          <div className="mt-1 flex items-center justify-between text-[11px] text-slate-400">
-            <span className="flex items-center gap-1 text-slate-400">
-              <Fuel className="w-3.5 h-3.5 text-amber-400" />
-              Avg Burn: 54.2 L/h
-            </span>
-            <span className="text-emerald-400 font-bold">Loaded Right-of-Way Active</span>
-          </div>
-        </div>
 
-        {/* Card 4: HEMM Overall Availability */}
-        <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 flex flex-col justify-between shadow-xl">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">HEMM Availability &amp; MTBF</span>
-            <Wrench className="w-4 h-4 text-purple-400" />
-          </div>
-          <div className="mt-2 flex items-baseline gap-2">
-            <span className="text-2xl font-black text-purple-400">{hemmData?.overall_fleet_availability_pct || 92.1}%</span>
-            <span className="text-xs text-slate-400">Uptime</span>
-          </div>
-          <div className="mt-2 flex items-center justify-between text-xs">
-            <span className="text-slate-400">Unplanned Shift Downtime:</span>
-            <span className="font-mono font-bold text-slate-300">{hemmData?.unplanned_downtime_hours_shift || 1.4} h</span>
-          </div>
-          <div className="mt-1 text-[11px] text-emerald-400 flex items-center gap-1">
-            <Check className="w-3.5 h-3.5" />
-            <span>98.4% PM Compliance</span>
-          </div>
-        </div>
       </div>
 
       {/* MAIN COMMAND NAVIGATION TABS */}
@@ -455,17 +414,7 @@ export function FleetCommandCenter({ mineId, zone }: { mineId?: string; zone?: a
           <span>3. Truck Telemetry &amp; TKPH HUD</span>
         </button>
 
-        <button
-          onClick={() => setActiveTab('reliability')}
-          className={`px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition-all ${
-            activeTab === 'reliability'
-              ? 'bg-purple-600 text-white shadow-lg shadow-purple-900/40'
-              : 'bg-slate-900 text-slate-400 hover:text-slate-200 hover:bg-slate-800'
-          }`}
-        >
-          <Wrench className="w-4 h-4" />
-          <span>4. HEMM Reliability &amp; MTBF</span>
-        </button>
+
 
         <button
           onClick={() => setActiveTab('geotech')}
@@ -666,8 +615,8 @@ export function FleetCommandCenter({ mineId, zone }: { mineId?: string; zone?: a
                   }
 
                   const p = truck.progress;
-                  const posX = startPos.x + (endPos.x - startPos.x) * p + Math.sin(p * Math.PI * 2) * 2.5;
-                  const posY = startPos.y + (endPos.y - startPos.y) * p + Math.cos(p * Math.PI * 2) * 2.5;
+                  const posX = startPos.x + (endPos.x - startPos.x) * p;
+                  const posY = startPos.y + (endPos.y - startPos.y) * p;
 
                   const isSelected = selectedTruck?.id === truck.id;
 
@@ -1033,50 +982,7 @@ export function FleetCommandCenter({ mineId, zone }: { mineId?: string; zone?: a
         </div>
       )}
 
-      {/* TAB 4: HEMM RELIABILITY & MTBF */}
-      {activeTab === 'reliability' && (
-        <div className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {hemmData?.hemm_units?.map((unit: HemmUnit) => (
-              <div key={unit.unit_id} className="bg-slate-900/90 border border-slate-800 rounded-2xl p-5 shadow-xl flex flex-col justify-between">
-                <div>
-                  <div className="flex items-center justify-between border-b border-slate-800 pb-2 mb-3">
-                    <span className="text-sm font-black text-white">{unit.unit_id}</span>
-                    <span className="bg-purple-950 text-purple-300 border border-purple-600/60 px-2 py-0.5 rounded text-[10px] font-mono font-bold">
-                      {unit.availability_pct}% Avail
-                    </span>
-                  </div>
-                  <h4 className="text-xs font-semibold text-slate-300">{unit.type}</h4>
-                  
-                  <div className="mt-4 space-y-2 text-xs font-mono text-slate-400">
-                    <div className="flex justify-between">
-                      <span>MTBF (Reliability):</span>
-                      <span className="font-bold text-white">{unit.mtbf_hours} Hours</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>MTTR (Repair Time):</span>
-                      <span className="font-bold text-slate-300">{unit.mttr_hours} Hours</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Operating Hours:</span>
-                      <span className="font-bold text-slate-300">{unit.operating_hours} h</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>48h Deficit Risk:</span>
-                      <span className="font-bold text-rose-400">{unit.failure_risk_48h_pct}%</span>
-                    </div>
-                  </div>
-                </div>
 
-                <div className="mt-4 pt-3 border-t border-slate-800">
-                  <span className="text-[10px] text-slate-500 uppercase font-bold block mb-1">CSV Maintenance Log</span>
-                  <span className="text-[11px] font-bold text-amber-300">{unit.critical_subsystem}</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
 
       {/* TAB 5: SPACE-TECH & GEOTECHNICAL INSAR */}
       {activeTab === 'geotech' && (

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { RESERVE_ZONES } from '@/data/moilData';
 import { MINE_PROCESS_STEPS, MineProcessFlowchart } from '@/components/MineProcessFlowchart';
 import { BlastingPitStudio3D } from '@/components/BlastingPitStudio3D';
@@ -12,14 +12,35 @@ import { ArrowLeft, Sparkles, Sliders, Database, AlertCircle, FileSpreadsheet, A
 export default function ProcessDetailPage() {
   const params = useParams();
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   const mineId = params.id as string;
   const processId = params.processId as string;
 
-  const zone = RESERVE_ZONES.find(z => z.id === mineId);
+  let zone = RESERVE_ZONES.find(z => z.id === mineId);
+
+  if (mineId === 'custom') {
+    const lat = searchParams.get('lat');
+    const lng = searchParams.get('lng');
+    if (lat && lng) {
+      zone = {
+        id: 'custom',
+        name: `Custom Target`,
+        coordinates: [parseFloat(lat), parseFloat(lng)],
+        manganeseProbability: 75,
+        overburdenRatio: 'Unknown',
+        exactLocation: { district: 'Custom', dms: 'N/A' },
+        description: 'Dynamically generated 3D block model for custom target coordinates.',
+        features: []
+      } as any;
+    }
+  }
+
   const currentProcess = MINE_PROCESS_STEPS.find(p => p.id === processId);
 
-  const mineName = zone ? zone.name : mineId.toUpperCase() + ' Mine';
+  const mineName = zone?.name === 'Custom Target' 
+    ? `Target (${zone.coordinates[0].toFixed(3)}N, ${zone.coordinates[1].toFixed(3)}E)`
+    : (zone ? zone.name : mineId.toUpperCase() + ' Mine');
 
   if (!currentProcess) {
     return (

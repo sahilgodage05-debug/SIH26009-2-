@@ -14,7 +14,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
 from geostatistics import (
-    generate_dongri_drillholes,
+    generate_balaghat_drillholes,
     create_3d_grid,
     run_ordinary_kriging_3d,
     calculate_reserves
@@ -49,7 +49,31 @@ block_model_engine = BlockModelEngine(block_size_x=12.0, block_size_y=12.0, bloc
 blasting_engine = BlastingEngine(default_rock_density=3.65)
 fleet_engine = FleetEngine()
 production_engine = ProductionEngine()
-drillholes_cache = generate_dongri_drillholes()
+drillholes_cache = generate_balaghat_drillholes()
+
+# All 11 MOIL mine center coordinates for nearest-mine distance calculations
+KNOWN_MINE_CENTERS = [
+    (21.8502, 80.2274),  # Balaghat
+    (21.5420, 79.6780),  # Dongri Buzurg
+    (21.5336, 79.7437),  # Chikla
+    (21.6835, 79.7246),  # Tirodi
+    (21.4078, 78.9833),  # Gumgaon
+    (21.4230, 79.2885),  # Kandri
+    (21.3965, 79.2725),  # Mansar
+    (21.9685, 80.4680),  # Ukwa
+    (21.4315, 79.3140),  # Beldongri
+    (21.7180, 79.7610),  # Sitapatore
+    (21.6580, 79.7085),  # Sukli
+]
+
+def _dist_to_nearest_mine(lat: float, lng: float) -> float:
+    """Returns distance in meters to the nearest known MOIL mine center."""
+    min_dist = float('inf')
+    for mlat, mlng in KNOWN_MINE_CENTERS:
+        d = math.hypot((lat - mlat) * 111.0, (lng - mlng) * 105.0) * 1000.0
+        if d < min_dist:
+            min_dist = d
+    return min_dist
 
 # Mount User and Shivam Backends
 from user_app import app as user_app
@@ -290,7 +314,7 @@ async def health_check():
             "kobold_bayesian_ai": "active (ensemble rf+gb)",
             "parameter_engine": "active (multi-spectral + geophysical)"
         },
-        "target_region": "Sausar Manganese Belt (Balaghat - Dongri Buzurg, Central India)"
+        "target_region": "Sausar Manganese Belt (Balaghat, Central India)"
     }
 
 
@@ -308,7 +332,7 @@ async def get_spatial_layers(resolution: int = Query(default=40, ge=20, le=80)):
         topo = parameter_engine.compute_topography_and_feasibility(grid_size=resolution, cell_size_m=12.0)
 
         return {
-            "region": "Dongri Buzurg - Balaghat Sausar Belt",
+            "region": "Balaghat - Sausar Belt",
             "grid_size": resolution,
             "spectral_indices": {
                 "ndvi": spectral["ndvi"].tolist(),
@@ -346,8 +370,8 @@ async def predict_bayesian_scoring(payload: BayesianPredictRequest):
     quantifies epistemic uncertainty, and yields the penalized confidence score.
     """
     try:
-        # Distance to nearest known deposit / drillhole
-        dist_to_dongri = math.hypot((payload.lat - 21.5540) * 111.0, (payload.lng - 79.6974) * 105.0) * 1000.0
+        # Distance to nearest known MOIL mine deposit / drillhole
+        dist_to_nearest = _dist_to_nearest_mine(payload.lat, payload.lng)
         
         # Assemble feature vector
         X_scaled = prospector_engine.assemble_feature_vector(
@@ -364,7 +388,7 @@ async def predict_bayesian_scoring(payload: BayesianPredictRequest):
         prior_p = prospector_engine.predict_prior_probability(X_scaled)
         cs, posterior_p, uncertainty = prospector_engine.calculate_confidence_score(
             prior_p=prior_p,
-            dist_to_drillhole_m=dist_to_dongri
+            dist_to_drillhole_m=dist_to_nearest
         )
 
         # Exploration Decision Classification
@@ -398,6 +422,73 @@ async def predict_bayesian_scoring(payload: BayesianPredictRequest):
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Error computing Bayesian prospectivity: {str(e)}"
+        )
+
+
+class BatchPredictPoint(BaseModel):
+    lat: float
+    lng: float
+    msv_anomaly: float = 1.8
+    swir_ratio: float = 2.1
+    resistivity: float = 135.0
+    chargeability: float = 24.5
+    s_density: float = 6.5
+    elevation: float = 340.0
+    slope_deg: float = 22.0
+    mansar_proximity: float = 0.85
+
+
+class BatchPredictRequest(BaseModel):
+    points: List[BatchPredictPoint]
+
+
+@app.post("/api/v1/predict/scoring/batch", tags=["Phase 2: KoBold Bayesian AI"])
+async def predict_bayesian_scoring_batch(payload: BatchPredictRequest):
+    """
+    Batch KoBold Bayesian AI scoring: accepts up to 2000 points at once.
+    Returns confidence scores for each point.
+    """
+    try:
+        results = []
+        for pt in payload.points:
+            dist_to_nearest = _dist_to_nearest_mine(pt.lat, pt.lng)
+
+            X_scaled = prospector_engine.assemble_feature_vector(
+                msv_anomaly=pt.msv_anomaly,
+                swir_ratio=pt.swir_ratio,
+                resistivity=pt.resistivity,
+                chargeability=pt.chargeability,
+                s_density=pt.s_density,
+                elevation=pt.elevation,
+                slope_deg=pt.slope_deg,
+                mansar_proximity=pt.mansar_proximity
+            )
+
+            prior_p = prospector_engine.predict_prior_probability(X_scaled)
+            cs, posterior_p, uncertainty = prospector_engine.calculate_confidence_score(
+                prior_p=prior_p,
+                dist_to_drillhole_m=dist_to_nearest
+            )
+
+            if cs >= 80.0:
+                priority = "High (Tier 1)"
+            elif cs >= 55.0:
+                priority = "Medium (Tier 2)"
+            else:
+                priority = "Low (Tier 3)"
+
+            results.append({
+                "lat": pt.lat,
+                "lng": pt.lng,
+                "score": round(cs, 1),
+                "priority": priority
+            })
+
+        return {"predictions": results}
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Batch prediction error: {str(e)}"
         )
 
 
@@ -491,7 +582,7 @@ async def estimate_reserve(payload: ReserveEstimationRequest):
             specific_gravity=payload.specific_gravity, cut_off_grade=payload.cut_off_grade
         )
         return {
-            "mine_name": "MOIL Dongri Buzurg Manganese Mine",
+            "mine_name": "MOIL Balaghat Manganese Mine",
             "cut_off_grade": payload.cut_off_grade,
             "specific_gravity": payload.specific_gravity,
             "block_size_m": payload.block_size,

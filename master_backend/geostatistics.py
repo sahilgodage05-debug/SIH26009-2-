@@ -2,10 +2,10 @@
 MOIL AI: 3D Block Modeling & Geostatistical Ordinary Kriging Engine
 -------------------------------------------------------------------
 Author: Senior Backend Engineer & Geostatistician
-Module: Ordinary Kriging 3D Reserve Estimation for Dongri Buzurg Mine
+Module: Ordinary Kriging 3D Reserve Estimation for Balaghat Mine
 
 Features:
-1. Synthetic Drill Hole Composites Generator for MOIL Dongri Buzurg
+1. Synthetic Drill Hole Composites Generator for MOIL Balaghat
 2. 3D Regular Block Discretization (Bounding Box Grid)
 3. 3D Ordinary Kriging Interpolation (PyKrige Vectorized Engine)
 4. Cut-Off Grade Filtering and Specific Gravity Tonnage Modeling
@@ -18,10 +18,10 @@ from typing import Tuple, Dict, Any, List
 from pykrige.ok3d import OrdinaryKriging3D
 
 
-def generate_dongri_drillholes(random_seed: int = 42) -> pd.DataFrame:
+def generate_balaghat_drillholes(random_seed: int = 42) -> pd.DataFrame:
     """
-    Generates realistic 3D drill hole composites for MOIL's Dongri Buzurg manganese mine.
-    The tabular manganese ore body strikes ~N70°E and dips ~65° SSE within the Sausar Group.
+    Generates realistic 3D drill hole composites for MOIL's Balaghat manganese mine.
+    The tabular manganese ore body strikes ~N70°E and dips ~74° NW within the Sausar Group.
     
     Returns:
         pd.DataFrame with columns: ['hole_id', 'x', 'y', 'z', 'grade_mn', 'lithology']
@@ -37,16 +37,16 @@ def generate_dongri_drillholes(random_seed: int = 42) -> pd.DataFrame:
     
     for sx in section_xs:
         for sy in section_ys:
-            hole_id = f"DH-DB-{hole_counter:03d}"
+            hole_id = f"DH-BG-{hole_counter:03d}"
             hole_counter += 1
             
             # Collar coordinates with slight survey variance
             collar_x = sx + np.random.uniform(-4.0, 4.0)
             collar_y = sy + np.random.uniform(-4.0, 4.0)
-            collar_z = 320.0 + np.random.uniform(-2.0, 3.0) # Surface elevation RL (m)
+            collar_z = 335.0 + np.random.uniform(-2.0, 3.0) # Surface elevation RL (m) (Balaghat is ~335m)
             
-            # Drill down to 230m RL (depth of 90m) with 3m composite intervals
-            depths = np.arange(0.0, 90.0, 3.0, dtype=np.float64)
+            # Drill down to deep underground levels (depth of 200m) with 3m composite intervals
+            depths = np.arange(0.0, 200.0, 3.0, dtype=np.float64)
             
             # Slight borehole trajectory deviation (inclined at 80° toward NNW)
             for d in depths:
